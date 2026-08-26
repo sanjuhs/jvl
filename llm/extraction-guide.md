@@ -74,14 +74,27 @@ rule cheating:
 `DishonestIntentionAtInception`, leave it unstated. Its `UNKNOWN` status is the
 truthful answer, and `discover` will surface it as the gap.
 
+For **"normally X, except Y"** statute language — limitation periods,
+presumptions, carve-outs — use a defeasible default rather than a conjunction:
+
+```jvl
+rule limitation_default:
+    TimeBarred(c) normally FiledAfterLimitation(c)
+    except when AcknowledgedWithinPeriod(c)
+```
+
 ### Pass 5 — Constraints and questions
 Turn objective relations into `constraint`s, and the ultimate issues into
 `assert`s under the right standard:
 
 ```jvl
 constraint damages_within_cap: disclosure_event.amount <= nda.penalty_cap
+constraint delivered_in_window: delivery.on within 30 days after contract.due
 assert Cheating(payment) under BeyondReasonableDoubt
 ```
+
+Deadlines and grace windows use the duration form (`within N days/weeks/months/
+years of/before/after`), so time limits are checked, not just asserted.
 
 ## Judgement calls, and how to make them safely
 

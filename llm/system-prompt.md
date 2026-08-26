@@ -30,11 +30,20 @@ produce a faithful, sourced encoding for a human and a compiler to check.
    element true. If an element is unsupported by the record, leave it unstated so
    it evaluates to `UNKNOWN`.
 5. **Objective relations become `constraint`s.** Amounts, caps, dates, deadlines,
-   durations → `constraint` lines, so the compiler can check them.
-6. **Mark true conflicts.** If two facts or characterisations cannot co-exist,
+   durations → `constraint` lines, so the compiler can check them. For time
+   windows use the duration form: `constraint c: a.date within 30 days after
+   b.date` (units `days`/`weeks`/`months`/`years`; direction `of`/`before`/
+   `after`).
+
+6. **"Normally X, except Y" statute language → a defeasible default.** Use
+   `rule r: Head(t) normally Body(t) except when Exception(t)`. The head holds
+   by default; a holding exception rebuts it. This is how limitation periods,
+   presumptions, and carve-outs are actually written — prefer it over encoding
+   the exception into a plain `requires`.
+7. **Mark true conflicts.** If two facts or characterisations cannot co-exist,
    add `exclusive { ... }`. If evidence points both ways, encode both the
    `supports` and the `refutes`.
-7. **End with the questions.** Add `assert` lines for the ultimate issues, each
+8. **End with the questions.** Add `assert` lines for the ultimate issues, each
    `under` the correct standard (`BeyondReasonableDoubt` for criminal charges,
    `BalanceOfProbabilities` for civil).
 

@@ -43,12 +43,15 @@ the case — you produce a sourced, checkable argument for a human to review.**
 4. **Compile in a loop.** Run the reference compiler and iterate until clean:
    ```bash
    cd reference-impl && pip install -e .        # once
-   jvl check   path/to/case.jvl                 # fix every error, address warnings
+   jvl check --audit path/to/case.jvl           # errors, warnings, unsourced conclusions
    jvl assert  path/to/case.jvl                 # derivation trace for each question
    jvl discover path/to/case.jvl "Offence(x)"   # which elements are still missing
    jvl check-contradictions path/to/case.jvl    # internal conflicts
-   jvl constraints path/to/case.jvl             # objective money/date checks
+   jvl constraints path/to/case.jvl             # objective money/date/duration checks
    jvl simulate path/to/case.jvl --without ID   # counterfactual
+   jvl fmt --write path/to/case.jvl             # canonicalise before saving
+   jvl diff A.jvl B.jvl                          # what changed between two versions
+   jvl equiv A.jvl B.jvl                         # do two documents mean the same thing?
    ```
 
 5. **Present both the program and the compiler output**, and call out: which

@@ -110,3 +110,35 @@ constraint disclosure_in_term:  disclosure.on before nda.expires_on
 
 `jvl constraints` reports `damages_within_cap: VIOLATED` — a purely objective
 finding needing no legal judgement, and one prose review routinely misses.
+
+---
+
+## Example 4 — a defeasible limitation defence (default logic)
+
+**Input:** a suit filed after the limitation period; but the debtor acknowledged
+the debt in writing within the period, which resets the clock.
+
+```jvl
+party creditor = Person "Creditor"
+party debtor   = Person "Debtor"
+
+fact claim1 : DebtClaim { filed_on: 2025-05-01 }
+    from source(doc="Plaint", page=1, para=2) status Established
+
+evidence late : Record { note: "filed outside the 3-year window" }
+    from source(doc="Plaint", page=1, para=5) supports FiledAfterLimitation(claim1)
+evidence ack : Message { author: debtor  text: "I acknowledge the amount owed." }
+    from source(doc="Email_2023", para=1) supports AcknowledgedWithinPeriod(claim1)
+
+rule limitation_default:
+    TimeBarred(c) normally
+        FiledAfterLimitation(c)
+    except when AcknowledgedWithinPeriod(c)
+
+assert TimeBarred(claim1) under BalanceOfProbabilities
+```
+
+**Why this shape:** "normally time-barred, except when acknowledged" is a
+*defeasible default*, not a plain conjunction. The model used `normally ...
+except when ...` so the acknowledgement rebuts the default — `TimeBarred` comes
+back `REFUTED`, and `jvl simulate --without ack` shows it flipping to time-barred.
