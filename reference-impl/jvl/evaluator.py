@@ -336,6 +336,39 @@ class Evaluator:
             return None, f"unbound reference '{v.name}'"
         return None, "unsupported operand"
 
+    # --- provenance audit ----------------------------------------------
+    def _has_source(self, key: AtomKey, seen: set | None = None) -> bool:
+        """Does this atom trace to *any* source, directly or through a rule?"""
+        seen = seen or set()
+        if key in seen:
+            return False
+        seen.add(key)
+        for c in self._atoms.get(key, []):
+            if c.provenance is not None:
+                return True
+        for rule in self.program.of_type(ast.Rule):
+            binding = _unify(rule.head, key)
+            if binding is None:
+                continue
+            for p in rule.body:
+                bp = (p.name, tuple(binding.get(a, a) for a in p.args))
+                if self._has_source(bp, seen):
+                    return True
+        return False
+
+    def unsourced_conclusions(self) -> list[tuple[AtomKey, Status]]:
+        """Propositions that reach SUPPORTED+ but trace to no source at all.
+
+        A supported conclusion the compiler cannot ground in the record is the
+        exact failure mode JVL exists to catch — a rigorous proof of a fact
+        nobody wrote down. `jvl check --audit` reports these.
+        """
+        out = []
+        for key, st in sorted(self.status.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+            if st.rank >= Status.SUPPORTED.rank and not self._has_source(key):
+                out.append((key, st))
+        return out
+
     # --- static checks (jvl check) -------------------------------------
     def static_check(self) -> list[Diagnostic]:
         diags: list[Diagnostic] = list(self.diagnostics)

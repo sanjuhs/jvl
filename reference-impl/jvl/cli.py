@@ -56,6 +56,15 @@ def cmd_check(args) -> int:
         print(d.render())
     counts = f"{len(errors)} error(s), {len(diags) - len(errors)} warning(s)"
     print(f"\n{'✗' if errors else '✓'} {args.file}: {counts}")
+    if getattr(args, "audit", False):
+        unsourced = ev.unsourced_conclusions()
+        print("\n── provenance audit ──")
+        if not unsourced:
+            print("  ✓ every supported conclusion traces to a source")
+        else:
+            for key, st in unsourced:
+                print(f"  ⚠ {ast.Predicate(key[0], key[1]).render()} is {st.name} "
+                      f"but traces to no source")
     return 1 if errors else 0
 
 
@@ -269,6 +278,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     c = sub.add_parser("check", help="parse + static checks + provenance audit")
     c.add_argument("file")
+    c.add_argument("--audit", action="store_true",
+                   help="also report supported conclusions that trace to no source")
     c.set_defaults(func=cmd_check)
 
     c = sub.add_parser("assert", help="run assert/refute statements")

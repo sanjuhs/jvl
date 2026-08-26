@@ -70,8 +70,10 @@ they mean the same thing, and if not, exactly what differs.*
   meaning-preserving — tested across all examples).
 - ⬜ Nested exceptions-to-exceptions (`except-to-exception`).
 - ⬜ Duration/interval constraints (`within 3 years`), arithmetic expressions.
+- ✅ **`jvl check --audit`** — reports any supported conclusion that traces to no
+  source (the "proof of an unsourced fact" guardrail).
 - ⬜ Burden-of-proof modelling per element and per party.
-- ⬜ Provenance on inferences + `jvl check --audit` (atoms with no source path).
+- ⬜ Provenance carried *onto* inferences (specific spans per derived element).
 
 ## Phase 5 — Tooling & ecosystem 🚧
 
