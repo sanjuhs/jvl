@@ -66,11 +66,12 @@ they mean the same thing, and if not, exactly what differs.*
 - ✅ **Default logic**: `normally ... except when ...` (Catala-style defeasible
   defaults) — in both the Python reference and the JS engine, with a worked
   example ([05](examples/05-limitation-default.jvl)).
+- ✅ **`jvl fmt`** — canonical formatter; round-trip safe (re-parses, idempotent,
+  meaning-preserving — tested across all examples).
 - ⬜ Nested exceptions-to-exceptions (`except-to-exception`).
 - ⬜ Duration/interval constraints (`within 3 years`), arithmetic expressions.
 - ⬜ Burden-of-proof modelling per element and per party.
 - ⬜ Provenance on inferences + `jvl check --audit` (atoms with no source path).
-- ⬜ `jvl fmt` canonical formatter.
 
 ## Phase 5 — Tooling & ecosystem 🚧
 

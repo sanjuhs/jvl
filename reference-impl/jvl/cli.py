@@ -24,7 +24,7 @@ import sys
 import json
 
 from . import ast
-from . import compare, nl, serialize
+from . import compare, format as fmt, nl, serialize
 from .evaluator import Evaluator
 from .lattice import Standard
 from .parser import ParseError, parse
@@ -214,6 +214,19 @@ def cmd_equiv(args) -> int:
     return 1
 
 
+def cmd_fmt(args) -> int:
+    with open(args.file, "r", encoding="utf-8") as fh:
+        src = fh.read()
+    formatted = fmt.format_program(parse(src))
+    if args.write:
+        with open(args.file, "w", encoding="utf-8") as fh:
+            fh.write(formatted)
+        print(f"formatted {args.file}")
+    else:
+        print(formatted, end="")
+    return 0
+
+
 def cmd_ask(args) -> int:
     with open(args.file, "r", encoding="utf-8") as fh:
         src = fh.read()
@@ -306,6 +319,11 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("file")
     c.add_argument("question")
     c.set_defaults(func=cmd_ask)
+
+    c = sub.add_parser("fmt", help="format a program in canonical JVL")
+    c.add_argument("file")
+    c.add_argument("--write", "-w", action="store_true", help="overwrite the file in place")
+    c.set_defaults(func=cmd_fmt)
     return p
 
 
