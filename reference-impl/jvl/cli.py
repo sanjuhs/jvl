@@ -9,6 +9,9 @@ Subcommands:
     jvl check-contradictions FILE     report conflicts between clauses
     jvl constraints FILE              evaluate the objective constraints
     jvl simulate FILE --without ID    counterfactual: drop a node, re-run asserts
+    jvl emit     FILE json|graph|dot  emit the program as data (the JSON/graph layer)
+    jvl diff     A B                  structural + semantic diff of two programs
+    jvl equiv    A B                  do two programs mean the same thing?
 """
 
 from __future__ import annotations
@@ -16,7 +19,10 @@ from __future__ import annotations
 import argparse
 import sys
 
+import json
+
 from . import ast
+from . import compare, serialize
 from .evaluator import Evaluator
 from .lattice import Standard
 from .parser import ParseError, parse
@@ -144,6 +150,68 @@ def cmd_simulate(args) -> int:
     return 0
 
 
+def cmd_emit(args) -> int:
+    ev = Evaluator(_load(args.file)).build()
+    if args.format == "json":
+        print(serialize.to_json(ev))
+    elif args.format == "graph":
+        print(json.dumps(serialize.to_graph(ev), indent=2, ensure_ascii=False))
+    elif args.format == "dot":
+        print(serialize.to_dot(ev))
+    return 0
+
+
+def cmd_diff(args) -> int:
+    a = Evaluator(_load(args.a)).build()
+    b = Evaluator(_load(args.b)).build()
+    d = compare.diff(a, b)
+    if args.json:
+        print(json.dumps(d.as_dict(), indent=2, ensure_ascii=False))
+        return 0
+    print(f"\n⚖  diff  {args.a}  →  {args.b}\n")
+    if d.is_empty():
+        print("  (identical — no structural or semantic differences)")
+        return 0
+    sections = [
+        ("parties added", d.parties_added), ("parties removed", d.parties_removed),
+        ("facts added", d.facts_added), ("facts removed", d.facts_removed),
+        ("fact changes", d.fact_changes),
+        ("rules added", d.rules_added), ("rules removed", d.rules_removed),
+        ("rule changes", d.rule_changes),
+        ("obligations added", d.obligations_added),
+        ("obligations removed", d.obligations_removed),
+        ("propositions added", d.props_added),
+        ("propositions removed", d.props_removed),
+        ("STATUS CHANGES (semantic delta)", d.status_changes),
+    ]
+    for title, items in sections:
+        if not items:
+            continue
+        print(f"  {title}:")
+        for it in items:
+            mark = "±" if "→" in it or "vs" in it else ("+" if "added" in title else "-")
+            print(f"    {mark} {it}")
+        print()
+    return 0
+
+
+def cmd_equiv(args) -> int:
+    a = Evaluator(_load(args.a)).build()
+    b = Evaluator(_load(args.b)).build()
+    result = compare.equiv(a, b)
+    if args.json:
+        print(json.dumps(result.as_dict(), indent=2, ensure_ascii=False))
+        return 0 if result.equivalent else 1
+    print(f"\n⚖  equiv  {args.a}  ≟  {args.b}\n")
+    if result.equivalent:
+        print("  ✓ EQUIVALENT — both programs derive the same conclusions")
+        return 0
+    print("  ✗ DIFFERENT — they diverge on these propositions:\n")
+    for line in result.discriminating:
+        print(f"    · {line}")
+    return 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="jvl", description="Jhana Verifiable Law compiler")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -178,6 +246,23 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("file")
     c.add_argument("--without", required=True, metavar="ID")
     c.set_defaults(func=cmd_simulate)
+
+    c = sub.add_parser("emit", help="emit the program as json / graph / dot")
+    c.add_argument("file")
+    c.add_argument("format", choices=["json", "graph", "dot"])
+    c.set_defaults(func=cmd_emit)
+
+    c = sub.add_parser("diff", help="structural + semantic diff of two programs")
+    c.add_argument("a")
+    c.add_argument("b")
+    c.add_argument("--json", action="store_true")
+    c.set_defaults(func=cmd_diff)
+
+    c = sub.add_parser("equiv", help="do two programs mean the same thing?")
+    c.add_argument("a")
+    c.add_argument("b")
+    c.add_argument("--json", action="store_true")
+    c.set_defaults(func=cmd_equiv)
     return p
 
 

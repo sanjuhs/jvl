@@ -1,0 +1,37 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Example 04a — Service agreement, VERSION 1
+#
+# Paired with 04-service-agreement-v2.jvl to demonstrate comparison:
+#   jvl diff  examples/04-service-agreement-v1.jvl examples/04-service-agreement-v2.jvl
+#   jvl equiv examples/04-service-agreement-v1.jvl examples/04-service-agreement-v2.jvl
+#
+# The two versions describe "the same" contract — but v2 raises the fee and adds
+# a late-delivery penalty. `equiv` reports DIFFERENT and names exactly which
+# propositions diverge; `diff` shows the field-level and rule-level changes.
+# ─────────────────────────────────────────────────────────────────────────
+
+jurisdiction IN.Contract.v1
+
+party client   = Org "Northwind Traders"
+party provider = Person "Dev Consultant"
+
+fact agreement : ServiceAgreement {
+    fee:        INR 500_000
+    due_on:     2025-09-30
+    signed_on:  2025-06-01
+} from source(doc="MSA_v1", page=1, para=1) status Established
+
+fact delivery : Delivery {
+    by:  provider
+    on:  2025-09-28
+} from source(doc="DeliveryNote", para=2) status Established
+
+rule payment_due:
+    PaymentDue(a) requires
+        ServiceAgreement(a)
+        WorkDelivered(a)
+
+evidence delivered : Record { note: "work accepted by client" }
+    from source(doc="Acceptance", para=1) supports WorkDelivered(agreement)
+
+assert PaymentDue(agreement) under BalanceOfProbabilities

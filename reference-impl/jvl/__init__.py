@@ -9,9 +9,13 @@ Public API::
     ev.run_assert(target, standard)
 """
 
+from . import compare, serialize
 from .evaluator import Evaluator
 from .lattice import Standard, Status, Verdict
 from .parser import parse
 
-__version__ = "0.1.0"
-__all__ = ["parse", "Evaluator", "Status", "Standard", "Verdict", "__version__"]
+__version__ = "0.2.0"
+__all__ = [
+    "parse", "Evaluator", "Status", "Standard", "Verdict",
+    "compare", "serialize", "__version__",
+]

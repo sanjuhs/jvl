@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Example 04b — Service agreement, VERSION 2 (amended)
+#
+# Same contract as v1, with three changes:
+#   1. the fee rises from INR 500,000 to INR 650,000
+#   2. a late-delivery penalty clause is added
+#   3. a new derived proposition (PenaltyOwed) can now arise
+#
+# Compare with v1:
+#   jvl diff  examples/04-service-agreement-v1.jvl examples/04-service-agreement-v2.jvl
+#   jvl equiv examples/04-service-agreement-v1.jvl examples/04-service-agreement-v2.jvl
+# ─────────────────────────────────────────────────────────────────────────
+
+jurisdiction IN.Contract.v1
+
+party client   = Org "Northwind Traders"
+party provider = Person "Dev Consultant"
+
+fact agreement : ServiceAgreement {
+    fee:        INR 650_000
+    due_on:     2025-09-30
+    signed_on:  2025-06-01
+    penalty:    INR 50_000
+} from source(doc="MSA_v2", page=1, para=1) status Established
+
+fact delivery : Delivery {
+    by:  provider
+    on:  2025-09-28
+} from source(doc="DeliveryNote", para=2) status Established
+
+rule payment_due:
+    PaymentDue(a) requires
+        ServiceAgreement(a)
+        WorkDelivered(a)
+
+# New clause: a penalty is owed if delivery is late.
+rule penalty_clause:
+    PenaltyOwed(a) requires
+        ServiceAgreement(a)
+        LateDelivery(a)
+
+evidence delivered : Record { note: "work accepted by client" }
+    from source(doc="Acceptance", para=1) supports WorkDelivered(agreement)
+
+assert PaymentDue(agreement) under BalanceOfProbabilities
