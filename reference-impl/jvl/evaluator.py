@@ -142,7 +142,7 @@ class Evaluator:
 
     def _vars_of(self, rule: ast.Rule) -> set[str]:
         vs: set[str] = set()
-        for pred in (rule.head, *rule.body):
+        for pred in (rule.head, *rule.body, *rule.exceptions):
             for a in pred.args:
                 if a not in self.constants and _VAR_RE.match(a):
                     vs.add(a)
@@ -157,14 +157,21 @@ class Evaluator:
         body_statuses = [prev.get(k, Status.UNKNOWN) for k in body_keys]
         if all(s is Status.UNKNOWN for s in body_statuses):
             return head_key, None, body_keys  # don't manufacture atoms
-        if rule.connective == "requires":
-            acc = body_statuses[0]
-            for s in body_statuses[1:]:
-                acc = meet(acc, s)
-        else:  # established_if
+        if rule.connective == "established_if":
             acc = body_statuses[0]
             for s in body_statuses[1:]:
                 acc = join(acc, s)
+        else:  # "requires" and "normally" both take the weakest element
+            acc = body_statuses[0]
+            for s in body_statuses[1:]:
+                acc = meet(acc, s)
+        # Defeasible default: a holding exception rebuts the conclusion.
+        if rule.connective == "normally" and rule.exceptions:
+            for ex in rule.exceptions:
+                ex_key = inst(ex)
+                if prev.get(ex_key, Status.UNKNOWN).rank >= Status.SUPPORTED.rank:
+                    acc = Status.REFUTED
+                    break
         return head_key, acc, body_keys
 
     # ------------------------------------------------------------------
@@ -201,9 +208,13 @@ class Evaluator:
                 continue
             body = [ast.Predicate(p.name, tuple(binding.get(a, a) for a in p.args))
                     for p in rule.body]
-            sep = " ∧ " if rule.connective == "requires" else " ∨ "
-            lines.append(f"{pad}  └─ {rule.connective}: "
-                         + sep.join(b.render() for b in body))
+            sep = " ∨ " if rule.connective == "established_if" else " ∧ "
+            head_line = f"{pad}  └─ {rule.connective}: " + sep.join(b.render() for b in body)
+            if rule.exceptions:
+                exc = [ast.Predicate(p.name, tuple(binding.get(a, a) for a in p.args))
+                       for p in rule.exceptions]
+                head_line += "  except when " + " ∨ ".join(e.render() for e in exc)
+            lines.append(head_line)
             for b in body:
                 lines.extend(self.trace(b, depth + 2, seen))
         return lines

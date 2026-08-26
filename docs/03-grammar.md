@@ -32,6 +32,7 @@ claim ID by Party : "text" asserts Pred(args)
 
 rule ID: Head(t) requires        BodyA(t) BodyB(t)
 rule ID: Head(t) established_if   BranchA(t) or BranchB(t)
+rule ID: Head(t) normally BodyA(t) except when ExceptionA(t)   # defeasible default
 
 obligation  ID { bearer: P, to: Q, that: Pred(P), by: DATE, on_breach: Pred(P) }
 permission  ID { ... }
@@ -67,6 +68,7 @@ obligation notify { bearer: B, to: A, that: NotifyOnRequest(B), by: 2025-07-01 }
 
 ## What is intentionally *not* in the grammar (yet)
 
-Arithmetic expressions, quantifiers, first-class `normally/except` defaults, and
-temporal-interval operators. See the [roadmap](07-roadmap.md). Keeping the v0.1
+Arithmetic expressions, quantifiers, nested exceptions-to-exceptions, and
+temporal-interval operators. (First-class `normally ... except when ...` defaults
+*are* supported — see above.) See the [roadmap](../ROADMAP.md). Keeping the
 surface tiny is what makes it reliably machine-writable.

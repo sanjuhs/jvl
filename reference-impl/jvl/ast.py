@@ -144,8 +144,9 @@ class Rule:
     id: str
     head: Predicate
     body: tuple[Predicate, ...]
-    connective: str                 # "requires" (AND) | "established_if" (OR)
+    connective: str                 # "requires" (AND) | "established_if" (OR) | "normally" (default)
     span: Span
+    exceptions: tuple[Predicate, ...] = ()   # for `normally ... except when ...`
 
 
 @dataclass

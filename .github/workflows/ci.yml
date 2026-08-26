@@ -33,6 +33,7 @@ jobs:
           jvl discover ../examples/03-cheating-s420.jvl "Cheating(payment)"
           jvl constraints ../examples/02-nda-contract.jvl
           jvl equiv ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl || true
+          jvl assert ../examples/05-limitation-default.jvl || true
 
   engine:
     runs-on: ubuntu-latest

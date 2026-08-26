@@ -98,7 +98,30 @@ rule loan_def: Loan(t) requires TransferOfValue(t) RepaymentObligation(t)
 assert Loan(x) under BalanceOfProbabilities`
     },
     {
-      id: "constraints", title: "6 · Objective checks",
+      id: "default", title: "7 · Default logic",
+      note: "Statutes are full of 'normally X, except when Y'. Here a late claim is normally time-barred — UNLESS the debt was acknowledged in time, which rebuts the default. Run it (TimeBarred is REFUTED), then delete the `ack` evidence and re-run.",
+      pred: "TimeBarred(claim1)",
+      code: `party creditor = Person "Creditor"
+party debtor   = Person "Debtor"
+
+fact claim1 : DebtClaim { principal: INR 300_000 }
+    from source(doc="Plaint", page=1, para=2) status Established
+
+evidence late : Record { note: "filed outside the 3-year window" }
+    from source(doc="Plaint", page=1, para=5) supports FiledAfterLimitation(claim1)
+
+evidence ack : Message { author: debtor  text: "I acknowledge the amount owed." }
+    from source(doc="Email_2023", para=1) supports AcknowledgedWithinPeriod(claim1)
+
+rule limitation_default:
+    TimeBarred(c) normally
+        FiledAfterLimitation(c)
+    except when AcknowledgedWithinPeriod(c)
+
+assert TimeBarred(claim1) under BalanceOfProbabilities`
+    },
+    {
+      id: "constraints", title: "8 · Objective checks",
       note: "Money and dates need no legal judgement — just arithmetic. Here the claimed damages exceed the contractual cap. Hit Constraints.",
       pred: "",
       code: `fact nda : Agreement {

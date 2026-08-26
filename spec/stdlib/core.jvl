@@ -48,10 +48,10 @@ rule cheating_offence:
         DishonestIntentionAtInception(p)
 
 # ── Limitation as a defeasible default (Catala-style) ───────────────────────
-# NOTE: JVL v0.1 does not yet have first-class `normally / except` defaults;
-# this is written the long way and is a priority for the roadmap. See
-# docs/04-semantics.md and docs/07-roadmap.md.
+# JVL supports first-class `normally ... except when ...` defaults. The claim is
+# time-barred by default when filed late, unless the debt was acknowledged in
+# time (which rebuts the default). See docs/04-semantics.md.
 rule time_barred:
-    TimeBarred(c) requires
+    TimeBarred(c) normally
         FiledAfterLimitation(c)
-        NoAcknowledgement(c)
+    except when AcknowledgedWithinPeriod(c)

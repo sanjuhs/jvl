@@ -89,6 +89,22 @@ def test_contradiction_detected_from_conflicting_evidence():
 
 # --- example 02: constraints ----------------------------------------------
 
+def test_default_logic_exception_rebuts_the_conclusion():
+    # `normally TimeBarred ... except when Acknowledged` — with the
+    # acknowledgement present, the default is rebutted (REFUTED).
+    ev = _eval("05-limitation-default.jvl")
+    st = ev.atom_status(Predicate("TimeBarred", ("claim1",)).key())
+    assert st is Status.REFUTED
+
+
+def test_removing_the_exception_restores_the_default():
+    prog = parse((EXAMPLES / "05-limitation-default.jvl").read_text())
+    prog.nodes = [n for n in prog.nodes if getattr(n, "id", None) != "ack"]
+    ev = Evaluator(prog).build()
+    st = ev.atom_status(Predicate("TimeBarred", ("claim1",)).key())
+    assert st is Status.SUPPORTED
+
+
 def test_objective_constraint_catches_overcap_damages():
     ev = _eval("02-nda-contract.jvl")
     results = {c.id: ok for c, ok, _ in ev.check_constraints()}

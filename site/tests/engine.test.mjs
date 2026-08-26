@@ -46,6 +46,10 @@ r = JVL.run(ex("02-nda-contract.jvl"), "constraints");
 check("02 damages_within_cap VIOLATED", /damages_within_cap: VIOLATED/.test(r.text));
 check("02 disclosure_before_expiry holds", /disclosure_before_expiry: holds/.test(r.text));
 
+// Example 05 — default logic
+r = JVL.run(ex("05-limitation-default.jvl"), "assert");
+check("05 default is rebutted (TimeBarred REFUTED)", /TimeBarred\(claim1\).*REFUTED/s.test(r.text));
+
 // check command
 r = JVL.run("fact f : Thing { a: 1 }\nassert Thing(f)", "check");
 check("check warns on missing provenance", /provenance/.test(r.text));

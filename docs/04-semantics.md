@@ -48,6 +48,29 @@ resolution — the system's job is to *show* you the conflict.
 `meet` and `join` make the status lattice a genuine lattice, which is what lets
 evaluation reach a stable answer.
 
+## 3b. Defeasible defaults — `normally ... except when ...`
+
+Statutes are full of *"normally X, except when Y"*. JVL expresses this directly:
+
+```jvl
+rule limitation_default:
+    TimeBarred(c) normally
+        FiledAfterLimitation(c)
+    except when AcknowledgedWithinPeriod(c)
+```
+
+Semantics: the body is combined like a `requires` (the default holds when the
+body holds), **but if any exception proposition reaches `SUPPORTED` or above, the
+conclusion is rebutted and becomes `REFUTED`**. Removing the exception (e.g.
+`jvl simulate --without ack`) restores the default. This is the *defeasible*
+logic that mirrors how legislation is actually written — a rule with carve-outs —
+and it composes with everything else: a rebutted default is just a `REFUTED`
+contribution, so if other evidence still supports the conclusion, the atom
+becomes `DISPUTED` and the conflict surfaces.
+
+Exceptions can stack (`except when A except when B`); any one holding rebuts the
+default. See [example 05](../examples/05-limitation-default.jvl).
+
 ## 4. Standards of proof — when does a status *count as holding*?
 
 A status is just a position on the lattice. Whether it is "good enough" depends

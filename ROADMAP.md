@@ -59,9 +59,12 @@ they mean the same thing, and if not, exactly what differs.*
   and return the compiler's answer with its trace.
 - ⬜ A documented query protocol so any LLM/agent can drive JVL as a tool (MCP).
 
-## Phase 4 — Language depth ⬜
+## Phase 4 — Language depth 🚧
 
-- ⬜ **Default logic**: `normally / except / except-to-exception` (Catala-style).
+- ✅ **Default logic**: `normally ... except when ...` (Catala-style defeasible
+  defaults) — in both the Python reference and the JS engine, with a worked
+  example ([05](examples/05-limitation-default.jvl)).
+- ⬜ Nested exceptions-to-exceptions (`except-to-exception`).
 - ⬜ Duration/interval constraints (`within 3 years`), arithmetic expressions.
 - ⬜ Burden-of-proof modelling per element and per party.
 - ⬜ Provenance on inferences + `jvl check --audit` (atoms with no source path).

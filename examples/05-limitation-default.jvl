@@ -1,0 +1,48 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Example 05 — Default logic: a defeasible limitation defence
+#
+# Statutes are full of "normally X, except when Y". A debt claim filed after
+# the limitation period is *normally* time-barred — UNLESS the debtor
+# acknowledged the debt within the period, which resets the clock. This is a
+# defeasible default: the conclusion holds by default but is rebutted by an
+# exception.
+#
+# JVL expresses it directly with `normally ... except when ...`.
+#
+# Try:
+#   jvl assert   examples/05-limitation-default.jvl
+#   jvl simulate examples/05-limitation-default.jvl --without ack
+#     → with the acknowledgement removed, the default is no longer rebutted
+#       and the claim becomes time-barred.
+# ─────────────────────────────────────────────────────────────────────────
+
+jurisdiction IN.Limitation.v1
+
+party creditor = Person "Meera Shah"
+party debtor   = Person "Ravi Kapoor"
+
+fact claim1 : DebtClaim {
+    principal: INR 300_000
+    filed_on:  2025-05-01
+} from source(doc="Plaint", page=1, para=2) status Established
+
+# The claim was filed outside the 3-year limitation window.
+evidence late : Record { note: "cause of action arose 2021-02, filed 2025-05" }
+    from source(doc="Plaint", page=1, para=5) supports FiledAfterLimitation(claim1)
+
+# But the debtor acknowledged the debt in writing within the period — the
+# exception that rebuts the default.
+evidence ack : Message {
+    author: debtor
+    text:   "I acknowledge the outstanding amount and will clear it shortly."
+} from source(doc="Email_2023", para=1) supports AcknowledgedWithinPeriod(claim1)
+
+# ── The defeasible rule ──────────────────────────────────────────────────
+rule limitation_default:
+    TimeBarred(c) normally
+        FiledAfterLimitation(c)
+    except when AcknowledgedWithinPeriod(c)
+
+# With the acknowledgement on the record, the default is rebutted, so the
+# claim is NOT time-barred — the assert should fail.
+assert TimeBarred(claim1) under BalanceOfProbabilities

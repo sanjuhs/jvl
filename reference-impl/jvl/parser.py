@@ -169,12 +169,23 @@ class Parser:
         elif self.at_keyword("established_if"):
             self.next()
             connective = "established_if"
+        elif self.at_keyword("normally"):
+            self.next()
+            connective = "normally"
         else:
             t = self.peek()
             raise ParseError(
-                f"line {t.line}, col {t.col}: expected 'requires' or 'established_if'")
+                f"line {t.line}, col {t.col}: expected 'requires', 'established_if', or 'normally'")
         body = self._predicate_list()
-        return ast.Rule(id=rid, head=head, body=tuple(body), connective=connective, span=span)
+        # Defeasible defaults: `normally ... except when P except when Q`.
+        exceptions: list[ast.Predicate] = []
+        while self.at_keyword("except"):
+            self.next()
+            if self.at_keyword("when"):
+                self.next()
+            exceptions.append(self._predicate())
+        return ast.Rule(id=rid, head=head, body=tuple(body), connective=connective,
+                        span=span, exceptions=tuple(exceptions))
 
     def _deontic(self, modality: str) -> ast.Obligation:
         span = self._span()
