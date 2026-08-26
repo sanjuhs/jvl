@@ -39,6 +39,8 @@ permission  ID { ... }
 prohibition ID { ... }
 
 constraint ID: value OP value          # OP: <= >= < > == !=  before after
+constraint ID: DATE within N days after DATE   # duration: of | before | after
+                                               #  (units: days weeks months years)
 
 exclusive { PredA(t) PredB(t) }
 

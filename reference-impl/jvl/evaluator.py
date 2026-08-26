@@ -23,7 +23,10 @@ from __future__ import annotations
 import itertools
 import re
 from dataclasses import dataclass, field
+from datetime import date
 from typing import Optional
+
+_UNIT_DAYS = {"days": 1, "weeks": 7, "months": 30, "years": 365}
 
 from . import ast
 from .lattice import (
@@ -305,6 +308,16 @@ class Evaluator:
         right, rnote = self._resolve(c.right)
         if left is None or right is None:
             return None, (lnote or rnote or "unresolved operand")
+        if c.op == "within":
+            if not (isinstance(left, ast.DateLit) and isinstance(right, ast.DateLit)):
+                return None, "duration constraints compare two dates"
+            limit = c.n * _UNIT_DAYS[c.unit]
+            delta = (date.fromisoformat(left.iso) - date.fromisoformat(right.iso)).days
+            if c.direction == "of":
+                return abs(delta) <= limit, ""
+            if c.direction == "after":
+                return 0 <= delta <= limit, ""
+            return 0 <= -delta <= limit, ""  # before
         try:
             if isinstance(left, ast.Money) and isinstance(right, ast.Money):
                 if left.currency != right.currency:

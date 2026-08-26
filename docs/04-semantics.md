@@ -135,6 +135,10 @@ because they need no legal judgement:
   silently coerced).
 - ISO dates compare correctly as strings; `before` / `after` are provided as
   readable aliases.
+- **Durations**: `left within N days after right` (units `days`/`weeks`/
+  `months`/`years`; `months`≈30 days, `years`≈365 — a documented approximation)
+  computes the signed gap between two dates. `after` requires `0 ≤ gap ≤ N`,
+  `before` the reverse, and `of` the absolute gap `|gap| ≤ N`.
 - `id.field` dereferences a field on a declared fact.
 
 A violated constraint (e.g. claimed damages above a contractual cap) is a hard,

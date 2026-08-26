@@ -114,6 +114,21 @@ def test_objective_constraint_catches_overcap_damages():
 
 # --- static checks ---------------------------------------------------------
 
+def test_duration_constraint_within_days():
+    src = (
+        'fact a : T { d: 2025-08-31 } from source(doc="X", page=1) status Established\n'
+        'fact b : T { d: 2025-10-15 } from source(doc="Y", page=1) status Established\n'
+        'constraint ok: b.d within 60 days after a.d\n'
+        'constraint bad: b.d within 30 days after a.d\n'
+        'constraint of_ok: b.d within 2 months of a.d\n'
+    )
+    ev = Evaluator(parse(src)).build()
+    results = {c.id: ok for c, ok, _ in ev.check_constraints()}
+    assert results["ok"] is True
+    assert results["bad"] is False
+    assert results["of_ok"] is True
+
+
 def test_missing_provenance_is_a_warning():
     src = 'fact f : Thing { a: 1 }\nassert Thing(f)'
     diags = Evaluator(parse(src)).build().static_check()

@@ -173,9 +173,13 @@ class Constraint:
 
     id: str
     left: Value
-    op: str                         # <= >= < > == != within before after
+    op: str                         # <= >= < > == != | within
     right: Value
     span: Span
+    # For the `within N unit direction` duration form:
+    n: Optional[int] = None
+    unit: Optional[str] = None       # days | weeks | months | years
+    direction: Optional[str] = None  # of | before | after
 
 
 @dataclass

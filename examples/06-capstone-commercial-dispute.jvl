@@ -100,6 +100,8 @@ rule limitation_default:
 # ── Objective constraints ───────────────────────────────────────────────
 constraint damages_within_cap:  damages_claim.amount <= contract.penalty_cap
 constraint delivered_after_due: delivery.on after contract.deliver_by
+# Duration: was delivery within the 60-day grace window after the due date?
+constraint within_grace:        delivery.on within 60 days after contract.deliver_by
 
 # ── The questions ───────────────────────────────────────────────────────
 assert Breach(contract) under BalanceOfProbabilities

@@ -209,6 +209,19 @@ class Parser:
         cid = self.expect("IDENT").value
         self.expect("PUNCT", ":")
         left = self._value()
+        # Duration form: `left within N unit (of|before|after) right`.
+        if self.at_keyword("within"):
+            self.next()
+            n = int(self.expect("NUMBER").value)
+            unit = self.expect("IDENT").value
+            if unit not in {"days", "weeks", "months", "years"}:
+                raise ParseError(f"constraint {cid!r}: expected a unit (days/weeks/months/years), got {unit!r}")
+            direction = self.expect("IDENT").value
+            if direction not in {"of", "before", "after"}:
+                raise ParseError(f"constraint {cid!r}: expected 'of', 'before', or 'after', got {direction!r}")
+            right = self._value()
+            return ast.Constraint(id=cid, left=left, op="within", right=right,
+                                  span=span, n=n, unit=unit, direction=direction)
         op = self._constraint_op()
         right = self._value()
         return ast.Constraint(id=cid, left=left, op=op, right=right, span=span)

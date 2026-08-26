@@ -106,6 +106,9 @@ def _format_node(n: ast.Node) -> str:
             fields["on_breach"] = n.on_breach
         return f"{n.modality} {n.id} {_record(fields)}"
     if isinstance(n, ast.Constraint):
+        if n.op == "within":
+            return (f"constraint {n.id}: {_value(n.left)} within {n.n} {n.unit} "
+                    f"{n.direction} {_value(n.right)}")
         return f"constraint {n.id}: {_value(n.left)} {n.op} {_value(n.right)}"
     if isinstance(n, ast.Exclusive):
         return "exclusive { " + " ".join(_pred(m) for m in n.members) + " }"

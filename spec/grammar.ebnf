@@ -47,7 +47,14 @@ deontic      = ( "obligation" | "permission" | "prohibition" ) , ident , record 
                (* record fields: bearer, to, that (predicate), by (date),
                   on_breach (predicate) *)
 
-constraint   = "constraint" , ident , ":" , value , comparator , value ;
+constraint   = "constraint" , ident , ":" , value ,
+               ( comparator , value
+               | "within" , number , unit , direction , value ) ;
+               (* duration form: `left within N days after right` compares two
+                  dates; direction `of` = absolute gap, `after`/`before` =
+                  signed and bounded. *)
+unit         = "days" | "weeks" | "months" | "years" ;
+direction    = "of" | "before" | "after" ;
 
 exclusive    = "exclusive" , "{" , { predicate [ "," ] } , "}" ;
 

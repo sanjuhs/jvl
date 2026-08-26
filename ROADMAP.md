@@ -68,8 +68,10 @@ they mean the same thing, and if not, exactly what differs.*
   example ([05](examples/05-limitation-default.jvl)).
 - ✅ **`jvl fmt`** — canonical formatter; round-trip safe (re-parses, idempotent,
   meaning-preserving — tested across all examples).
+- ✅ **Duration/interval constraints** — `left within N days/weeks/months/years
+  of/before/after right` (both engines).
 - ⬜ Nested exceptions-to-exceptions (`except-to-exception`).
-- ⬜ Duration/interval constraints (`within 3 years`), arithmetic expressions.
+- ⬜ Arithmetic expressions in constraints.
 - ✅ **`jvl check --audit`** — reports any supported conclusion that traces to no
   source (the "proof of an unsourced fact" guardrail).
 - ⬜ Burden-of-proof modelling per element and per party.

@@ -165,7 +165,16 @@
   };
   Parser.prototype.constraint = function () {
     this.expect("IDENT", "constraint"); var id = this.expect("IDENT").value; this.expect("PUNCT", ":");
-    var left = this.value(); var op = this.constraintOp(); var right = this.value();
+    var left = this.value();
+    if (this.atKw("within")) {
+      this.next();
+      var n = parseInt(this.expect("NUMBER").value, 10);
+      var unit = this.expect("IDENT").value;
+      var direction = this.expect("IDENT").value;
+      var right2 = this.value();
+      return { type: "constraint", id: id, left: left, op: "within", right: right2, n: n, unit: unit, direction: direction };
+    }
+    var op = this.constraintOp(); var right = this.value();
     return { type: "constraint", id: id, left: left, op: op, right: right };
   };
   Parser.prototype.constraintOp = function () {
@@ -437,6 +446,15 @@
     return this.ofType("constraint").map(function (c) {
       var l = self.resolve(c.left), r = self.resolve(c.right);
       if (l == null || r == null) return { id: c.id, ok: null, note: "unresolved operand" };
+      if (c.op === "within") {
+        if (!(l.date && r.date)) return { id: c.id, ok: null, note: "duration constraints compare two dates" };
+        var UNIT = { days: 1, weeks: 7, months: 30, years: 365 };
+        var limit = c.n * (UNIT[c.unit] || 1);
+        var delta = Math.round((Date.parse(l.date) - Date.parse(r.date)) / 86400000);
+        if (c.direction === "of") return { id: c.id, ok: Math.abs(delta) <= limit };
+        if (c.direction === "after") return { id: c.id, ok: delta >= 0 && delta <= limit };
+        return { id: c.id, ok: -delta >= 0 && -delta <= limit };
+      }
       if (l.currency && r.currency) { if (l.currency !== r.currency) return { id: c.id, ok: null, note: "currency mismatch" }; return { id: c.id, ok: cmp(l.amount, r.amount, c.op) }; }
       if (l.date && r.date) return { id: c.id, ok: cmpDate(l.date, r.date, c.op) };
       if (typeof l === "number" && typeof r === "number") return { id: c.id, ok: cmp(l, r, c.op) };
