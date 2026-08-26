@@ -35,8 +35,8 @@
         <h1>Compile the law into a program you can <span class="grad-text">check</span>.</h1>
         <p class="lead">JVL turns a contract or a case file into a small program. Facts carry their source. Propositions carry a confidence. And legal arguments <strong>type-check</strong>.</p>
         <div class="cta">
-          <a class="btn primary" href="learn.html">Learn the language →</a>
-          <a class="btn" href="playground.html">See it run</a>
+          <a class="btn primary" href="editor.html">Try it live →</a>
+          <a class="btn" href="learn.html">Learn the language</a>
         </div>
         <p class="sub">The graph stores what the case says. The JVL program determines what <em>follows</em> from it.</p>
       </div>
@@ -161,6 +161,10 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
         <div class="cmd"><code>jvl constraints</code><p>Objective money / date / number checks — pure, non-arguable arithmetic.</p></div>
         <div class="cmd"><code>jvl simulate --without X</code><p>Counterfactual: drop an exhibit or a rule and re-run.</p></div>
         <div class="cmd"><code>jvl diff · equiv</code><p>Compare two versions — structurally and semantically.</p></div>
+        <div class="cmd"><code>jvl emit json · graph</code><p>The program as data — it can be the JSON/graph layer.</p></div>
+        <div class="cmd"><code>jvl ask "…"</code><p>Ask in plain English; the engine computes the answer.</p></div>
+        <div class="cmd"><code>jvl fmt</code><p>Canonical formatter — round-trip safe, clean diffs.</p></div>
+        <div class="cmd"><code>jvl check --audit</code><p>Flag any supported conclusion that traces to no source.</p></div>
       </div>
     </div>
   </section>
