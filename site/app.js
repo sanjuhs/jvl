@@ -114,6 +114,9 @@
     });
   }
 
+  // Expose the highlighters so the interactive editor can reuse them.
+  window.JVLHL = { highlightJVL: highlightJVL, colorizeTerm: colorizeTerm, esc: esc };
+
   document.addEventListener("DOMContentLoaded", function () {
     render(); initTabs(); initNav(); initTheme(); initCopy();
   });

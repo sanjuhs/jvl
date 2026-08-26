@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JVL Theory</title>
+  <meta name="description" content="Is JVL Turing complete? Why decidability, termination, and determinism matter more than raw power for a language that checks the law.">
+  <link rel="icon" href="assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <nav class="links">
+        <a href="learn.html">Learn</a>
+        <a href="docs.html">Docs</a>
+        <a href="editor.html">Editor</a>
+        <a href="theory.html">Theory</a>
+        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:2.5rem;">
+    <div class="section-head">
+      <span class="kicker">Theory &amp; design</span>
+      <h1 style="font-size:clamp(2rem,4vw,2.8rem);font-weight:800;">Is JVL a "real" programming language?</h1>
+      <p>Short answer: yes, but a deliberately <em>restricted</em> one — and the restriction is the whole point. This page answers the questions that matter when you design a language to check the law: is it Turing complete, does it always terminate, is it decidable, and what actually makes a language good for this job.</p>
+    </div>
+
+    <div class="doc-wrap">
+      <aside class="doc-nav">
+        <div class="group">Power</div>
+        <a href="#turing">Turing completeness</a>
+        <a href="#why-not">Why not, on purpose</a>
+        <a href="#spectrum">The decidability spectrum</a>
+        <div class="group">Guarantees</div>
+        <a href="#terminate">Termination</a>
+        <a href="#decide">Decidability</a>
+        <a href="#determinism">Determinism</a>
+        <div class="group">Design</div>
+        <a href="#good">What makes it good</a>
+        <a href="#scale">Scale &amp; complexity</a>
+        <a href="#future">When we'd add power</a>
+      </aside>
+
+      <main class="prose">
+        <h2 id="turing">Is JVL Turing complete?</h2>
+        <p><strong>No — and that is a feature, not a limitation.</strong> A language is "Turing complete" if it can express any computation a Turing machine can: unbounded loops, arbitrary recursion, general memory. C, Python, and JavaScript are Turing complete. The price of that power is a famous theorem: for a Turing-complete language you <em>cannot</em>, in general, decide whether a program will halt, or whether two programs compute the same thing. These questions are <em>undecidable</em>.</p>
+        <p>JVL is intentionally <strong>not</strong> Turing complete. It has no unbounded loops, no general recursion over infinite data, no mutable memory. A JVL program is a finite set of facts and rules over a finite set of declared entities. Evaluating it is a bounded process that always finishes.</p>
+        <div class="callout">
+          <strong>Why would you give up power?</strong> Because the questions you undertake by giving it up — "does this always halt?", "do these two contracts mean the same thing?", "is this set of clauses consistent?" — are exactly the questions a legal checker must answer, and they are only <em>decidable</em> in a non-Turing-complete language. JVL trades power it doesn't need for guarantees it can't live without.
+        </div>
+
+        <h2 id="why-not">The best languages for verification are the restrained ones</h2>
+        <p>JVL is in excellent company. Some of the most useful languages ever built are deliberately less powerful than a general-purpose language, precisely so they can be analysed:</p>
+        <table>
+          <tr><th>Language</th><th>Turing complete?</th><th>Why restricted</th></tr>
+          <tr><td>SQL (core relational)</td><td>No</td><td>So a query planner can reason about and optimise every query</td></tr>
+          <tr><td>Datalog</td><td>No</td><td>So every query terminates and has a unique answer</td></tr>
+          <tr><td>Regular expressions</td><td>No</td><td>So matching is linear-time and analysable</td></tr>
+          <tr><td>Catala (law → code)</td><td>Restricted</td><td>So legislation compiles to a predictable decision procedure</td></tr>
+          <tr><td>Dhall / total languages</td><td>No</td><td>So configuration always evaluates and never hangs</td></tr>
+          <tr><td><strong>JVL</strong></td><td><strong>No</strong></td><td><strong>So legal arguments terminate, stay consistent, and can be compared</strong></td></tr>
+        </table>
+        <p>You would never want the program that decides whether you owe money, or whether an offence is made out, to be one that <em>might loop forever</em> or whose meaning <em>cannot be compared</em> to another. A contract is not a Turing machine, and it should not be encoded as one. What you want is a <strong>decision procedure</strong>: give it the facts, and it always returns an answer, with a reason.</p>
+
+        <h2 id="spectrum">Where JVL sits on the power spectrum</h2>
+        <p>Formally, JVL's rule layer is close to <strong>Datalog with stratified/defeasible negation</strong>, extended with an epistemic-status lattice and objective constraints over finite values. That places it here:</p>
+        <div class="pipeline" style="margin:1.2rem 0;">
+          <div class="pipe-row">
+            <span class="pipe small">Propositional logic</span><span class="pipe-arrow">→</span>
+            <span class="pipe accent">JVL · Datalog · SQL</span><span class="pipe-arrow">→</span>
+            <span class="pipe small">Prolog (Turing complete)</span><span class="pipe-arrow">→</span>
+            <span class="pipe small">Python / C (Turing complete)</span>
+          </div>
+        </div>
+        <p>Moving right adds expressive power and takes away decidability. JVL sits at the sweet spot: expressive enough to capture the logical skeleton of law (conjunction, disjunction, defeasible defaults, provenance, objective comparison), restrained enough that every question about a program is answerable.</p>
+
+        <h2 id="terminate">It always terminates</h2>
+        <p>JVL evaluation is a <strong>forward-chaining fixpoint</strong>. It repeatedly applies the rules until nothing changes. Because the set of entities is finite and the epistemic lattice has finite height, there are only finitely many states the program can be in, and each pass either changes something or halts. So evaluation is guaranteed to reach a fixpoint and stop — no program can hang. (The reference evaluator also carries a hard iteration cap as a belt-and-braces safeguard.)</p>
+
+        <h2 id="decide">Everything about a program is decidable</h2>
+        <p>Because JVL isn't Turing complete, the questions that are <em>undecidable</em> for real programming languages are <em>decidable</em> for JVL:</p>
+        <ul class="feature-list">
+          <li><strong>Does a proposition hold?</strong> — evaluate to fixpoint, read the status. Always answerable.</li>
+          <li><strong>Are these clauses consistent?</strong> — check for any <code>Disputed</code> atom or violated <code>exclusive</code> set. Always answerable.</li>
+          <li><strong>Do two contracts mean the same thing?</strong> — compare the derived state of both. Always answerable (<code>jvl equiv</code>).</li>
+        </ul>
+        <p>That last one is worth dwelling on. Program equivalence is <em>undecidable</em> for Turing-complete languages — it's a corollary of the halting problem. JVL can answer it because it gave up the power that made it undecidable. The feature you liked — "check if two legal documents say the same thing" — <em>exists because</em> JVL is not Turing complete.</p>
+
+        <h2 id="determinism">It is deterministic</h2>
+        <p>The fixpoint does not depend on the order rules are written, and there is no randomness or hidden state. The same program yields the same answer and the same derivation trace, every run, on every machine. For a system meant to make the law's mechanical part actually mechanical, this is non-negotiable — and it's what makes <code>jvl emit json</code> a reliable interchange format and <code>diff</code>/<code>equiv</code> trustworthy.</p>
+
+        <h2 id="good">So what actually makes JVL a good language?</h2>
+        <p>Not raw power. For this job, the properties that matter are:</p>
+        <div class="cards">
+          <div class="card"><h3>Decidability</h3><p>Every question about a program has an answer the compiler can compute.</p></div>
+          <div class="card"><h3>Termination</h3><p>Evaluation always halts. A legal checker that might hang is useless.</p></div>
+          <div class="card"><h3>Determinism</h3><p>Same input, same answer, same explanation — always.</p></div>
+          <div class="card"><h3>Soundness</h3><p>It only derives what actually follows; unsupported things stay <code>Unknown</code>.</p></div>
+          <div class="card"><h3>Readability</h3><p>Two audiences — a lawyer and a language model — must both parse it unambiguously.</p></div>
+          <div class="card"><h3>Auditability</h3><p>Every conclusion traces to a source. Power without provenance is dangerous.</p></div>
+        </div>
+        <p style="margin-top:1.4rem;">Expressiveness still matters — the language has to be able to <em>say</em> what the law says. But it's a tension to be balanced, not maximised: <strong>expressive enough to capture legal logic, restrained enough to stay checkable.</strong> Every proposed feature is judged against that line. If a construct would make equivalence undecidable or evaluation non-terminating, that's a strong reason against it.</p>
+
+        <h2 id="scale">Scale and complexity</h2>
+        <p>Since a JVL program is just data plus rules, it can be arbitrarily large — a whole contract suite, a constitution, a treatise. Evaluation is a fixpoint over a finite universe, so its cost is <strong>polynomial</strong> in the size of the program (for bounded predicate arity, like Datalog). In plain terms: it scales. A bigger document is more facts and rules, not a fundamentally harder problem, and an assertion still runs over all of it.</p>
+        <p>The reference evaluator today is written for clarity, not speed — it uses a naive binding search. Making it fast (semi-naive evaluation, indexed joins, incremental re-evaluation for <code>simulate</code>) is engineering on a well-understood foundation, and it's on the <a href="https://github.com/sanjuhs/jvl/blob/main/ROADMAP.md">roadmap</a>. The in-browser engine already runs whole programs instantly.</p>
+
+        <h2 id="future">When would we add more power?</h2>
+        <p>Some legal structures want <em>bounded recursion</em> — transitive relationships like corporate ownership chains ("A controls B, B controls C, therefore A controls C"). That's expressible in Datalog and stays decidable, so it's a natural extension. What JVL will keep resisting is <em>unbounded</em> computation — general loops and arbitrary recursion — because that's exactly what would forfeit termination and equivalence-checking. The guiding rule: <strong>add expressiveness only while every question about a program stays answerable.</strong></p>
+
+        <div class="callout" style="margin-top:2rem;">
+          <strong>The one-line version.</strong> JVL isn't Turing complete because it doesn't want to be. It wants to always halt, always give a reason, and let you ask whether two documents mean the same thing — and those are precisely the powers a Turing-complete language has to give up.
+        </div>
+
+        <p style="margin-top:2rem;"><a class="btn primary" href="editor.html">Try it in the editor →</a> <a class="btn" href="docs.html">Read the docs</a></p>
+      </main>
+    </div>
+  </div>
+
+  <footer class="site">
+    <div class="container">
+      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+    </div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

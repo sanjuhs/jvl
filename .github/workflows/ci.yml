@@ -32,3 +32,14 @@ jobs:
           jvl assert   ../examples/01-loan-vs-investment.jvl
           jvl discover ../examples/03-cheating-s420.jvl "Cheating(payment)"
           jvl constraints ../examples/02-nda-contract.jvl
+          jvl equiv ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl || true
+
+  engine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Test the in-browser JS engine (parity with the Python reference)
+        run: node site/tests/engine.test.mjs

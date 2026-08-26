@@ -33,6 +33,21 @@ Because it's plain static files, you can also drop `site/` on GitHub Pages,
 Netlify, Cloudflare Pages, or an S3 bucket. Point the host at the `site/`
 directory and you're done.
 
+## Enabling the AI helper (optional)
+
+The editor's "Draft JVL from plain English" button calls a Vercel serverless
+function at [`site/api/assist.js`](site/api/assist.js). To turn it on, add an
+environment variable in the Vercel project (Settings → Environment Variables):
+
+- `ANTHROPIC_API_KEY` — your Anthropic API key. **Server-side only**; it is never
+  sent to the browser.
+- `JVL_ASSIST_MODEL` *(optional)* — the model to use. Defaults to
+  `claude-sonnet-5` (fast). Set to `claude-opus-5` for maximum quality.
+
+Without the key, the button still works as a fallback: it copies a ready-made
+prompt to the clipboard to paste into any LLM. Redeploy after adding the
+variable so the function picks it up.
+
 ## Local preview
 
 ```bash

@@ -48,14 +48,15 @@ they mean the same thing, and if not, exactly what differs.*
 - ⬜ **`jvl assert-same doc.jvl against template.jvl`** — "is this contract the
   same as the reference template, and where does it deviate?"
 
-## Phase 3 — Ask in natural language ⬜
+## Phase 3 — Ask in natural language 🚧
 
 *Thesis: convert the doc to a program once, then answer questions fast.*
 
-- ⬜ **`jvl ask "does B have to repay A?"`** — an NL front-end that maps a
-  question to a JVL query (`assert` / `explain` / `discover` / constraint) and
-  returns the compiler's answer with its trace. LLM maps NL→query; the *answer*
-  stays deterministic and sourced.
+- ✅ **AI helper on the website** — a serverless function drafts a JVL program
+  from a plain-English scenario (LLM transforms; the engine decides). Key stays
+  server-side; model configurable.
+- ⬜ **`jvl ask "does B have to repay A?"`** — map an NL *question* to a JVL query
+  and return the compiler's answer with its trace.
 - ⬜ A documented query protocol so any LLM/agent can drive JVL as a tool (MCP).
 
 ## Phase 4 — Language depth ⬜
@@ -66,20 +67,23 @@ they mean the same thing, and if not, exactly what differs.*
 - ⬜ Provenance on inferences + `jvl check --audit` (atoms with no source path).
 - ⬜ `jvl fmt` canonical formatter.
 
-## Phase 5 — Tooling & ecosystem ⬜
+## Phase 5 — Tooling & ecosystem 🚧
 
-- ⬜ **WASM/JS build of the compiler** to power an in-browser playground.
+- ✅ **JS build of the engine** (`site/jvl-engine.js`) powering an in-browser
+  editor with live run — parity-tested against the Python reference.
 - ⬜ Language server (LSP): hover-status, go-to-source, contradiction squiggles.
 - ⬜ Compile-to-Prolog/ASP backend for hard queries.
 - ⬜ VS Code extension with syntax highlighting.
 
-## Phase 6 — Brand & website 🚧
+## Phase 6 — Brand & website ✅
 
-- 🚧 **Logo / mark** (SVG) — a scale whose pans are code brackets, with a check.
-- 🚧 **Website** (`site/`) — clean, fast: landing, learn/tour, docs, examples,
-  syntax reference, "convert your doc" guide.
-- 🚧 **Deploy on Vercel** + CI/CD so docs update on every push.
-- ⬜ In-browser playground (needs Phase 5 WASM).
+- ✅ **Logo / mark** (SVG) — scales of justice fused with a verification check.
+- ✅ **Website** (`site/`) — landing, Learn (tour + syntax + convert-a-doc), Docs,
+  Playground, Theory, and an interactive Editor.
+- ✅ **Deploy on Vercel** (personal scope) — live at https://jvl-six.vercel.app;
+  CI + deploy workflow in place.
+- ✅ **In-browser editor** with live run and an AI helper.
+- ✅ **Theory page** — Turing completeness, decidability, determinism, language design.
 
 ---
 

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JVL Editor</title>
+  <meta name="description" content="Write JVL and run it instantly in your browser. A live editor with lessons and an AI helper that drafts JVL from plain English.">
+  <link rel="icon" href="assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <nav class="links">
+        <a href="learn.html">Learn</a>
+        <a href="docs.html">Docs</a>
+        <a href="editor.html">Editor</a>
+        <a href="theory.html">Theory</a>
+        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:2rem;">
+    <div class="section-head" style="margin-bottom:1.4rem;">
+      <span class="kicker">Interactive editor</span>
+      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;">Write JVL. Run it here.</h1>
+      <p>The whole compiler runs in your browser — no server, no wait. Edit the program, hit a command, and read the trace. Pick a lesson to learn a concept, or describe a scenario in plain English and let the AI draft the JVL.</p>
+    </div>
+
+    <div class="lesson-bar" id="lessons"></div>
+    <div class="lesson-note" id="lessonNote"></div>
+
+    <div class="editor-toolbar">
+      <button class="btn primary" data-cmd="run">▶ Run</button>
+      <button class="btn" data-cmd="check">Check</button>
+      <button class="btn" data-cmd="assert">Assert</button>
+      <button class="btn" data-cmd="contradictions">Contradictions</button>
+      <button class="btn" data-cmd="constraints">Constraints</button>
+      <input class="cmd-input" id="predInput" placeholder="Loan(transfer_17)">
+      <button class="btn" data-cmd="explain" data-usepred="1">Explain</button>
+      <button class="btn" data-cmd="discover" data-usepred="1">Discover</button>
+    </div>
+
+    <div class="editor-grid">
+      <div class="editor-pane">
+        <div class="code-editor">
+          <pre aria-hidden="true"><code id="hl" class="jvl"></code></pre>
+          <textarea id="src" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+        </div>
+      </div>
+      <div class="output-pane">
+        <div class="window term">
+          <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name" id="outName">$ jvl run</span></div>
+          <pre><code id="out" class="term"></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-panel">
+      <h3>✨ AI helper — draft JVL from plain English</h3>
+      <div class="ai-row">
+        <textarea id="aiPrompt" placeholder="e.g. On 3 May 2025 Acme paid Priya ₹8,00,000. Acme says it was a loan repayable in 6 months; Priya says it was a gift. There's an email where Priya wrote 'thanks for the loan'."></textarea>
+        <button class="btn primary" id="aiBtn" style="align-self:flex-start;">Draft JVL →</button>
+      </div>
+      <div class="ai-status" id="aiStatus">The helper needs an <code>ANTHROPIC_API_KEY</code> set on the deployment. Without it, it hands you a ready-made prompt to paste into any LLM.</div>
+    </div>
+
+    <p style="margin-top:1.6rem;color:var(--text-faint);font-size:.85rem;">
+      This editor runs a JavaScript port of the reference compiler (a faithful subset). For the full toolchain — <code>diff</code>, <code>equiv</code>, <code>emit</code>, <code>simulate</code> — use the <a href="https://github.com/sanjuhs/jvl/tree/main/reference-impl">Python CLI</a>.
+    </p>
+  </div>
+
+  <footer class="site">
+    <div class="container">
+      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+    </div>
+  </footer>
+
+  <script src="jvl-engine.js"></script>
+  <script src="app.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>
