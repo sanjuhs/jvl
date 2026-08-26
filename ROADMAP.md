@@ -58,7 +58,8 @@ they mean the same thing, and if not, exactly what differs.*
 - ✅ **`jvl ask FILE "does B have to repay A?"`** — the LLM maps the English
   question to a JVL query; the engine computes the deterministic answer with its
   trace. (Needs `ANTHROPIC_API_KEY`; stdlib-only, no new deps.)
-- ⬜ An MCP server so any agent can drive JVL as a tool.
+- ✅ **MCP server** (`mcp-server/`) — exposes check/assert/explain/discover/
+  contradictions/constraints/emit/diff/equiv as MCP tools any agent can call.
 
 ## Phase 4 — Language depth 🚧
 
@@ -75,9 +76,10 @@ they mean the same thing, and if not, exactly what differs.*
 
 - ✅ **JS build of the engine** (`site/jvl-engine.js`) powering an in-browser
   editor with live run — parity-tested against the Python reference.
+- ✅ **VS Code / TextMate grammar** (`editor-support/vscode/`) for `.jvl` syntax
+  highlighting.
 - ⬜ Language server (LSP): hover-status, go-to-source, contradiction squiggles.
 - ⬜ Compile-to-Prolog/ASP backend for hard queries.
-- ⬜ VS Code extension with syntax highlighting.
 
 ## Phase 6 — Brand & website ✅
 

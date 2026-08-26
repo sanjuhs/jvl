@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "JVL",
+  "scopeName": "source.jvl",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#keywords" },
+    { "include": "#status" },
+    { "include": "#standards" },
+    { "include": "#money" },
+    { "include": "#dates" },
+    { "include": "#numbers" },
+    { "include": "#predicates" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "name": "comment.line.number-sign.jvl", "match": "(#|//).*$" }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.jvl",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [{ "name": "constant.character.escape.jvl", "match": "\\\\." }]
+    },
+    "keywords": {
+      "patterns": [
+        { "name": "keyword.control.jvl",
+          "match": "\\b(jurisdiction|party|fact|evidence|claim|rule|obligation|permission|prohibition|constraint|exclusive|assert|prove|refute|explain|discover)\\b" },
+        { "name": "keyword.operator.word.jvl",
+          "match": "\\b(requires|established_if|normally|except|when|supports|refutes|asserts|by|from|source|status|under|for|and|or)\\b" }
+      ]
+    },
+    "status": {
+      "name": "support.constant.status.jvl",
+      "match": "\\b(Established|Admitted|Alleged|Disputed|Refuted|Unknown|Proven|Supported)\\b"
+    },
+    "standards": {
+      "name": "support.constant.standard.jvl",
+      "match": "\\b(BalanceOfProbabilities|ClearAndConvincing|BeyondReasonableDoubt)\\b"
+    },
+    "money": {
+      "name": "constant.numeric.money.jvl",
+      "match": "\\b(INR|USD|EUR|GBP|JPY|AUD|CAD|SGD|CNY|CHF)\\s+[0-9_]+\\b"
+    },
+    "dates": {
+      "name": "constant.numeric.date.jvl",
+      "match": "\\b\\d{4}-\\d{2}-\\d{2}\\b"
+    },
+    "numbers": {
+      "name": "constant.numeric.jvl",
+      "match": "\\b\\d[\\d_]*(\\.\\d+)?\\b"
+    },
+    "predicates": {
+      "name": "entity.name.function.predicate.jvl",
+      "match": "\\b[A-Z][A-Za-z0-9_]*(?=\\s*\\()"
+    },
+    "operators": {
+      "name": "keyword.operator.jvl",
+      "match": "(<=|>=|==|!=|<|>|=|:)"
+    }
+  }
+}

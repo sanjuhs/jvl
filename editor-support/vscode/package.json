@@ -1,0 +1,28 @@
+{
+  "name": "jvl-language",
+  "displayName": "JVL — Jhana Verifiable Law",
+  "description": "Syntax highlighting for JVL (.jvl) legal programs.",
+  "version": "0.1.0",
+  "publisher": "jvl",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/sanjuhs/jvl" },
+  "engines": { "vscode": "^1.60.0" },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "jvl",
+        "aliases": ["JVL", "jvl"],
+        "extensions": [".jvl"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "jvl",
+        "scopeName": "source.jvl",
+        "path": "./syntaxes/jvl.tmLanguage.json"
+      }
+    ]
+  }
+}

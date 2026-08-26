@@ -1,0 +1,3 @@
+# The JVL MCP server depends on the jvl package (install from ../reference-impl)
+# and the MCP SDK.
+mcp[cli]>=1.2.0

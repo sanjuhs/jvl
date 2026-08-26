@@ -191,7 +191,9 @@ The extraction step is where an LLM shines, and the [`llm/`](llm/README.md) fold
 | [`reference-impl/`](reference-impl/) | A working Python compiler: lexer, parser, epistemic evaluator, CLI |
 | [`examples/`](examples/) | Annotated `.jvl` programs — loan-vs-investment, an NDA, a criminal-cheating charge, and a versioned contract for `diff`/`equiv` |
 | [`llm/`](llm/) | How to teach an LLM to write JVL, plus a ready-to-use Claude skill |
-| [`site/`](site/) | The website — landing, Learn, Docs, Playground (static, Vercel-ready). See [DEPLOY.md](DEPLOY.md) |
+| [`site/`](site/) | The website — landing, Learn, Docs, Playground, Editor, Theory (static, Vercel-ready). See [DEPLOY.md](DEPLOY.md) |
+| [`mcp-server/`](mcp-server/) | An MCP server exposing JVL as tools for Claude / any agent |
+| [`editor-support/`](editor-support/) | VS Code / TextMate grammar for `.jvl` syntax highlighting |
 | [`ROADMAP.md`](ROADMAP.md) | Phased plan — what's done, in progress, and planned |
 
 ---
