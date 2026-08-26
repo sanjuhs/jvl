@@ -50,6 +50,14 @@ check("02 disclosure_before_expiry holds", /disclosure_before_expiry: holds/.tes
 r = JVL.run(ex("05-limitation-default.jvl"), "assert");
 check("05 default is rebutted (TimeBarred REFUTED)", /TimeBarred\(claim1\).*REFUTED/s.test(r.text));
 
+// emit
+r = JVL.run(ex("01-loan-vs-investment.jvl"), "emit");
+try {
+  const data = JSON.parse(r.text);
+  const props = Object.fromEntries(data.atoms.map(a => [a.proposition, a.status]));
+  check("emit produces valid JSON with atoms", props["Loan(transfer_17)"] === "SUPPORTED");
+} catch (e) { check("emit produces valid JSON with atoms", false); }
+
 // check command
 r = JVL.run("fact f : Thing { a: 1 }\nassert Thing(f)", "check");
 check("check warns on missing provenance", /provenance/.test(r.text));

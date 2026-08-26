@@ -523,6 +523,25 @@
       else issues.forEach(function (i) { L.push("  ⚠ " + i); });
       return { text: L.join("\n"), ok: issues.length === 0 };
     }
+    if (command === "emit") {
+      var out = {
+        jurisdiction: (ev.ofType("jurisdiction")[0] || {}).name || null,
+        parties: ev.ofType("party").map(function (p) { return { id: p.id, type: p.ptype, label: p.label }; }),
+        facts: ev.ofType("fact").map(function (f) { return { id: f.id, type: f.ftype, status: f.status }; }),
+        rules: ev.ofType("rule").map(function (r) {
+          return { id: r.id, head: renderPred(r.head), connective: r.conn, body: r.body.map(renderPred) };
+        }),
+        atoms: Object.keys(ev.status).sort().map(function (k) {
+          var p = k.split("|"), name = p[0], args = p[1] ? p[1].split(",") : [];
+          var contribs = ev._atoms[k] || [];
+          var sources = [];
+          contribs.forEach(function (c) { if (c.prov) sources.push(renderProv(c.prov)); });
+          return { proposition: renderPred({ name: name, args: args }), status: ev.status[k], sources: sources };
+        }),
+        contradictions: ev.contradictions()
+      };
+      return { text: JSON.stringify(out, null, 2), ok: true };
+    }
     if (command === "constraints") {
       L.push("⚖  objective constraints"); L.push("");
       var results = ev.constraints();

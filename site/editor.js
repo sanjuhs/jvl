@@ -159,7 +159,8 @@ constraint within_term: breach.on before nda.expires_on`
   function runCommand(cmd, usePred) {
     var arg = usePred ? predInput.value.trim() : null;
     var res = JVL.run(src.value, cmd, arg);
-    out.innerHTML = HL.colorizeTerm(res.text || "(no output)");
+    // JSON output is shown verbatim; everything else gets terminal colorizing.
+    out.innerHTML = cmd === "emit" ? HL.esc(res.text || "") : HL.colorizeTerm(res.text || "(no output)");
     outName.textContent = "$ jvl " + cmd + (arg ? ' "' + arg + '"' : "");
   }
 
