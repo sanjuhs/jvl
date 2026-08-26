@@ -11,6 +11,7 @@ header comment.
 | [`03-cheating-s420.jvl`](03-cheating-s420.jvl) | A criminal offence as a conjunction of elements, `discover` pinpointing the unproven mental element, failure under `BeyondReasonableDoubt`, and a contradiction from conflicting evidence. |
 | [`04-service-agreement-v1/v2.jvl`](04-service-agreement-v1.jvl) | A versioned contract pair for `diff` and `equiv` — "do these two contracts mean the same thing?" |
 | [`05-limitation-default.jvl`](05-limitation-default.jvl) | Defeasible **default logic** — `normally time-barred … except when acknowledged`; the exception rebuts the default, and `simulate --without ack` restores it. |
+| [`06-capstone-commercial-dispute.jvl`](06-capstone-commercial-dispute.jvl) | **The whole language in one file** — facts, evidence, claims, a disjunction rule, a defeasible default, deontic obligations, constraints, and exclusivity. Shows a disjunction succeeding on its strong branch while the other branch is `DISPUTED`. |
 
 ## Try it in 30 seconds
 

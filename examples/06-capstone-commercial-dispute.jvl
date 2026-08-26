@@ -1,0 +1,106 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Example 06 — Capstone: a commercial dispute using the whole language
+#
+# One file that exercises every part of JVL:
+#   parties · facts (+provenance +status) · evidence (supports/refutes) ·
+#   claims · a conjunction rule · a defeasible default (normally/except) ·
+#   deontic obligations · objective constraints · exclusivity · assertions.
+#
+# The story: Northwind engaged Vega to deliver software for INR 20,00,000 by
+# 2025-08-31, with a confidentiality clause and a penalty cap. Vega delivered
+# late and (Northwind alleges) leaked the source to a competitor. Northwind
+# sues for breach; Vega raises a limitation defence. Northwind claims damages
+# above the contractual cap.
+#
+# Try the full toolchain on it:
+#   jvl check --audit          examples/06-capstone-commercial-dispute.jvl
+#   jvl assert                 examples/06-capstone-commercial-dispute.jvl
+#   jvl discover               examples/06-capstone-commercial-dispute.jvl "Breach(contract)"
+#   jvl check-contradictions   examples/06-capstone-commercial-dispute.jvl
+#   jvl constraints            examples/06-capstone-commercial-dispute.jvl
+#   jvl simulate               examples/06-capstone-commercial-dispute.jvl --without ack
+# ─────────────────────────────────────────────────────────────────────────
+
+jurisdiction IN.Contract.v1
+
+party Northwind = Org "Northwind Traders Pvt Ltd"
+party Vega      = Org "Vega Software LLP"
+
+# ── The contract and what happened ──────────────────────────────────────
+fact contract : ServiceAgreement {
+    fee:         INR 2_000_000
+    deliver_by:  2025-08-31
+    signed_on:   2025-03-01
+    penalty_cap: INR 400_000
+} from source(doc="MSA", page=1, para=1) status Established
+
+fact delivery : Delivery {
+    by: Vega
+    on: 2025-10-15
+} from source(doc="DeliveryNote", para=3) status Established
+
+fact damages_claim : DamagesClaim {
+    amount:   INR 900_000
+    filed_on: 2025-11-20
+} from source(doc="Plaint", page=2, para=7) status Alleged
+
+# ── Deontic core: the contract's duties ─────────────────────────────────
+obligation deliver_on_time {
+    bearer: Vega  to: Northwind
+    that:   DeliverBy(Vega)
+    by:     2025-08-31
+    on_breach: liable(Vega, damages)
+}
+prohibition confidentiality {
+    bearer: Vega  to: Northwind
+    that:   Discloses(Vega)
+    on_breach: liable(Vega, damages)
+}
+
+# ── Evidence ────────────────────────────────────────────────────────────
+evidence late_note : Record { note: "delivery 2025-10-15 is 45 days late" }
+    from source(doc="DeliveryNote", para=3) supports LateDelivery(contract)
+
+evidence leak_email : Message {
+    author: Vega
+    text:   "sharing the repo with the other client, keep it quiet"
+} from source(doc="Exhibit_P9", para=2) supports Disclosure(contract)
+
+evidence vega_denial : Testimony {
+    author: Vega
+    text:   "the repository was never shared externally"
+} from source(doc="Deposition_V", para=8) refutes Disclosure(contract)
+
+evidence ack : Message {
+    author: Vega
+    text:   "we acknowledge the delay and the amount owed"
+} from source(doc="Email_Nov", para=1) supports AcknowledgedWithinPeriod(damages_claim)
+
+# ── Claims (the contest) ────────────────────────────────────────────────
+claim c_breach   by Northwind : "Vega breached the agreement"        asserts Breach(contract)
+claim c_no_breach by Vega     : "Vega performed substantially"       asserts SubstantialPerformance(contract)
+exclusive { Breach(contract) SubstantialPerformance(contract) }
+
+# ── The law ─────────────────────────────────────────────────────────────
+rule breach_rule:
+    Breach(k) established_if
+        LateDelivery(k)
+        or Disclosure(k)
+
+rule liability:
+    Liable(k) requires
+        Breach(k)
+
+# A defeasible limitation defence on the damages claim.
+rule limitation_default:
+    TimeBarred(d) normally
+        FiledAfterLimitation(d)
+    except when AcknowledgedWithinPeriod(d)
+
+# ── Objective constraints ───────────────────────────────────────────────
+constraint damages_within_cap:  damages_claim.amount <= contract.penalty_cap
+constraint delivered_after_due: delivery.on after contract.deliver_by
+
+# ── The questions ───────────────────────────────────────────────────────
+assert Breach(contract) under BalanceOfProbabilities
+assert Liable(contract) under BalanceOfProbabilities
