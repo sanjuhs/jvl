@@ -12,7 +12,7 @@
   <a href="docs/04-semantics.md">Semantics</a> ·
   <a href="llm/README.md">Teaching an LLM</a> ·
   <a href="ROADMAP.md">Roadmap</a> ·
-  <a href="site/">Website</a>
+  <a href="https://jvl-six.vercel.app">Website ↗</a>
 </p>
 
 <p align="center">
