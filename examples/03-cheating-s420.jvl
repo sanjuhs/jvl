@@ -1,0 +1,66 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Example 03 — Criminal charge: "cheating" (a s.420-style offence)
+#
+# This is where JVL earns its keep. A criminal offence is a *conjunction* of
+# elements, each of which must be proven to a high standard. The hardest to
+# prove is usually the mental element — dishonest intention *at the inception*.
+# JVL makes the gap explicit: it can tell you exactly which element is not yet
+# established, and refuse to certify the offence until it is.
+#
+# It also demonstrates contradiction detection: two pieces of evidence pull the
+# accused's presence at the scene in opposite directions.
+#
+# Try:
+#   jvl assert                examples/03-cheating-s420.jvl
+#   jvl discover              examples/03-cheating-s420.jvl "Cheating(payment)"
+#   jvl check-contradictions  examples/03-cheating-s420.jvl
+# ─────────────────────────────────────────────────────────────────────────
+
+jurisdiction IN.Penal.v1
+
+party accused    = Person "Rakesh Menon"
+party complainant = Person "Sunita Iyer"
+
+# The delivery of property is not in dispute.
+fact payment : DeliveryOfProperty {
+    from:   complainant
+    to:     accused
+    amount: INR 2_500_000
+    on:     2024-11-02
+} from source(doc="FIR", page=1, para=3) status Established
+
+# The offence and its elements.
+rule cheating:
+    Cheating(p) requires
+        Deception(p)
+        DishonestInducement(p)
+        DeliveryOfProperty(p)
+        DishonestIntentionAtInception(p)
+
+# Evidence bearing on the elements.
+evidence forged_brochure : Document {
+    note: "fabricated returns projection shown to complainant"
+} from source(doc="Exhibit_P3", para=8) supports Deception(payment)
+
+evidence inducement_msg : Message {
+    author: accused
+    text:   "Guaranteed 40% returns, transfer today to lock the slot."
+} from source(doc="WhatsApp_22", para=5) supports DishonestInducement(payment)
+
+# NOTE: there is *no* evidence establishing dishonest intention at inception.
+# That element remains UNKNOWN — and the offence cannot be certified without it.
+
+# ── A contradiction in the record ────────────────────────────────────────
+# One witness places the accused at the meeting; the accused's alibi refutes it.
+evidence witness_x : Testimony {
+    author: "Witness X"
+    text:   "I saw the accused hand over the brochure at the Taj on Nov 1."
+} from source(doc="Deposition_WX", para=14) supports PresentAtMeeting(accused)
+
+evidence alibi : Record {
+    note: "boarding pass + CCTV place accused in Dubai on Nov 1"
+} from source(doc="Exhibit_D2", para=2) refutes PresentAtMeeting(accused)
+
+# ── Questions ────────────────────────────────────────────────────────────
+# Criminal standard: nothing less than proof beyond reasonable doubt.
+assert Cheating(payment) under BeyondReasonableDoubt

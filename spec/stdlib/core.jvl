@@ -1,0 +1,57 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# JVL core standard library (draft)
+#
+# The language itself has almost no built-in legal vocabulary — that is on
+# purpose. Offences, contract types, and doctrines live here, as ordinary JVL
+# rules, so they can be versioned, forked, and argued about in the open rather
+# than baked into a compiler.
+#
+# This file sketches the shape of a jurisdiction library. It is illustrative,
+# NOT a statement of any real jurisdiction's law. Real libraries would live in
+# spec/stdlib/<jurisdiction>/ and cite the actual statute in every source(...).
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ── Reusable predicates (documentation only; JVL is untyped-nominal for now) ─
+# TransferOfValue(x)          a thing of value moved from one party to another
+# RepaymentObligation(x)      an obligation to return value
+# DeliveryOfProperty(x)       property passed to the accused/defendant
+# Deception(x)                a false representation was made
+# DishonestInducement(x)      the victim was induced by dishonesty
+# DishonestIntentionAtInception(x)  mens rea present when the act began
+
+# ── Generic contract doctrine ───────────────────────────────────────────────
+rule loan_definition:
+    Loan(t) requires
+        TransferOfValue(t)
+        RepaymentObligation(t)
+
+rule repayment_obligation:
+    RepaymentObligation(t) established_if
+        AdmittedRepayment(t)
+        or ContractRequiresRepayment(t)
+        or DemandAcknowledged(t)
+
+rule investment_definition:
+    Investment(t) requires
+        TransferOfValue(t)
+        ExpectationOfProfitShare(t)
+
+# A transfer is one or the other, not both.
+exclusive { Loan(t) Investment(t) }
+
+# ── A cheating-style offence (illustrative, not a real statute) ─────────────
+rule cheating_offence:
+    Cheating(p) requires
+        Deception(p)
+        DishonestInducement(p)
+        DeliveryOfProperty(p)
+        DishonestIntentionAtInception(p)
+
+# ── Limitation as a defeasible default (Catala-style) ───────────────────────
+# NOTE: JVL v0.1 does not yet have first-class `normally / except` defaults;
+# this is written the long way and is a priority for the roadmap. See
+# docs/04-semantics.md and docs/07-roadmap.md.
+rule time_barred:
+    TimeBarred(c) requires
+        FiledAfterLimitation(c)
+        NoAcknowledgement(c)

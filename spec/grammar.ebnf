@@ -1,0 +1,87 @@
+(* ═══════════════════════════════════════════════════════════════════════
+   JVL — Jhana Verifiable Law
+   Authoritative grammar (EBNF). The reference parser in
+   reference-impl/jvl/parser.py implements this.
+
+   Design note: newlines and indentation are INSIGNIFICANT. The grammar is
+   driven by keywords and structure so that a language model can emit it
+   without getting whitespace exactly right. Whitespace separates tokens; that
+   is all it does.
+   ═══════════════════════════════════════════════════════════════════════ *)
+
+program      = { statement } ;
+
+statement    = jurisdiction
+             | party
+             | fact
+             | evidence
+             | claim
+             | rule
+             | deontic
+             | constraint
+             | exclusive
+             | query ;
+
+jurisdiction = "jurisdiction" , dotted_ident ;
+
+party        = "party" , ident , "=" , ident , string ;   (* id = Type "label" *)
+
+fact         = "fact" , ident , ":" , ident , record ,
+               [ source ] , [ "status" , ident ] ;
+
+evidence     = "evidence" , ident , ":" , ident , record ,
+               [ source ] , [ ( "supports" | "refutes" ) , predicate ] ;
+
+claim        = "claim" , ident , "by" , ident , ":" , string ,
+               "asserts" , predicate ;
+
+rule         = "rule" , ident , ":" , predicate ,
+               ( "requires" | "established_if" ) , predicate_list ;
+
+deontic      = ( "obligation" | "permission" | "prohibition" ) , ident , record ;
+               (* record fields: bearer, to, that (predicate), by (date),
+                  on_breach (predicate) *)
+
+constraint   = "constraint" , ident , ":" , value , comparator , value ;
+
+exclusive    = "exclusive" , "{" , { predicate [ "," ] } , "}" ;
+
+query        = ( "assert" | "prove" | "refute" | "explain" | "discover" ) ,
+               predicate , { "under" ident | "for" ident } ;
+
+(* ── shared ── *)
+
+record       = "{" , { ident , ":" , value , [ "," ] } , "}" ;
+
+source       = "from" , "source" , "(" ,
+               { ident , "=" , value , [ "," ] } , ")" ;
+               (* keys: doc, page, para, exhibit, speaker *)
+
+predicate    = ident , "(" , { value , [ "," ] } , ")" ;
+
+predicate_list = predicate , { [ "and" | "or" | "," ] , predicate } ;
+               (* the combinator is fixed by the rule keyword:
+                  `requires` = conjunction (meet), `established_if` =
+                  disjunction (join). `and`/`or` here are sugar. *)
+
+value        = string
+             | date
+             | number
+             | money
+             | predicate                  (* IDENT immediately before "(" *)
+             | ref ;                       (* a bare or dotted identifier *)
+
+money        = currency , number ;        (* e.g. INR 1_000_000 *)
+comparator   = "<=" | ">=" | "<" | ">" | "==" | "!="
+             | "within" | "before" | "after" | "equals" ;
+
+(* ── lexical ── *)
+
+ident        = letter , { letter | digit | "_" } ;
+dotted_ident = ident , { "." , ident } ;
+ref          = dotted_ident ;             (* `nda.penalty_cap` reads a field *)
+currency     = "INR" | "USD" | "EUR" | "GBP" | "JPY" | ... ;
+date         = digit digit digit digit "-" digit digit "-" digit digit ;
+number       = digit , { digit | "_" } , [ "." , { digit } ] ;
+string       = '"' , { character } , '"' ;
+comment      = ( "#" | "//" ) , { character - newline } ;

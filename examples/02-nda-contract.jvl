@@ -1,0 +1,76 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Example 02 — A Non-Disclosure Agreement as a program
+#
+# A contract is a set of obligations that trigger under conditions, plus some
+# objective limits (dates, money caps) that are just... checkable arithmetic.
+# This example shows JVL's deontic layer (obligation / permission / prohibition)
+# and the objective `constraint` layer working together.
+#
+# Try:
+#   jvl check       examples/02-nda-contract.jvl
+#   jvl constraints examples/02-nda-contract.jvl
+#   jvl assert      examples/02-nda-contract.jvl
+# ─────────────────────────────────────────────────────────────────────────
+
+jurisdiction IN.Contract.v1
+
+party Disclosing = Org "Acme Labs Pvt Ltd"
+party Receiving  = Person "Priya Nair"
+
+fact nda : Agreement {
+    signed_on:   2025-01-15
+    expires_on:  2028-01-15
+    penalty_cap: INR 5_000_000
+} from source(doc="NDA_executed", page=1, para=1) status Established
+
+fact disclosure_event : Disclosure {
+    by:      Receiving
+    on:      2025-06-20
+    to:      "TechCrunch"
+    amount:  INR 8_000_000
+} from source(doc="Complaint", page=3, para=12) status Alleged
+
+# ── Deontic core: what the contract obliges and forbids ──────────────────
+prohibition keep_secret {
+    bearer:    Receiving
+    to:        Disclosing
+    that:      Discloses(Receiving)
+    on_breach: liable(Receiving, damages)
+}
+
+obligation notify {
+    bearer: Receiving
+    to:     Disclosing
+    that:   NotifyOnRequest(Receiving)
+    by:     2025-07-01
+}
+
+# ── Rules ────────────────────────────────────────────────────────────────
+rule breach_of_nda:
+    BreachOfNDA(e) requires
+        Disclosure(e)
+        WithinTerm(e)
+
+rule liability:
+    Liable(e) requires
+        BreachOfNDA(e)
+
+evidence leak_email : Message {
+    author: Receiving
+    text:   "Here is the deck, please keep it between us."
+} from source(doc="Exhibit_P7", para=4) supports Disclosure(disclosure_event)
+
+evidence within_term : Record {
+    note: "disclosure 2025-06-20 falls between signing and expiry"
+} from source(doc="NDA_executed", page=1) supports WithinTerm(disclosure_event)
+
+# ── Objective constraints: pure comparison, no legal judgement ───────────
+# The claimed damages exceed the contract's penalty cap — a checkable defect.
+constraint damages_within_cap: disclosure_event.amount <= nda.penalty_cap
+
+# The disclosure must fall within the agreement's term to count.
+constraint disclosure_after_signing: disclosure_event.on after nda.signed_on
+constraint disclosure_before_expiry: disclosure_event.on before nda.expires_on
+
+# ── Questions ────────────────────────────────────────────────────────────
+assert BreachOfNDA(disclosure_event) under BalanceOfProbabilities

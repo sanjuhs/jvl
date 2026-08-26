@@ -1,0 +1,55 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Example 01 — Loan vs. Investment
+#
+# The classic dispute: A transferred money to B. A says it was a loan (must be
+# repaid). B says it was an investment (no repayment obligation). The same
+# facts, two incompatible legal characterisations. JVL lets us ask which
+# characterisation the record actually supports — and trace every step back to
+# a document.
+#
+# Try:
+#   jvl check    examples/01-loan-vs-investment.jvl
+#   jvl assert   examples/01-loan-vs-investment.jvl
+#   jvl explain  examples/01-loan-vs-investment.jvl "RepaymentObligation(transfer_17)"
+#   jvl simulate examples/01-loan-vs-investment.jvl --without w17
+# ─────────────────────────────────────────────────────────────────────────
+
+jurisdiction IN.Contract.v1
+
+party A = Person "Anil Kumar"
+party B = Person "Beena Rao"
+
+# A primary fact, conceded by both sides, anchored to a bank statement.
+fact transfer_17 : TransferOfValue {
+    from:   A
+    to:     B
+    amount: INR 1_000_000
+    on:     2025-03-10
+} from source(doc="BankStatement_3", page=2, para=4) status Established
+
+# Two competing characterisations of the same transfer.
+claim c_loan   by A : "the transfer was a loan"        asserts Loan(transfer_17)
+claim c_invest by B : "the transfer was an investment" asserts Investment(transfer_17)
+
+# They cannot both be true of the same transfer.
+exclusive { Loan(transfer_17) Investment(transfer_17) }
+
+# A message from B that bears on whether repayment was owed.
+evidence w17 : Message {
+    author: B
+    text:   "I'll repay you next month."
+} from source(doc="WhatsApp_17", para=21) supports RepaymentObligation(transfer_17)
+
+# ── The law ──────────────────────────────────────────────────────────────
+rule loan_definition:
+    Loan(t) requires
+        TransferOfValue(t)
+        RepaymentObligation(t)
+
+rule repayment_obligation:
+    RepaymentObligation(t) established_if
+        AdmittedRepayment(t)
+        or ContractRequiresRepayment(t)
+
+# ── The questions ────────────────────────────────────────────────────────
+assert Loan(transfer_17) under BalanceOfProbabilities
