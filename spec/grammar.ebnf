@@ -37,11 +37,13 @@ claim        = "claim" , ident , "by" , ident , ":" , string ,
 
 rule         = "rule" , ident , ":" , predicate ,
                ( "requires" | "established_if" | "normally" ) , predicate_list ,
-               { "except" , [ "when" ] , predicate } ;
+               { ( "except" | "unless" ) , [ "when" ] , predicate } ;
                (* `requires` = conjunction (meet); `established_if` = disjunction
-                  (join); `normally ... except when ...` = a defeasible default:
-                  the head holds when the body holds, UNLESS an exception holds,
-                  which rebuts it (REFUTED). *)
+                  (join); `normally ... except when ... unless when ...` = a
+                  defeasible default with a cascade: the head holds by default;
+                  `except` rebuts it (REFUTED), `unless` reinstates it. Clauses
+                  are processed in order and the last one that holds wins, so
+                  later clauses have higher priority (except-to-the-exception). *)
 
 deontic      = ( "obligation" | "permission" | "prohibition" ) , ident , record ;
                (* record fields: bearer, to, that (predicate), by (date),

@@ -71,6 +71,21 @@ becomes `DISPUTED` and the conflict surfaces.
 Exceptions can stack (`except when A except when B`); any one holding rebuts the
 default. See [example 05](../examples/05-limitation-default.jvl).
 
+**Exceptions to the exception.** Add `unless when ...` to reinstate the default,
+giving Catala-style cascading defaults:
+
+```jvl
+rule limitation:
+    TimeBarred(k) normally FiledLate(k)
+    except when Acknowledged(k)             # rebuts the time-bar
+    unless when FraudulentConcealment(k)    # ...but fraud reinstates it
+```
+
+Clauses are processed in order and **the last one that holds wins** — so later
+clauses have higher priority. Here: filed late ⇒ time-barred; acknowledged ⇒
+not time-barred; but fraudulent concealment ⇒ time-barred again. `except`
+rebuts, `unless` reinstates, and you can alternate them to any depth.
+
 ## 4. Standards of proof — when does a status *count as holding*?
 
 A status is just a position on the lattice. Whether it is "good enough" depends

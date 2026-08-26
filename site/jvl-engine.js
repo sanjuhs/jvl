@@ -156,7 +156,11 @@
     else throw new Error("Parse error line " + this.peek().line + ": expected 'requires' or 'established_if'");
     var body = this.predicateList();
     var exceptions = [];
-    while (this.atKw("except")) { this.next(); if (this.atKw("when")) this.next(); exceptions.push(this.predicate()); }
+    while (this.atKw("except", "unless")) {
+      var kind = this.next().value;
+      if (this.atKw("when")) this.next();
+      exceptions.push({ kind: kind, pred: this.predicate() });
+    }
     return { type: "rule", id: id, head: head, body: body, conn: conn, exceptions: exceptions };
   };
   Parser.prototype.deontic = function (modality) {
@@ -289,7 +293,7 @@
   Evaluator.prototype.addBase = function (key, c) { (this.base[key] = this.base[key] || []).push(c); };
   Evaluator.prototype.varsOf = function (rule) {
     var self = this, vs = {};
-    [rule.head].concat(rule.body).concat(rule.exceptions || []).forEach(function (p) {
+    [rule.head].concat(rule.body).concat((rule.exceptions || []).map(function (e) { return e.pred; })).forEach(function (p) {
       p.args.forEach(function (a) { if (!self.constants[a] && VAR.test(a)) vs[a] = true; });
     });
     return Object.keys(vs);
@@ -325,7 +329,7 @@
     // Collect the values each variable actually takes — linear, no cartesian
     // product over the universe, no quadratic join between body predicates.
     var cand = {}; vars.forEach(function (v) { cand[v] = {}; });
-    (rule.body || []).concat(rule.exceptions || []).forEach(function (pred) {
+    (rule.body || []).concat((rule.exceptions || []).map(function (e) { return e.pred; })).forEach(function (pred) {
       var atoms = index[pred.name]; if (!atoms) return;
       atoms.forEach(function (args) {
         if (args.length !== pred.args.length) return;
@@ -359,13 +363,14 @@
     if (bodyStatuses.every(function (s) { return s === "UNKNOWN"; })) return { head: headKey, status: null };
     var acc = bodyStatuses[0];
     for (var i = 1; i < bodyStatuses.length; i++) acc = (rule.conn === "established_if") ? join(acc, bodyStatuses[i]) : meet(acc, bodyStatuses[i]);
-    // default logic: an exception that holds defeats the (normally) conclusion.
+    // Defeasible default with a cascade: `except` rebuts, `unless` reinstates;
+    // process in order, last holding clause wins.
     if ((rule.conn === "normally") && rule.exceptions && rule.exceptions.length) {
-      var defeated = rule.exceptions.some(function (ex) {
-        var exKey = ex.name + "|" + ex.args.map(function (a) { return binding[a] || a; }).join(",");
-        return RANK[prev[exKey] || "UNKNOWN"] >= 4;
+      var def = acc;
+      rule.exceptions.forEach(function (cl) {
+        var exKey = cl.pred.name + "|" + cl.pred.args.map(function (a) { return binding[a] || a; }).join(",");
+        if (RANK[prev[exKey] || "UNKNOWN"] >= 4) acc = (cl.kind === "except") ? "REFUTED" : def;
       });
-      if (defeated) acc = "REFUTED";
     }
     return { head: headKey, status: acc };
   };

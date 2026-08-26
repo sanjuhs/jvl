@@ -159,7 +159,7 @@ class Evaluator:
         # atom. This is linear in the number of atoms — no cartesian product
         # over the whole universe, and no quadratic join between body predicates.
         candidates: dict[str, set[str]] = {v: set() for v in variables}
-        for pred in (*rule.body, *rule.exceptions):
+        for pred in (*rule.body, *(p for _, p in rule.exceptions)):
             atoms = index.get(pred.name)
             if not atoms:
                 continue
@@ -188,7 +188,8 @@ class Evaluator:
 
     def _vars_of(self, rule: ast.Rule) -> set[str]:
         vs: set[str] = set()
-        for pred in (rule.head, *rule.body, *rule.exceptions):
+        preds = [rule.head, *rule.body, *(p for _, p in rule.exceptions)]
+        for pred in preds:
             for a in pred.args:
                 if a not in self.constants and _VAR_RE.match(a):
                     vs.add(a)
@@ -211,13 +212,14 @@ class Evaluator:
             acc = body_statuses[0]
             for s in body_statuses[1:]:
                 acc = meet(acc, s)
-        # Defeasible default: a holding exception rebuts the conclusion.
+        # Defeasible default with a cascade of exceptions. Process the chain in
+        # order; the last clause that holds decides — `except` rebuts (REFUTED),
+        # `unless` reinstates the default. Later clauses win (higher priority).
         if rule.connective == "normally" and rule.exceptions:
-            for ex in rule.exceptions:
-                ex_key = inst(ex)
-                if prev.get(ex_key, Status.UNKNOWN).rank >= Status.SUPPORTED.rank:
-                    acc = Status.REFUTED
-                    break
+            default = acc
+            for kind, ex in rule.exceptions:
+                if prev.get(inst(ex), Status.UNKNOWN).rank >= Status.SUPPORTED.rank:
+                    acc = Status.REFUTED if kind == "except" else default
         return head_key, acc, body_keys
 
     # ------------------------------------------------------------------
@@ -256,10 +258,9 @@ class Evaluator:
                     for p in rule.body]
             sep = " ∨ " if rule.connective == "established_if" else " ∧ "
             head_line = f"{pad}  └─ {rule.connective}: " + sep.join(b.render() for b in body)
-            if rule.exceptions:
-                exc = [ast.Predicate(p.name, tuple(binding.get(a, a) for a in p.args))
-                       for p in rule.exceptions]
-                head_line += "  except when " + " ∨ ".join(e.render() for e in exc)
+            for kind, p in rule.exceptions:
+                ep = ast.Predicate(p.name, tuple(binding.get(a, a) for a in p.args))
+                head_line += f"  {kind} when {ep.render()}"
             lines.append(head_line)
             for b in body:
                 lines.extend(self.trace(b, depth + 2, seen))

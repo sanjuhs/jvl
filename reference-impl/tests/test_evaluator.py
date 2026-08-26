@@ -105,6 +105,35 @@ def test_removing_the_exception_restores_the_default():
     assert st is Status.SUPPORTED
 
 
+def _nested_src(*present):
+    lines = [
+        'fact c : Case { } from source(doc="X", page=1) status Established',
+    ]
+    ev = {"late": "FiledLate", "ack": "Acknowledged", "fraud": "FraudulentConcealment"}
+    for eid in present:
+        lines.append(f'evidence {eid} : Record {{ n: "x" }} from source(doc="D", para=1) '
+                     f'supports {ev[eid]}(c)')
+    lines.append("rule r:\n    TimeBarred(k) normally\n        FiledLate(k)\n"
+                 "    except when Acknowledged(k)\n    unless when FraudulentConcealment(k)")
+    return "\n".join(lines)
+
+
+def test_nested_exception_reinstates_the_default():
+    # late + ack + fraud: default rebutted by ack, reinstated by fraud → holds.
+    ev = Evaluator(parse(_nested_src("late", "ack", "fraud"))).build()
+    assert ev.atom_status(Predicate("TimeBarred", ("c",)).key()) is Status.SUPPORTED
+
+
+def test_first_level_exception_rebuts_when_no_reinstatement():
+    ev = Evaluator(parse(_nested_src("late", "ack"))).build()
+    assert ev.atom_status(Predicate("TimeBarred", ("c",)).key()) is Status.REFUTED
+
+
+def test_default_holds_with_no_exceptions_active():
+    ev = Evaluator(parse(_nested_src("late"))).build()
+    assert ev.atom_status(Predicate("TimeBarred", ("c",)).key()) is Status.SUPPORTED
+
+
 def test_objective_constraint_catches_overcap_damages():
     ev = _eval("02-nda-contract.jvl")
     results = {c.id: ok for c, ok, _ in ev.check_constraints()}

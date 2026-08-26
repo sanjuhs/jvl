@@ -92,8 +92,8 @@ def _format_node(n: ast.Node) -> str:
         else:
             body = [f"        {_pred(b)}" for b in n.body]
         lines.extend(body)
-        for ex in n.exceptions:
-            lines.append(f"    except when {_pred(ex)}")
+        for kind, ex in n.exceptions:
+            lines.append(f"    {kind} when {_pred(ex)}")
         return "\n".join(lines)
     if isinstance(n, ast.Obligation):
         fields = {"bearer": ast.Ref(n.bearer)}

@@ -146,7 +146,10 @@ class Rule:
     body: tuple[Predicate, ...]
     connective: str                 # "requires" (AND) | "established_if" (OR) | "normally" (default)
     span: Span
-    exceptions: tuple[Predicate, ...] = ()   # for `normally ... except when ...`
+    # For `normally ... except when E ... unless when U ...`: an ordered chain of
+    # (kind, predicate) where kind is "except" (rebuts) or "unless" (reinstates).
+    # Later clauses have higher priority; the last one that holds decides.
+    exceptions: tuple[tuple[str, Predicate], ...] = ()
 
 
 @dataclass

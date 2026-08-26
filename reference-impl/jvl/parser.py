@@ -177,13 +177,15 @@ class Parser:
             raise ParseError(
                 f"line {t.line}, col {t.col}: expected 'requires', 'established_if', or 'normally'")
         body = self._predicate_list()
-        # Defeasible defaults: `normally ... except when P except when Q`.
-        exceptions: list[ast.Predicate] = []
-        while self.at_keyword("except"):
-            self.next()
+        # Defeasible defaults with cascading exceptions:
+        #   normally BODY except when E1 unless when U1 except when E2 ...
+        # `except` rebuts the default; `unless` reinstates it; later wins.
+        exceptions: list[tuple[str, ast.Predicate]] = []
+        while self.at_keyword("except", "unless"):
+            kind = self.next().value
             if self.at_keyword("when"):
                 self.next()
-            exceptions.append(self._predicate())
+            exceptions.append((kind, self._predicate()))
         return ast.Rule(id=rid, head=head, body=tuple(body), connective=connective,
                         span=span, exceptions=tuple(exceptions))
 

@@ -31,7 +31,7 @@
         { "name": "keyword.control.jvl",
           "match": "\\b(jurisdiction|party|fact|evidence|claim|rule|obligation|permission|prohibition|constraint|exclusive|assert|prove|refute|explain|discover)\\b" },
         { "name": "keyword.operator.word.jvl",
-          "match": "\\b(requires|established_if|normally|except|when|supports|refutes|asserts|by|from|source|status|under|for|and|or)\\b" }
+          "match": "\\b(requires|established_if|normally|except|unless|when|supports|refutes|asserts|by|from|source|status|under|for|and|or)\\b" }
       ]
     },
     "status": {

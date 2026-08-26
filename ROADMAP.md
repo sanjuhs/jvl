@@ -70,7 +70,8 @@ they mean the same thing, and if not, exactly what differs.*
   meaning-preserving — tested across all examples).
 - ✅ **Duration/interval constraints** — `left within N days/weeks/months/years
   of/before/after right` (both engines).
-- ⬜ Nested exceptions-to-exceptions (`except-to-exception`).
+- ✅ **Nested exceptions-to-exceptions** — `except when … unless when …`
+  cascading defaults (Catala-style; last holding clause wins). Both engines.
 - ⬜ Arithmetic expressions in constraints.
 - ✅ **`jvl check --audit`** — reports any supported conclusion that traces to no
   source (the "proof of an unsourced fact" guardrail).
