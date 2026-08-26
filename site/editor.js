@@ -156,12 +156,37 @@ constraint within_term: breach.on before nda.expires_on`
     runCommand("run");
   }
 
+  var graphOut = document.getElementById("graphOut");
+  var outPre = out.parentNode; // the <pre> wrapping #out
+
   function runCommand(cmd, usePred) {
     var arg = usePred ? predInput.value.trim() : null;
     var res = JVL.run(src.value, cmd, arg);
+    outName.textContent = "$ jvl " + (cmd === "graph" ? "emit graph" : cmd) + (arg ? ' "' + arg + '"' : "");
+
+    if (cmd === "graph") {
+      outPre.style.display = "none";
+      graphOut.style.display = "block";
+      graphOut.innerHTML = '<span class="o-dim">rendering…</span>';
+      if (window.mermaid) {
+        try {
+          window.mermaid.render("g" + Date.now(), res.text).then(function (o) {
+            graphOut.innerHTML = o.svg;
+          }).catch(function (e) {
+            graphOut.innerHTML = '<pre class="term"><span class="o-bad">graph error: ' + HL.esc(String(e && e.message || e)) + "</span>\n\n" + HL.esc(res.text) + "</pre>";
+          });
+        } catch (e) {
+          graphOut.innerHTML = '<pre class="term">' + HL.esc(res.text) + "</pre>";
+        }
+      } else {
+        graphOut.innerHTML = '<pre class="term">' + HL.esc(res.text) + "</pre>";
+      }
+      return;
+    }
+    outPre.style.display = "";
+    graphOut.style.display = "none";
     // JSON output is shown verbatim; everything else gets terminal colorizing.
     out.innerHTML = cmd === "emit" ? HL.esc(res.text || "") : HL.colorizeTerm(res.text || "(no output)");
-    outName.textContent = "$ jvl " + cmd + (arg ? ' "' + arg + '"' : "");
   }
 
   // ---- AI helper --------------------------------------------------------
@@ -199,6 +224,9 @@ constraint within_term: breach.on before nda.expires_on`
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    if (window.mermaid) {
+      try { window.mermaid.initialize({ startOnLoad: false, theme: "dark", securityLevel: "loose", flowchart: { curve: "basis" } }); } catch (e) {}
+    }
     // Build lesson pills.
     var bar = $("#lessons");
     LESSONS.forEach(function (l, i) {

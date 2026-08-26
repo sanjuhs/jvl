@@ -43,6 +43,7 @@
       <button class="btn" data-cmd="contradictions">Contradictions</button>
       <button class="btn" data-cmd="constraints">Constraints</button>
       <button class="btn" data-cmd="emit">Emit JSON</button>
+      <button class="btn" data-cmd="graph">Graph</button>
       <input class="cmd-input" id="predInput" placeholder="Loan(transfer_17)">
       <button class="btn" data-cmd="explain" data-usepred="1">Explain</button>
       <button class="btn" data-cmd="discover" data-usepred="1">Discover</button>
@@ -59,6 +60,7 @@
         <div class="window term">
           <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name" id="outName">$ jvl run</span></div>
           <pre><code id="out" class="term"></code></pre>
+          <div id="graphOut" style="display:none;flex:1;overflow:auto;padding:1rem;background:#060911;"></div>
         </div>
       </div>
     </div>
@@ -83,6 +85,7 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="jvl-engine.js"></script>
   <script src="app.js"></script>
   <script src="editor.js"></script>

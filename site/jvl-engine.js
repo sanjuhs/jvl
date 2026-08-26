@@ -546,6 +546,55 @@
       else issues.forEach(function (i) { L.push("  ⚠ " + i); });
       return { text: L.join("\n"), ok: issues.length === 0 };
     }
+    if (command === "graph") {
+      var lines = ["flowchart LR"];
+      var declared = {};
+      function idOf(s) { return "n_" + s.replace(/[^A-Za-z0-9]/g, "_"); }
+      function declare(label, cls) {
+        var id = idOf(label);
+        if (!declared[id]) { declared[id] = true; lines.push('  ' + id + '["' + label.replace(/"/g, "'") + '"]' + (cls ? ":::" + cls : "")); }
+        return id;
+      }
+      Object.keys(ev.status).forEach(function (k) {
+        var p = k.split("|"), lbl = renderPred({ name: p[0], args: p[1] ? p[1].split(",") : [] });
+        declare(lbl, ev.status[k].toLowerCase());
+      });
+      var statusOf = function (pred) { return (ev.status[keyOf(pred)] || "UNKNOWN").toLowerCase(); };
+      ev.ofType("rule").forEach(function (r) {
+        Object.keys(ev.status).forEach(function (k) {
+          var b = unify(r.head, k);
+          if (!b) return;
+          var p = k.split("|");
+          var head = declare(renderPred({ name: p[0], args: p[1] ? p[1].split(",") : [] }), ev.status[k].toLowerCase());
+          r.body.forEach(function (bp) {
+            var inst = { name: bp.name, args: bp.args.map(function (a) { return b[a] || a; }) };
+            lines.push("  " + declare(renderPred(inst), statusOf(inst)) + " --> " + head);
+          });
+          (r.exceptions || []).forEach(function (e) {
+            var inst = { name: e.pred.name, args: e.pred.args.map(function (a) { return b[a] || a; }) };
+            lines.push("  " + declare(renderPred(inst), statusOf(inst)) + " -. " + e.kind + " .-> " + head);
+          });
+        });
+      });
+      ev.ofType("evidence").forEach(function (e) {
+        var t = e.supports || e.refutes; if (!t) return;
+        var tid = declare(renderPred(t)), eid = declare(e.id, "evidence");
+        lines.push("  " + eid + " -. " + (e.supports ? "supports" : "refutes") + " .-> " + tid);
+      });
+      ev.ofType("claim").forEach(function (c) {
+        lines.push("  " + declare(c.id, "claim") + " -. claims .-> " + declare(renderPred(c.asserts)));
+      });
+      lines.push("classDef supported fill:#0f2e20,stroke:#10b981,color:#a7f3d0");
+      lines.push("classDef proven fill:#0f2e20,stroke:#10b981,color:#a7f3d0");
+      lines.push("classDef established fill:#0f2e20,stroke:#10b981,color:#a7f3d0");
+      lines.push("classDef disputed fill:#3a2e10,stroke:#f59e0b,color:#fde68a");
+      lines.push("classDef refuted fill:#3a1520,stroke:#f43f5e,color:#fecdd3");
+      lines.push("classDef unknown fill:#1b2338,stroke:#64748b,color:#94a3b8");
+      lines.push("classDef unsupported fill:#1b2338,stroke:#64748b,color:#94a3b8");
+      lines.push("classDef evidence fill:#0e2a3a,stroke:#0ea5e9,color:#bae6fd");
+      lines.push("classDef claim fill:#231a3a,stroke:#a78bfa,color:#ddd6fe");
+      return { text: lines.join("\n"), ok: true };
+    }
     if (command === "emit") {
       var out = {
         jurisdiction: (ev.ofType("jurisdiction")[0] || {}).name || null,
