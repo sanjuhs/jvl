@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JVL — Jhana Verifiable Law</title>
+  <meta name="description" content="Compile any legal document into a program you can statically check. Facts carry provenance; propositions carry an epistemic status; legal arguments type-check.">
+  <link rel="icon" href="assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <nav class="links">
+        <a href="learn.html">Learn</a>
+        <a href="docs.html">Docs</a>
+        <a href="playground.html">Playground</a>
+        <a href="learn.html#convert">Convert a doc</a>
+        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+        <a class="btn btn-sm primary" href="learn.html">Get started</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> Open source · MIT · early &amp; evolving</span>
+        <h1>Compile the law into a program you can <span class="grad-text">check</span>.</h1>
+        <p class="lead">JVL turns a contract or a case file into a small program. Facts carry their source. Propositions carry a confidence. And legal arguments <strong>type-check</strong>.</p>
+        <div class="cta">
+          <a class="btn primary" href="learn.html">Learn the language →</a>
+          <a class="btn" href="playground.html">See it run</a>
+        </div>
+        <p class="sub">The graph stores what the case says. The JVL program determines what <em>follows</em> from it.</p>
+      </div>
+      <div class="window">
+        <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">loan-vs-investment.jvl</span></div>
+        <pre><code class="jvl">jurisdiction IN.Contract.v1
+
+party A = Person "Anil Kumar"
+party B = Person "Beena Rao"
+
+fact transfer_17 : TransferOfValue {
+    from:   A
+    to:     B
+    amount: INR 1_000_000
+    on:     2025-03-10
+} from source(doc="BankStatement_3", page=2, para=4) status Established
+
+claim c_loan by A : "the transfer was a loan"
+    asserts Loan(transfer_17)
+
+evidence w17 : Message { author: B  text: "I'll repay next month." }
+    from source(doc="WhatsApp_17", para=21)
+    supports RepaymentObligation(transfer_17)
+
+rule loan_definition:
+    Loan(t) requires TransferOfValue(t) RepaymentObligation(t)
+
+assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREE PILLARS -->
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Why it's different</span>
+        <h2>Three ideas no other legal DSL combines</h2>
+        <p>Most tools extract JSON (silent on what follows) or build a graph (vague on meaning). JVL adds the executable meaning layer — and keeps the other two underneath it.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="ico">⚖️</div>
+          <h3>Epistemic status is a type</h3>
+          <p>A proposition is never just <code>true</code>. It's <em>Proven, Supported, Disputed, Unsupported, Refuted,</em> or <em>Unknown</em> — judged against a standard of proof. Law lives in doubt; the type system lives there too.</p>
+        </div>
+        <div class="card">
+          <div class="ico">🔗</div>
+          <h3>Provenance is mandatory</h3>
+          <p>Every fact links back to <code>doc / page / paragraph / exhibit</code>. A conclusion the compiler can't trace to the record is a defect it reports — the guardrail against a proof of a hallucinated fact.</p>
+        </div>
+        <div class="card">
+          <div class="ico">✅</div>
+          <h3>Arguments type-check</h3>
+          <p><code>assert Cheating(x)</code> returns a derivation trace — which elements hold, which are missing, which are contested — not a bare yes/no. Static type checking for a legal argument.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section style="background:var(--bg-soft);border-block:1px solid var(--border-soft);">
+    <div class="container split">
+      <div>
+        <span class="kicker">The stack</span>
+        <h2>The program <em>is</em> the data layer</h2>
+        <p>JVL sits on top of extraction and graphs — and can emit both. One program holds the facts, the relationships, the provenance, and the logic, and it can compute over all of it.</p>
+        <ul class="feature-list">
+          <li><code>jvl emit json</code> — deterministic canonical data</li>
+          <li><code>jvl emit graph</code> — nodes &amp; edges of the case</li>
+          <li>Ask questions and get sourced, deterministic answers</li>
+        </ul>
+      </div>
+      <div class="pipeline">
+        <div class="pipe-row"><span class="pipe small">Legal document (PDF)</span></div>
+        <div class="pipe-row"><span class="pipe-arrow">↓</span><span class="pipe small">LLM extraction — raw text always kept</span></div>
+        <div class="pipe-row"><span class="pipe small">structured JSON</span><span class="pipe-arrow">+</span><span class="pipe small">case graph</span></div>
+        <div class="pipe-row"><span class="pipe-arrow">↓</span><span class="pipe accent">JVL program — meaning</span></div>
+        <div class="pipe-row">
+          <span class="pipe">assert</span><span class="pipe">explain</span><span class="pipe">discover</span><span class="pipe">diff / equiv</span><span class="pipe">simulate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON FEATURE -->
+  <section>
+    <div class="container split rev">
+      <div class="window">
+        <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">jvl equiv v1.jvl v2.jvl</span></div>
+        <pre><code class="term">⚖  equiv  service-agreement-v1  ≟  service-agreement-v2
+
+  ✗ DIFFERENT — they diverge on these propositions:
+
+    · proposition only in second — PenaltyOwed(agreement)
+    · term changed — agreement.fee: INR500000 → INR650000
+    · rule added — penalty_clause</code></pre>
+      </div>
+      <div>
+        <span class="kicker">Compare &amp; verify</span>
+        <h2>Do two contracts mean the same thing?</h2>
+        <p>Turn both documents into programs, then ask. <code>equiv</code> compares what each contract concludes <em>and</em> its operative terms — ignoring ordering, comments, and cosmetics — and names exactly where they diverge. <code>diff</code> gives the full delta.</p>
+        <ul class="feature-list">
+          <li>Version a contract and see the semantic change, not the text noise</li>
+          <li>Check a document against a reference template</li>
+          <li>Machine-readable output for pipelines (<code>--json</code>)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMANDS -->
+  <section style="background:var(--bg-soft);border-block:1px solid var(--border-soft);">
+    <div class="container">
+      <div class="section-head"><span class="kicker">What you can do</span><h2>One program, many questions</h2></div>
+      <div class="cmd-grid">
+        <div class="cmd"><code>jvl check</code><p>Parse, type-check, and audit every fact for provenance.</p></div>
+        <div class="cmd"><code>jvl assert</code><p>Does a proposition hold, to a standard of proof? With a full trace.</p></div>
+        <div class="cmd"><code>jvl explain</code><p>The derivation tree for any proposition, sourced to the record.</p></div>
+        <div class="cmd"><code>jvl discover</code><p>Which elements of a claim are still missing? The gap, pinpointed.</p></div>
+        <div class="cmd"><code>jvl check-contradictions</code><p>Where do the clauses conflict with each other?</p></div>
+        <div class="cmd"><code>jvl constraints</code><p>Objective money / date / number checks — pure, non-arguable arithmetic.</p></div>
+        <div class="cmd"><code>jvl simulate --without X</code><p>Counterfactual: drop an exhibit or a rule and re-run.</p></div>
+        <div class="cmd"><code>jvl diff · equiv</code><p>Compare two versions — structurally and semantically.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THESIS: transform vs decide -->
+  <section>
+    <div class="container">
+      <div class="section-head" style="max-width:70ch;">
+        <span class="kicker">The central thesis</span>
+        <h2>The LLM transforms. The <span class="grad-text">program</span> decides.</h2>
+        <p>An LLM is an unreliable judge but a capable translator. So JVL never asks it to weigh whether a fact is legally valid. It asks only for a faithful translation: document → program, question → assertion. Then the <strong>assertion runs against the whole logic of the program</strong>, and the deterministic engine — not the model — returns the answer, with a trace back to the record.</p>
+      </div>
+      <div class="split" style="align-items:stretch;">
+        <div class="card" style="border-left:3px solid var(--amber);">
+          <div class="ico">🤖</div>
+          <h3>What the LLM does</h3>
+          <ul class="feature-list">
+            <li>Read a messy document — any length</li>
+            <li>Emit a JVL program with honest sources</li>
+            <li>Map a natural-language question to an assertion</li>
+          </ul>
+          <p style="margin-top:.9rem;">Fuzzy, linguistic, error-prone — and checkable, because the compiler rejects what doesn't parse or cite.</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--emerald);">
+          <div class="ico">⚙️</div>
+          <h3>What the program does</h3>
+          <ul class="feature-list">
+            <li>Run the assertion over every rule and fact</li>
+            <li>Return <code>proven</code> / <code>refuted</code> / <code>disputed</code> — deterministically</li>
+            <li>Show the derivation, sourced to the document</li>
+          </ul>
+          <p style="margin-top:.9rem;">Exact, reproducible, auditable — the judgement lives in code you can read, not in a black box.</p>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:1.6rem;">
+        <strong>Scale is the point.</strong> A program can be arbitrarily large — a whole contract, a constitution, a treatise compressed into thousands of typed propositions and rules. However big it gets, an assertion still runs over all of it, and the compiler can still ask: <em>is this consistent? is this clause violated? does this conclusion follow?</em> That is a question you cannot ask natural language at all.
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="center">
+    <div class="container">
+      <h2>Make the law's structure visible.<br><span class="grad-text">Let humans keep the judgement.</span></h2>
+      <p style="max-width:52ch;margin:1rem auto 1.8rem;">JVL is a research prototype and an open invitation. Read the tour, run the examples, and help shape a language for encoding law in the open.</p>
+      <div class="cta" style="justify-content:center;">
+        <a class="btn primary" href="learn.html">Start the tour →</a>
+        <a class="btn" href="https://github.com/sanjuhs/jvl">Star on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site">
+    <div class="container">
+      <div class="foot-grid">
+        <a class="brand" href="index.html" style="font-weight:800;font-size:1.1rem;display:flex;gap:.5rem;align-items:center;"><img src="assets/logo-mark.svg" alt="" style="height:26px"> JVL</a>
+        <div style="display:flex;gap:1.4rem;flex-wrap:wrap;">
+          <a href="learn.html">Learn</a><a href="docs.html">Docs</a>
+          <a href="playground.html">Playground</a>
+          <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+          <a href="https://github.com/sanjuhs/jvl/blob/main/LICENSE">MIT License</a>
+        </div>
+      </div>
+      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+    </div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

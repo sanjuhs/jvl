@@ -1,0 +1,38 @@
+name: Deploy site
+
+# Deploys the static site in ./site to Vercel on every push to main.
+#
+# Two ways to run this:
+#   1. RECOMMENDED — connect the repo in the Vercel dashboard (Root Directory =
+#      "site"). Vercel then auto-deploys on every push and this workflow is not
+#      needed at all.
+#   2. This workflow — add three repo secrets: VERCEL_TOKEN, VERCEL_ORG_ID,
+#      VERCEL_PROJECT_ID. Without VERCEL_TOKEN the job skips cleanly.
+#
+# See DEPLOY.md for step-by-step instructions.
+
+on:
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/deploy-site.yml"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip if not configured
+        if: env.VERCEL_TOKEN == ''
+        run: echo "VERCEL_TOKEN not set — skipping deploy. Configure secrets or use the Vercel Git integration (see DEPLOY.md)."
+      - name: Deploy to Vercel
+        if: env.VERCEL_TOKEN != ''
+        working-directory: site
+        run: |
+          npm i -g vercel@latest
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel deploy --prod --yes --token="$VERCEL_TOKEN"

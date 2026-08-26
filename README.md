@@ -11,11 +11,17 @@
   <a href="docs/01-design-rationale.md">Why It Exists</a> ·
   <a href="docs/04-semantics.md">Semantics</a> ·
   <a href="llm/README.md">Teaching an LLM</a> ·
-  <a href="docs/07-roadmap.md">Roadmap</a>
+  <a href="ROADMAP.md">Roadmap</a> ·
+  <a href="site/">Website</a>
 </p>
 
 <p align="center">
   <code>MIT licensed</code> · <code>early / experimental</code> · <code>reference compiler in Python</code>
+</p>
+
+<p align="center">
+  <strong>The LLM transforms. The program decides.</strong> —
+  <a href="docs/09-thesis-scale-and-separation.md">the central thesis</a>
 </p>
 
 ---
@@ -127,6 +133,13 @@ jvl explain ../examples/01-loan-vs-investment.jvl "RepaymentObligation(transfer_
 
 # Counterfactual: re-run with a fact or piece of evidence removed
 jvl simulate ../examples/01-loan-vs-investment.jvl --without w17
+
+# Emit the program as data (the JSON / graph layer falls out of the program)
+jvl emit ../examples/01-loan-vs-investment.jvl json
+
+# Do two contracts mean the same thing? What changed between versions?
+jvl equiv ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl
+jvl diff  ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl
 ```
 
 Not sure where to start? Read the [tour](docs/02-language-tour.md), then open [`examples/`](examples/).
@@ -172,8 +185,10 @@ The extraction step is where an LLM shines, and the [`llm/`](llm/README.md) fold
 | [`docs/`](docs/) | Manifesto, design rationale, language tour, grammar, semantics, provenance model, prior-art survey, roadmap, FAQ |
 | [`spec/`](spec/) | The EBNF grammar and the `stdlib` of core legal types & predicates |
 | [`reference-impl/`](reference-impl/) | A working Python compiler: lexer, parser, epistemic evaluator, CLI |
-| [`examples/`](examples/) | Annotated `.jvl` programs — loan-vs-investment, an NDA, a criminal-cheating charge |
+| [`examples/`](examples/) | Annotated `.jvl` programs — loan-vs-investment, an NDA, a criminal-cheating charge, and a versioned contract for `diff`/`equiv` |
 | [`llm/`](llm/) | How to teach an LLM to write JVL, plus a ready-to-use Claude skill |
+| [`site/`](site/) | The website — landing, Learn, Docs, Playground (static, Vercel-ready). See [DEPLOY.md](DEPLOY.md) |
+| [`ROADMAP.md`](ROADMAP.md) | Phased plan — what's done, in progress, and planned |
 
 ---
 

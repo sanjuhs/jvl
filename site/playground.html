@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JVL Playground</title>
+  <meta name="description" content="See JVL run: worked examples and the exact output of the reference compiler.">
+  <link rel="icon" href="assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <nav class="links">
+        <a href="learn.html">Learn</a>
+        <a href="docs.html">Docs</a>
+        <a href="playground.html">Playground</a>
+        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:2.5rem;">
+    <div class="section-head">
+      <span class="kicker">Playground</span>
+      <h1 style="font-size:clamp(2rem,4vw,2.8rem);font-weight:800;">See it run</h1>
+      <p>Real programs, and the exact output of the reference compiler. A fully in-browser editor is on the roadmap (it needs a WASM build); for now, these show precisely what <code>jvl</code> prints on your machine.</p>
+    </div>
+
+    <div class="tabs" data-tabs=".pg-panel">
+      <button class="tab active" data-tab="loan">Loan vs. investment</button>
+      <button class="tab" data-tab="crime">Criminal charge</button>
+      <button class="tab" data-tab="nda">Contract constraints</button>
+      <button class="tab" data-tab="cmp">Compare two contracts</button>
+    </div>
+
+    <!-- LOAN -->
+    <div class="pg-panel" data-panel="loan">
+      <div class="split" style="align-items:stretch;">
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">01-loan-vs-investment.jvl</span></div>
+          <pre><code class="jvl">fact transfer_17 : TransferOfValue {
+    from: A  to: B  amount: INR 1_000_000  on: 2025-03-10
+} from source(doc="BankStatement_3", page=2, para=4) status Established
+
+claim c_loan by A : "the transfer was a loan" asserts Loan(transfer_17)
+
+evidence w17 : Message { author: B  text: "I'll repay next month." }
+    from source(doc="WhatsApp_17", para=21) supports RepaymentObligation(transfer_17)
+
+rule loan_definition:
+    Loan(t) requires TransferOfValue(t) RepaymentObligation(t)
+
+assert Loan(transfer_17) under BalanceOfProbabilities</code></pre></div>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ jvl assert 01-loan-vs-investment.jvl</span></div>
+          <pre><code class="term">⚖  assert  Loan(transfer_17)   standard: BalanceOfProbabilities
+
+  Loan(transfer_17) ............................. SUPPORTED
+    └─ requires: TransferOfValue(transfer_17) ∧ RepaymentObligation(transfer_17)
+      TransferOfValue(transfer_17) .............. ESTABLISHED
+        └─ Established fact (transfer_17)  →  BankStatement_3 p.2 ¶4
+      RepaymentObligation(transfer_17) .......... SUPPORTED
+        └─ supporting evidence (w17)  →  WhatsApp_17 ¶21
+
+  RESULT: SUPPORTED  ✓ (meets BalanceOfProbabilities)
+  NOTE:   contested by claim c_invest (B: Investment(transfer_17))</code></pre></div>
+      </div>
+    </div>
+
+    <!-- CRIME -->
+    <div class="pg-panel" data-panel="crime" style="display:none;">
+      <div class="split" style="align-items:stretch;">
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">03-cheating-s420.jvl</span></div>
+          <pre><code class="jvl">rule cheating:
+    Cheating(p) requires
+        Deception(p)
+        DishonestInducement(p)
+        DeliveryOfProperty(p)
+        DishonestIntentionAtInception(p)
+
+evidence brochure : Document { note: "fabricated projection" }
+    from source(doc="Exhibit_P3", para=8) supports Deception(payment)
+
+# No evidence establishes dishonest intention at inception.
+
+assert Cheating(payment) under BeyondReasonableDoubt</code></pre></div>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ jvl discover 03-cheating-s420.jvl "Cheating(payment)"</span></div>
+          <pre><code class="term">⚖  discover  what is missing for Cheating(payment)
+
+  ✗ DishonestIntentionAtInception(payment) — UNKNOWN
+
+# The offence is a conjunction of elements. Three are supported,
+# but the mental element is unproven — so under the criminal
+# standard the charge cannot be certified. The compiler says so,
+# and points at exactly the gap.</code></pre></div>
+      </div>
+    </div>
+
+    <!-- NDA -->
+    <div class="pg-panel" data-panel="nda" style="display:none;">
+      <div class="split" style="align-items:stretch;">
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">02-nda-contract.jvl</span></div>
+          <pre><code class="jvl">fact nda : Agreement {
+    penalty_cap: INR 5_000_000  expires_on: 2028-01-15
+} from source(doc="NDA_executed", page=1) status Established
+
+fact disclosure_event : Disclosure {
+    on: 2025-06-20  amount: INR 8_000_000
+} from source(doc="Complaint", page=3, para=12) status Alleged
+
+constraint damages_within_cap: disclosure_event.amount <= nda.penalty_cap
+constraint disclosure_before_expiry: disclosure_event.on before nda.expires_on</code></pre></div>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ jvl constraints 02-nda-contract.jvl</span></div>
+          <pre><code class="term">⚖  objective constraints: 02-nda-contract.jvl
+
+  ✗ damages_within_cap: VIOLATED
+  ✓ disclosure_after_signing: holds
+  ✓ disclosure_before_expiry: holds
+
+# Claimed damages (INR 8,000,000) exceed the contractual cap
+# (INR 5,000,000). Pure arithmetic — no legal judgement needed,
+# and the kind of defect a prose review routinely misses.</code></pre></div>
+      </div>
+    </div>
+
+    <!-- COMPARE -->
+    <div class="pg-panel" data-panel="cmp" style="display:none;">
+      <div class="split" style="align-items:stretch;">
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">v1  vs  v2</span></div>
+          <pre><code class="jvl"># v1
+fact agreement : ServiceAgreement {
+    fee: INR 500_000  due_on: 2025-09-30
+} from source(doc="MSA_v1", page=1) status Established
+
+# v2 — fee raised, penalty clause added
+fact agreement : ServiceAgreement {
+    fee: INR 650_000  due_on: 2025-09-30  penalty: INR 50_000
+} from source(doc="MSA_v2", page=1) status Established
+
+rule penalty_clause:
+    PenaltyOwed(a) requires ServiceAgreement(a) LateDelivery(a)</code></pre></div>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ jvl equiv v1.jvl v2.jvl</span></div>
+          <pre><code class="term">⚖  equiv  service-agreement-v1  ≟  service-agreement-v2
+
+  ✗ DIFFERENT — they diverge on these propositions:
+
+    · proposition only in second — PenaltyOwed(agreement) (UNKNOWN)
+    · term changed — agreement.fee: INR500000 → INR650000
+    · term changed — agreement.penalty: None → INR50000
+    · rule added — penalty_clause
+
+# Ordering, comments and formatting never register — only a real
+# change in meaning does. "Do these two contracts say the same
+# thing?" becomes a command.</code></pre></div>
+      </div>
+    </div>
+
+    <p style="margin-top:2rem;"><a class="btn primary" href="learn.html">Learn the language →</a> <a class="btn" href="https://github.com/sanjuhs/jvl/tree/main/examples">All examples on GitHub</a></p>
+  </div>
+
+  <footer class="site">
+    <div class="container">
+      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+    </div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JVL Docs</title>
+  <meta name="description" content="JVL documentation: manifesto, design rationale, language tour, grammar, semantics, provenance, prior art, and roadmap.">
+  <link rel="icon" href="assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <nav class="links">
+        <a href="learn.html">Learn</a>
+        <a href="docs.html">Docs</a>
+        <a href="playground.html">Playground</a>
+        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:2.5rem;">
+    <div class="section-head">
+      <span class="kicker">Documentation</span>
+      <h1 style="font-size:clamp(2rem,4vw,2.8rem);font-weight:800;">Everything, in order</h1>
+      <p>The full documentation set. Start with the <a href="learn.html">language tour</a> if you want to write JVL; read the design docs if you want to argue with its designers. Each card opens the full text on GitHub.</p>
+    </div>
+
+    <div class="section-head" style="max-width:none;">
+      <h2>Start here</h2>
+    </div>
+    <div class="cards">
+      <a class="card" href="learn.html">
+        <div class="ico">🚀</div><h3>Language Tour</h3>
+        <p>The whole language in one sitting — the fastest way in. (On this site.)</p>
+      </a>
+      <a class="card" href="playground.html">
+        <div class="ico">▶️</div><h3>Playground</h3>
+        <p>Worked examples and the exact compiler output.</p>
+      </a>
+      <a class="card" href="learn.html#convert">
+        <div class="ico">📄</div><h3>Convert a document</h3>
+        <p>The five-pass method for turning any legal doc into a program.</p>
+      </a>
+    </div>
+
+    <div class="section-head" style="max-width:none;margin-top:3rem;">
+      <h2>Concepts &amp; design</h2>
+    </div>
+    <div class="cards">
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/docs/00-manifesto.md">
+        <div class="ico">📜</div><h3>Manifesto</h3><p>Why a language for law — and what it's careful never to become.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/docs/09-thesis-scale-and-separation.md">
+        <div class="ico">🧭</div><h3>The Central Thesis</h3><p>The LLM transforms, the program decides — and whether it's actually possible.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/docs/01-design-rationale.md">
+        <div class="ico">🏗️</div><h3>Design Rationale</h3><p>Three representations (JSON, graph, program) and why JVL is the third.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/docs/04-semantics.md">
+        <div class="ico">⚖️</div><h3>Semantics</h3><p>The epistemic lattice, standards of proof, and how statuses combine.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/docs/05-provenance.md">
+        <div class="ico">🔗</div><h3>Provenance Model</h3><p>Why every conclusion must trace back to the record.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/docs/06-prior-art.md">
+        <div class="ico">📚</div><h3>Prior Art</h3><p>What JVL borrows from L4, PROLEG, Catala, Yuho, and others.</p></a>
+    </div>
+
+    <div class="section-head" style="max-width:none;margin-top:3rem;">
+      <h2>Reference</h2>
+    </div>
+    <div class="cards">
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/docs/03-grammar.md">
+        <div class="ico">🔤</div><h3>Grammar</h3><p>The syntax, keyword by keyword. Authoritative EBNF alongside.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/spec/grammar.ebnf">
+        <div class="ico">📐</div><h3>Grammar (EBNF)</h3><p>The formal grammar the reference parser implements.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/ROADMAP.md">
+        <div class="ico">🗺️</div><h3>Roadmap</h3><p>What's done, what's next, and the non-goals.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/blob/main/docs/08-faq.md">
+        <div class="ico">❓</div><h3>FAQ</h3><p>The honest answers to the obvious questions.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/tree/main/llm">
+        <div class="ico">🤖</div><h3>LLM Kit</h3><p>System prompt, extraction guide, few-shot, and a Claude skill.</p></a>
+      <a class="card" href="https://github.com/sanjuhs/jvl/tree/main/reference-impl">
+        <div class="ico">⚙️</div><h3>Reference Compiler</h3><p>The Python implementation — readable, dependency-free.</p></a>
+    </div>
+
+    <div class="callout" style="margin-top:3rem;">
+      <strong>Why do the deep docs live on GitHub?</strong> So they're versioned with the code and always match the compiler you're running. Rendering them inline on this site — with the same syntax highlighting as the tour — is on the roadmap.
+    </div>
+  </div>
+
+  <footer class="site">
+    <div class="container">
+      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+    </div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
