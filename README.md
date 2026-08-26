@@ -24,6 +24,13 @@
   <a href="docs/09-thesis-scale-and-separation.md">the central thesis</a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/sanjuhs/jvl/actions/workflows/ci.yml"><img src="https://github.com/sanjuhs/jvl/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT"></a>
+  <a href="https://jvl-six.vercel.app"><img src="https://img.shields.io/badge/website-live-brightgreen.svg" alt="Website"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
+</p>
+
 ---
 
 ## The one-paragraph pitch
@@ -147,6 +154,24 @@ jvl ask ../examples/01-loan-vs-investment.jvl "does B have to repay A?"
 ```
 
 Not sure where to start? Read the [tour](docs/02-language-tour.md), then open [`examples/`](examples/).
+
+### The toolchain
+
+| Command | What it does |
+|---|---|
+| `jvl check [--audit]` | parse, type-check, provenance audit (`--audit` flags unsourced conclusions) |
+| `jvl assert` / `prove` / `refute` | does a proposition hold, to a standard of proof? (with trace) |
+| `jvl explain` | full derivation tree for a proposition |
+| `jvl discover` | which elements of a claim are still missing |
+| `jvl check-contradictions` | disputed propositions + exclusivity violations |
+| `jvl constraints` | objective money / date / number checks |
+| `jvl simulate --without ID` | counterfactual: drop a node and re-run |
+| `jvl emit json` / `graph` / `dot` | the program as data — the JSON/graph layer |
+| `jvl diff` / `equiv` | compare two programs — structurally and semantically |
+| `jvl fmt [--write]` | canonical formatter (round-trip safe) |
+| `jvl ask "…"` | answer an English question (LLM picks the query; engine computes) |
+
+Beyond the CLI: an **[in-browser editor](https://jvl-six.vercel.app/editor)** that runs the compiler client-side, an **[MCP server](mcp-server/)** so agents can drive JVL as tools, and a **[VS Code grammar](editor-support/)**.
 
 ---
 
