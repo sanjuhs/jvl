@@ -55,9 +55,10 @@ they mean the same thing, and if not, exactly what differs.*
 - ✅ **AI helper on the website** — a serverless function drafts a JVL program
   from a plain-English scenario (LLM transforms; the engine decides). Key stays
   server-side; model configurable.
-- ⬜ **`jvl ask "does B have to repay A?"`** — map an NL *question* to a JVL query
-  and return the compiler's answer with its trace.
-- ⬜ A documented query protocol so any LLM/agent can drive JVL as a tool (MCP).
+- ✅ **`jvl ask FILE "does B have to repay A?"`** — the LLM maps the English
+  question to a JVL query; the engine computes the deterministic answer with its
+  trace. (Needs `ANTHROPIC_API_KEY`; stdlib-only, no new deps.)
+- ⬜ An MCP server so any agent can drive JVL as a tool.
 
 ## Phase 4 — Language depth 🚧
 

@@ -140,6 +140,10 @@ jvl emit ../examples/01-loan-vs-investment.jvl json
 # Do two contracts mean the same thing? What changed between versions?
 jvl equiv ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl
 jvl diff  ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl
+
+# Ask in plain English (LLM picks the query; the engine computes the answer)
+export ANTHROPIC_API_KEY=...        # then:
+jvl ask ../examples/01-loan-vs-investment.jvl "does B have to repay A?"
 ```
 
 Not sure where to start? Read the [tour](docs/02-language-tour.md), then open [`examples/`](examples/).

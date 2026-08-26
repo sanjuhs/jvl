@@ -12,6 +12,8 @@ Subcommands:
     jvl emit     FILE json|graph|dot  emit the program as data (the JSON/graph layer)
     jvl diff     A B                  structural + semantic diff of two programs
     jvl equiv    A B                  do two programs mean the same thing?
+    jvl ask      FILE "question"      answer an English question (LLM picks the
+                                      query; the engine computes the answer)
 """
 
 from __future__ import annotations
@@ -22,7 +24,7 @@ import sys
 import json
 
 from . import ast
-from . import compare, serialize
+from . import compare, nl, serialize
 from .evaluator import Evaluator
 from .lattice import Standard
 from .parser import ParseError, parse
@@ -212,6 +214,42 @@ def cmd_equiv(args) -> int:
     return 1
 
 
+def cmd_ask(args) -> int:
+    with open(args.file, "r", encoding="utf-8") as fh:
+        src = fh.read()
+    try:
+        query_line = nl.question_to_query(src, args.question)
+    except nl.NLError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
+    print(f'\n⚖  ask  "{args.question}"')
+    print(f"   → the model chose the query:  {query_line}\n")
+    try:
+        q = parse(query_line).of_type(ast.Query)[0]
+    except (ParseError, IndexError):
+        print(f"error: the model produced something that isn't a valid query: {query_line!r}",
+              file=sys.stderr)
+        return 2
+    ev = Evaluator(parse(src)).build()
+    if q.kind in ("assert", "refute"):
+        std = Standard.parse(q.standard) if q.standard else Standard.BalanceOfProbabilities
+        verdict = ev.run_assert(q.target, std)
+        for line in ev.trace(q.target):
+            print("  " + line)
+        print(f"\n  ANSWER: {verdict.status.name}  "
+              f"({'meets' if verdict.passes else 'does not meet'} {std.name})")
+    elif q.kind == "explain":
+        for line in ev.trace(q.target):
+            print("  " + line)
+    elif q.kind == "discover":
+        missing = ev.discover(q.target)
+        if not missing:
+            print("  nothing missing — every element is at least SUPPORTED")
+        for pred, st in missing:
+            print(f"  ✗ {pred.render()} — {st.name}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="jvl", description="Jhana Verifiable Law compiler")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -263,6 +301,11 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("b")
     c.add_argument("--json", action="store_true")
     c.set_defaults(func=cmd_equiv)
+
+    c = sub.add_parser("ask", help="ask a plain-English question (needs ANTHROPIC_API_KEY)")
+    c.add_argument("file")
+    c.add_argument("question")
+    c.set_defaults(func=cmd_ask)
     return p
 
 
