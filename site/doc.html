@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JVL Docs</title>
+  <meta name="description" content="JVL documentation, rendered on-site.">
+  <link rel="icon" href="assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <nav class="links">
+        <a href="learn.html">Learn</a>
+        <a href="docs.html">Docs</a>
+        <a href="editor.html">Editor</a>
+        <a href="theory.html">Theory</a>
+        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:2rem;">
+    <div class="doc-wrap">
+      <aside class="doc-nav" id="docNav"></aside>
+      <main class="prose" id="docBody">
+        <p class="muted">Loading…</p>
+      </main>
+    </div>
+  </div>
+
+  <footer class="site">
+    <div class="container">
+      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+  (function () {
+    var RAW = "https://raw.githubusercontent.com/sanjuhs/jvl/main/";
+    var BLOB = "https://github.com/sanjuhs/jvl/blob/main/";
+    var DOCS = [
+      { group: "Start" },
+      { p: "docs/00-manifesto", t: "Manifesto" },
+      { p: "docs/09-thesis-scale-and-separation", t: "The Central Thesis" },
+      { p: "docs/01-design-rationale", t: "Design Rationale" },
+      { group: "Language" },
+      { p: "docs/02-language-tour", t: "Language Tour" },
+      { p: "docs/03-grammar", t: "Grammar" },
+      { p: "docs/04-semantics", t: "Semantics" },
+      { p: "docs/05-provenance", t: "Provenance" },
+      { group: "More" },
+      { p: "docs/06-prior-art", t: "Prior Art" },
+      { p: "ROADMAP", t: "Roadmap" },
+      { p: "docs/08-faq", t: "FAQ" }
+    ];
+
+    function param() {
+      var m = /[?&]p=([^&]+)/.exec(location.search);
+      return m ? decodeURIComponent(m[1]) : "docs/00-manifesto";
+    }
+    function dirOf(p) { var i = p.lastIndexOf("/"); return i < 0 ? "" : p.slice(0, i + 1); }
+    function resolve(base, rel) {
+      // resolve a relative path (with ../ and ./) against base dir
+      var stack = (dirOf(base) + rel).split("/");
+      var out = [];
+      stack.forEach(function (s) {
+        if (s === "..") out.pop();
+        else if (s !== "." && s !== "") out.push(s);
+      });
+      return out.join("/");
+    }
+
+    function buildNav(cur) {
+      var nav = document.getElementById("docNav"), html = "";
+      DOCS.forEach(function (d) {
+        if (d.group) { html += '<div class="group">' + d.group + "</div>"; return; }
+        html += '<a href="doc.html?p=' + encodeURIComponent(d.p) + '"' +
+          (d.p === cur ? ' class="active"' : "") + ">" + d.t + "</a>";
+      });
+      nav.innerHTML = html;
+    }
+
+    function rewriteLinks(container, cur) {
+      container.querySelectorAll("a[href]").forEach(function (a) {
+        var href = a.getAttribute("href");
+        if (/^https?:|^#|^mailto:/.test(href)) return;
+        var hashless = href.split("#")[0], hash = href.slice(hashless.length);
+        var resolved = resolve(cur, hashless);
+        if (/\.md$/i.test(hashless)) {
+          a.setAttribute("href", "doc.html?p=" + encodeURIComponent(resolved.replace(/\.md$/i, "")) + hash);
+        } else {
+          // non-markdown repo files → GitHub
+          a.setAttribute("href", BLOB + resolved + hash);
+        }
+      });
+    }
+
+    function highlight(container) {
+      container.querySelectorAll("pre code").forEach(function (code) {
+        var cls = code.className || "";
+        if (/language-jvl/.test(cls)) code.innerHTML = window.JVLHL.highlightJVL(code.textContent);
+        else if (/language-term|language-text/.test(cls)) code.innerHTML = window.JVLHL.colorizeTerm(code.textContent);
+      });
+    }
+
+    function load() {
+      var cur = param();
+      buildNav(cur);
+      var body = document.getElementById("docBody");
+      fetch(RAW + cur + ".md").then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.text();
+      }).then(function (md) {
+        body.innerHTML = window.marked.parse(md);
+        rewriteLinks(body, cur);
+        highlight(body);
+        document.title = "JVL — " + (body.querySelector("h1") ? body.querySelector("h1").textContent : "Docs");
+        if (location.hash) { var el = document.getElementById(location.hash.slice(1)); if (el) el.scrollIntoView(); }
+      }).catch(function (e) {
+        body.innerHTML = '<h1>Couldn\'t load this doc</h1><p class="muted">Error: ' + e.message +
+          '. You can read it on <a href="' + BLOB + cur + '.md">GitHub</a> instead.</p>';
+      });
+    }
+
+    // Give headings ids for anchor links.
+    var oldParse;
+    document.addEventListener("DOMContentLoaded", function () {
+      if (window.marked && window.marked.use) {
+        window.marked.use({ mangle: false, headerIds: true, headerPrefix: "" });
+      }
+      load();
+    });
+    window.addEventListener("popstate", load);
+  })();
+  </script>
+</body>
+</html>

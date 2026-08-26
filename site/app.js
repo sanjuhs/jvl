@@ -3,7 +3,7 @@
   "use strict";
 
   // ---- JVL syntax highlighter -------------------------------------------
-  var KEYWORDS = /^(jurisdiction|party|fact|evidence|claim|rule|obligation|permission|prohibition|constraint|exclusive|assert|prove|refute|explain|discover|requires|established_if|supports|refutes|asserts|by|from|source|status|under|for|and|or)\b/;
+  var KEYWORDS = /^(jurisdiction|party|fact|evidence|claim|rule|obligation|permission|prohibition|constraint|exclusive|assert|prove|refute|explain|discover|requires|established_if|normally|except|when|supports|refutes|asserts|by|from|source|status|under|for|and|or)\b/;
   var STATUS = /^(Established|Admitted|Alleged|Disputed|Refuted|Unknown|Proven|Supported|BalanceOfProbabilities|ClearAndConvincing|BeyondReasonableDoubt)\b/;
   var CURRENCY = /^(INR|USD|EUR|GBP|JPY|AUD|CAD|SGD|CNY|CHF)\s+[\d_]+/;
 
