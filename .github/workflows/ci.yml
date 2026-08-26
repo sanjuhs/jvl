@@ -24,16 +24,25 @@ jobs:
         run: pytest -q
       - name: Smoke-test the CLI on every example
         working-directory: reference-impl
+        # `check` must exit 0 (no errors). The reporting commands legitimately
+        # return non-zero when they *find* something (a violated constraint, a
+        # failed assertion, a contradiction, a difference) — that's a finding,
+        # not a crash — so we only assert they run without erroring out (exit 2).
         run: |
+          set -e
           for f in ../examples/*.jvl; do
             echo "== check $f =="
             jvl check "$f"
           done
-          jvl assert   ../examples/01-loan-vs-investment.jvl
-          jvl discover ../examples/03-cheating-s420.jvl "Cheating(payment)"
-          jvl constraints ../examples/02-nda-contract.jvl
-          jvl equiv ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl || true
-          jvl assert ../examples/05-limitation-default.jvl || true
+          set +e
+          run() { "$@"; local rc=$?; if [ $rc -eq 2 ]; then echo "CRASH ($rc): $*"; exit 1; fi; echo "ok ($rc): $*"; }
+          run jvl assert   ../examples/01-loan-vs-investment.jvl
+          run jvl discover ../examples/03-cheating-s420.jvl "Cheating(payment)"
+          run jvl constraints ../examples/02-nda-contract.jvl
+          run jvl check-contradictions ../examples/03-cheating-s420.jvl
+          run jvl equiv ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl
+          run jvl assert ../examples/05-limitation-default.jvl
+          run jvl emit ../examples/01-loan-vs-investment.jvl json
 
   engine:
     runs-on: ubuntu-latest
