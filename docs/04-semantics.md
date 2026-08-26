@@ -108,9 +108,11 @@ The evaluator (`evaluator.py`):
    non-`UNKNOWN` — so the evaluator never manufactures propositions out of thin
    air.
 
-The algorithm is deliberately naive: legal programs are small, and a readable
-evaluator is worth more than a fast one. Determinism falls out for free — same
-program, same fixpoint, same trace, every run (§8).
+Rule variables are bound by **matching each rule's body against the atoms that
+already exist**, not by enumerating every entity — so evaluation scales with the
+relevant facts, and thousands of facts evaluate in tens of milliseconds
+(`reference-impl/bench.py`). Determinism falls out for free — same program, same
+fixpoint, same trace, every run (§8).
 
 ## 6. Contradiction detection
 

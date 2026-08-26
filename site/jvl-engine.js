@@ -280,7 +280,7 @@
   Evaluator.prototype.addBase = function (key, c) { (this.base[key] = this.base[key] || []).push(c); };
   Evaluator.prototype.varsOf = function (rule) {
     var self = this, vs = {};
-    [rule.head].concat(rule.body).forEach(function (p) {
+    [rule.head].concat(rule.body).concat(rule.exceptions || []).forEach(function (p) {
       p.args.forEach(function (a) { if (!self.constants[a] && VAR.test(a)) vs[a] = true; });
     });
     return Object.keys(vs);
@@ -292,7 +292,7 @@
       var atoms = {};
       Object.keys(this.base).forEach(function (k) { atoms[k] = self.base[k].slice(); });
       rules.forEach(function (rule) {
-        self.bindings(rule, universe).forEach(function (binding) {
+        self.bindings(rule, prev, universe).forEach(function (binding) {
           var fired = self.fire(rule, binding, prev);
           if (fired.status === null) return;
           (atoms[fired.head] = atoms[fired.head] || []).push({ kind: "rule", src: rule.id, status: fired.status, note: rule.conn });
@@ -305,13 +305,38 @@
       this._atoms = atoms; this.status = newStatus;
     }
   };
-  Evaluator.prototype.bindings = function (rule, universe) {
+  Evaluator.prototype.bindings = function (rule, prev, universe) {
     var vars = this.varsOf(rule).sort();
     if (!vars.length) return [{}];
+    // Index known atoms (from the previous pass + the base facts) by predicate.
+    var index = {};
+    function add(key) { var p = key.split("|"); (index[p[0]] = index[p[0]] || []).push(p[1] ? p[1].split(",") : []); }
+    Object.keys(prev).forEach(add);
+    Object.keys(this.base).forEach(function (k) { if (!(k in prev)) add(k); });
+    // Collect the values each variable actually takes — linear, no cartesian
+    // product over the universe, no quadratic join between body predicates.
+    var cand = {}; vars.forEach(function (v) { cand[v] = {}; });
+    (rule.body || []).concat(rule.exceptions || []).forEach(function (pred) {
+      var atoms = index[pred.name]; if (!atoms) return;
+      atoms.forEach(function (args) {
+        if (args.length !== pred.args.length) return;
+        for (var i = 0; i < args.length; i++) {
+          var h = pred.args[i];
+          if (vars.indexOf(h) < 0 && h !== args[i]) return; // constant mismatch
+        }
+        for (var j = 0; j < args.length; j++) {
+          var hv = pred.args[j];
+          if (vars.indexOf(hv) >= 0) cand[hv][args[j]] = true;
+        }
+      });
+    });
+    var valueLists = vars.map(function (v) {
+      var ks = Object.keys(cand[v]); return ks.length ? ks : universe;
+    });
     var out = [], combos = [[]];
-    vars.forEach(function () {
+    valueLists.forEach(function (vals) {
       var next = [];
-      combos.forEach(function (c) { universe.forEach(function (u) { next.push(c.concat([u])); }); });
+      combos.forEach(function (c) { vals.forEach(function (u) { next.push(c.concat([u])); }); });
       combos = next.length > 10000 ? next.slice(0, 10000) : next;
     });
     combos.forEach(function (c) { var b = {}; vars.forEach(function (v, i) { b[v] = c[i]; }); out.push(b); });
