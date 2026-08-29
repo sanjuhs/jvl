@@ -1,4 +1,4 @@
-<h1 align="center">JVL — Jhana Verifiable Law</h1>
+<h1 align="center">LVL — Legal Verifiable Language</h1>
 
 <p align="center">
   <em>Compile a legal document into a program you can statically check.</em><br>
@@ -12,7 +12,7 @@
   <a href="docs/04-semantics.md">Semantics</a> ·
   <a href="llm/README.md">Teaching an LLM</a> ·
   <a href="ROADMAP.md">Roadmap</a> ·
-  <a href="https://jvl-six.vercel.app">Website ↗</a>
+  <a href="https://lvl-lang.vercel.app">Website ↗</a>
 </p>
 
 <p align="center">
@@ -25,9 +25,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/sanjuhs/jvl/actions/workflows/ci.yml"><img src="https://github.com/sanjuhs/jvl/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/sanjuhs/lvl/actions/workflows/ci.yml"><img src="https://github.com/sanjuhs/lvl/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT"></a>
-  <a href="https://jvl-six.vercel.app"><img src="https://img.shields.io/badge/website-live-brightgreen.svg" alt="Website"></a>
+  <a href="https://lvl-lang.vercel.app"><img src="https://img.shields.io/badge/website-live-brightgreen.svg" alt="Website"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
 </p>
 
@@ -35,21 +35,21 @@
 
 ## The one-paragraph pitch
 
-A contract or a case file is really a *program* about the world: it defines parties, states facts, sets conditions, derives obligations, and reaches conclusions. Today that program lives as prose — impossible to run, hard to check, easy to argue about. **JVL** is a small language that an LLM (or a lawyer) can translate a legal document into, so that the resulting program can be **compiled, statically checked, and queried**: *Does this obligation actually follow? Which element of the offence is unproven? What breaks if we remove Exhibit P-17? Where does every conclusion trace back to in the source PDF?*
+A contract or a case file is really a *program* about the world: it defines parties, states facts, sets conditions, derives obligations, and reaches conclusions. Today that program lives as prose — impossible to run, hard to check, easy to argue about. **LVL** is a small language that an LLM (or a lawyer) can translate a legal document into, so that the resulting program can be **compiled, statically checked, and queried**: *Does this obligation actually follow? Which element of the offence is unproven? What breaks if we remove Exhibit P-17? Where does every conclusion trace back to in the source PDF?*
 
-JVL is **not** a replacement for your JSON extractor or your case graph. It's the layer that gives them *meaning you can execute*. See [the design rationale](docs/01-design-rationale.md).
+LVL is **not** a replacement for your JSON extractor or your case graph. It's the layer that gives them *meaning you can execute*. See [the design rationale](docs/01-design-rationale.md).
 
 ---
 
-## What makes JVL different
+## What makes LVL different
 
-Most "legal tech" either extracts structured JSON (great for facts, silent on *what follows*) or builds a knowledge graph (great for relationships, vague on *semantics*). JVL adds the third layer and keeps the other two:
+Most "legal tech" either extracts structured JSON (great for facts, silent on *what follows*) or builds a knowledge graph (great for relationships, vague on *semantics*). LVL adds the third layer and keeps the other two:
 
 | Layer | Representation | Answers |
 |---|---|---|
 | Extraction | JSON | *What does the document say?* |
 | Memory | Case graph | *How is everything related?* |
-| **Meaning** | **JVL program** | ***What follows? What's proven? What's missing?*** |
+| **Meaning** | **LVL program** | ***What follows? What's proven? What's missing?*** |
 
 Three ideas do the heavy lifting, and as far as we can tell no existing legal DSL combines all three (see [prior art](docs/06-prior-art.md)):
 
@@ -63,7 +63,7 @@ Three ideas do the heavy lifting, and as far as we can tell no existing legal DS
 
 ## A taste of the language
 
-```jvl
+```lvl
 jurisdiction IN.Contract.v1
 
 party A = Person "Anil Kumar"
@@ -101,7 +101,7 @@ assert Loan(transfer_17) under BalanceOfProbabilities
 Running it doesn't just say "true". It says *why*, and points at the record:
 
 ```
-$ jvl assert examples/01-loan-vs-investment.jvl
+$ lvl assert examples/01-loan-vs-investment.lvl
 
 ⚖  assert  Loan(transfer_17)   standard: BalanceOfProbabilities
 
@@ -125,32 +125,32 @@ Full walkthrough: **[the language tour](docs/02-language-tour.md)**.
 Requires Python 3.10+. No third-party dependencies for the core.
 
 ```bash
-git clone https://github.com/sanjuhs/jvl.git
-cd jvl/reference-impl
+git clone https://github.com/sanjuhs/lvl.git
+cd lvl/reference-impl
 pip install -e .
 
 # Type-check a program (parse + static checks + provenance audit)
-jvl check ../examples/01-loan-vs-investment.jvl
+lvl check ../examples/01-loan-vs-investment.lvl
 
 # Evaluate the assertions inside a program and print derivation traces
-jvl assert ../examples/01-loan-vs-investment.jvl
+lvl assert ../examples/01-loan-vs-investment.lvl
 
 # Explain how a single proposition is (or isn't) established
-jvl explain ../examples/01-loan-vs-investment.jvl "RepaymentObligation(transfer_17)"
+lvl explain ../examples/01-loan-vs-investment.lvl "RepaymentObligation(transfer_17)"
 
 # Counterfactual: re-run with a fact or piece of evidence removed
-jvl simulate ../examples/01-loan-vs-investment.jvl --without w17
+lvl simulate ../examples/01-loan-vs-investment.lvl --without w17
 
 # Emit the program as data (the JSON / graph layer falls out of the program)
-jvl emit ../examples/01-loan-vs-investment.jvl json
+lvl emit ../examples/01-loan-vs-investment.lvl json
 
 # Do two contracts mean the same thing? What changed between versions?
-jvl equiv ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl
-jvl diff  ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl
+lvl equiv ../examples/04-service-agreement-v1.lvl ../examples/04-service-agreement-v2.lvl
+lvl diff  ../examples/04-service-agreement-v1.lvl ../examples/04-service-agreement-v2.lvl
 
 # Ask in plain English (LLM picks the query; the engine computes the answer)
 export ANTHROPIC_API_KEY=...        # then:
-jvl ask ../examples/01-loan-vs-investment.jvl "does B have to repay A?"
+lvl ask ../examples/01-loan-vs-investment.lvl "does B have to repay A?"
 ```
 
 Not sure where to start? Read the [tour](docs/02-language-tour.md), then open [`examples/`](examples/).
@@ -159,25 +159,25 @@ Not sure where to start? Read the [tour](docs/02-language-tour.md), then open [`
 
 | Command | What it does |
 |---|---|
-| `jvl check [--audit]` | parse, type-check, provenance audit (`--audit` flags unsourced conclusions) |
-| `jvl assert` / `prove` / `refute` | does a proposition hold, to a standard of proof? (with trace) |
-| `jvl explain` | full derivation tree for a proposition |
-| `jvl discover` | which elements of a claim are still missing |
-| `jvl check-contradictions` | disputed propositions + exclusivity violations |
-| `jvl constraints` | objective money / date / number checks |
-| `jvl simulate --without ID` | counterfactual: drop a node and re-run |
-| `jvl emit json` / `graph` / `dot` | the program as data — the JSON/graph layer |
-| `jvl diff` / `equiv` | compare two programs — structurally and semantically |
-| `jvl fmt [--write]` | canonical formatter (round-trip safe) |
-| `jvl ask "…"` | answer an English question (LLM picks the query; engine computes) |
+| `lvl check [--audit]` | parse, type-check, provenance audit (`--audit` flags unsourced conclusions) |
+| `lvl assert` / `prove` / `refute` | does a proposition hold, to a standard of proof? (with trace) |
+| `lvl explain` | full derivation tree for a proposition |
+| `lvl discover` | which elements of a claim are still missing |
+| `lvl check-contradictions` | disputed propositions + exclusivity violations |
+| `lvl constraints` | objective money / date / number checks |
+| `lvl simulate --without ID` | counterfactual: drop a node and re-run |
+| `lvl emit json` / `graph` / `dot` | the program as data — the JSON/graph layer |
+| `lvl diff` / `equiv` | compare two programs — structurally and semantically |
+| `lvl fmt [--write]` | canonical formatter (round-trip safe) |
+| `lvl ask "…"` | answer an English question (LLM picks the query; engine computes) |
 
-Beyond the CLI: an **[in-browser editor](https://jvl-six.vercel.app/editor)** that runs the compiler client-side, an **[MCP server](mcp-server/)** so agents can drive JVL as tools, and a **[VS Code grammar](editor-support/)**.
+Beyond the CLI: an **[in-browser editor](https://lvl-lang.vercel.app/editor)** that runs the compiler client-side, an **[MCP server](mcp-server/)** so agents can drive LVL as tools, and a **[VS Code grammar](editor-support/)**.
 
 ---
 
-## The pipeline JVL is built for
+## The pipeline LVL is built for
 
-JVL is the top of a stack, and it never throws away the messy layers below it:
+LVL is the top of a stack, and it never throws away the messy layers below it:
 
 ```
               LEGAL DOCUMENT (PDF, contract, judgment, filings)
@@ -191,7 +191,7 @@ JVL is the top of a stack, and it never throws away the messy layers below it:
      (facts, parties, dates)        (relationships, provenance)
               └───────────────┬───────────────┘
                               ▼
-                      JVL  PROGRAM              ◄── this repository
+                      LVL  PROGRAM              ◄── this repository
               typed facts · epistemic status · rules · provenance
                               │
         ┌──────────────┬──────┴───────┬───────────────┐
@@ -201,9 +201,9 @@ JVL is the top of a stack, and it never throws away the messy layers below it:
    an element     trace           for a claim      change a rule, re-run
 ```
 
-> **The graph stores what the case says. The JVL program determines what follows from it.**
+> **The graph stores what the case says. The LVL program determines what follows from it.**
 
-The extraction step is where an LLM shines, and the [`llm/`](llm/README.md) folder is a complete kit — system prompt, extraction guide, few-shot examples, and a Claude Code skill — for teaching a model to emit valid JVL with honest provenance.
+The extraction step is where an LLM shines, and the [`llm/`](llm/README.md) folder is a complete kit — system prompt, extraction guide, few-shot examples, and a Claude Code skill — for teaching a model to emit valid LVL with honest provenance.
 
 ---
 
@@ -214,11 +214,11 @@ The extraction step is where an LLM shines, and the [`llm/`](llm/README.md) fold
 | [`docs/`](docs/) | Manifesto, design rationale, language tour, grammar, semantics, provenance model, prior-art survey, roadmap, FAQ |
 | [`spec/`](spec/) | The EBNF grammar and the `stdlib` of core legal types & predicates |
 | [`reference-impl/`](reference-impl/) | A working Python compiler: lexer, parser, epistemic evaluator, CLI |
-| [`examples/`](examples/) | Annotated `.jvl` programs — loan-vs-investment, an NDA, a criminal-cheating charge, and a versioned contract for `diff`/`equiv` |
-| [`llm/`](llm/) | How to teach an LLM to write JVL, plus a ready-to-use Claude skill |
+| [`examples/`](examples/) | Annotated `.lvl` programs — loan-vs-investment, an NDA, a criminal-cheating charge, and a versioned contract for `diff`/`equiv` |
+| [`llm/`](llm/) | How to teach an LLM to write LVL, plus a ready-to-use Claude skill |
 | [`site/`](site/) | The website — landing, Learn, Docs, Playground, Editor, Theory (static, Vercel-ready). See [DEPLOY.md](DEPLOY.md) |
-| [`mcp-server/`](mcp-server/) | An MCP server exposing JVL as tools for Claude / any agent |
-| [`editor-support/`](editor-support/) | VS Code / TextMate grammar for `.jvl` syntax highlighting |
+| [`mcp-server/`](mcp-server/) | An MCP server exposing LVL as tools for Claude / any agent |
+| [`editor-support/`](editor-support/) | VS Code / TextMate grammar for `.lvl` syntax highlighting |
 | [`ROADMAP.md`](ROADMAP.md) | Phased plan — what's done, in progress, and planned |
 
 ---
@@ -228,8 +228,8 @@ The extraction step is where an LLM shines, and the [`llm/`](llm/README.md) fold
 - **Deterministic to parse, easy for an LLM to emit.** Regular, block-structured syntax with low ambiguity. If a human lawyer and a language model disagree on what a line means, the syntax has failed.
 - **Honest about uncertainty by construction.** You cannot write down a legal conclusion without also writing down how well it's supported and where it comes from.
 - **Provenance or it didn't happen.** A conclusion with no traceable source is a defect the compiler reports.
-- **Small core, rich standard library.** The language has a handful of keywords; jurisdictions, offences, and contract templates live in `.jvl` libraries, not in the compiler.
-- **A tool for reasoning, not a robot judge.** JVL makes legal arguments explicit and checkable. It does not decide cases, and it is not legal advice. See [the manifesto](docs/00-manifesto.md).
+- **Small core, rich standard library.** The language has a handful of keywords; jurisdictions, offences, and contract templates live in `.lvl` libraries, not in the compiler.
+- **A tool for reasoning, not a robot judge.** LVL makes legal arguments explicit and checkable. It does not decide cases, and it is not legal advice. See [the manifesto](docs/00-manifesto.md).
 
 ---
 
@@ -243,4 +243,4 @@ This is an **early, experimental** project. The language will change. The refere
 
 ---
 
-<p align="center"><sub>JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</sub></p>
+<p align="center"><sub>LVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</sub></p>

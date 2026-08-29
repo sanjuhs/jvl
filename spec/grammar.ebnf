@@ -1,7 +1,7 @@
 (* ═══════════════════════════════════════════════════════════════════════
-   JVL — Jhana Verifiable Law
+   LVL — Legal Verifiable Language
    Authoritative grammar (EBNF). The reference parser in
-   reference-impl/jvl/parser.py implements this.
+   reference-impl/lvl/parser.py implements this.
 
    Design note: newlines and indentation are INSIGNIFICANT. The grammar is
    driven by keywords and structure so that a language model can emit it

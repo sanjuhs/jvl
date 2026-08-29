@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JVL Docs</title>
-  <meta name="description" content="JVL documentation, rendered on-site.">
+  <title>LVL Docs</title>
+  <meta name="description" content="LVL documentation, rendered on-site.">
   <link rel="icon" href="assets/logo-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,14 +14,14 @@
 <body>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> LVL</a>
       <button class="nav-toggle" aria-label="Menu">☰</button>
       <nav class="links">
         <a href="learn.html">Learn</a>
         <a href="docs.html">Docs</a>
         <a href="editor.html">Editor</a>
         <a href="theory.html">Theory</a>
-        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+        <a href="https://github.com/sanjuhs/lvl">GitHub</a>
       </nav>
     </div>
   </header>
@@ -37,7 +37,7 @@
 
   <footer class="site">
     <div class="container">
-      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+      <p class="disclaimer">LVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
     </div>
   </footer>
 
@@ -45,8 +45,8 @@
   <script src="app.js"></script>
   <script>
   (function () {
-    var RAW = "https://raw.githubusercontent.com/sanjuhs/jvl/main/";
-    var BLOB = "https://github.com/sanjuhs/jvl/blob/main/";
+    var RAW = "https://raw.githubusercontent.com/sanjuhs/lvl/main/";
+    var BLOB = "https://github.com/sanjuhs/lvl/blob/main/";
     var DOCS = [
       { group: "Start" },
       { p: "docs/00-manifesto", t: "Manifesto" },
@@ -107,8 +107,8 @@
     function highlight(container) {
       container.querySelectorAll("pre code").forEach(function (code) {
         var cls = code.className || "";
-        if (/language-jvl/.test(cls)) code.innerHTML = window.JVLHL.highlightJVL(code.textContent);
-        else if (/language-term|language-text/.test(cls)) code.innerHTML = window.JVLHL.colorizeTerm(code.textContent);
+        if (/language-lvl/.test(cls)) code.innerHTML = window.LVLHL.highlightLVL(code.textContent);
+        else if (/language-term|language-text/.test(cls)) code.innerHTML = window.LVLHL.colorizeTerm(code.textContent);
       });
     }
 
@@ -123,7 +123,7 @@
         body.innerHTML = window.marked.parse(md);
         rewriteLinks(body, cur);
         highlight(body);
-        document.title = "JVL — " + (body.querySelector("h1") ? body.querySelector("h1").textContent : "Docs");
+        document.title = "LVL — " + (body.querySelector("h1") ? body.querySelector("h1").textContent : "Docs");
         if (location.hash) { var el = document.getElementById(location.hash.slice(1)); if (el) el.scrollIntoView(); }
       }).catch(function (e) {
         body.innerHTML = '<h1>Couldn\'t load this doc</h1><p class="muted">Error: ' + e.message +

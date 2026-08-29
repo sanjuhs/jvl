@@ -1,4 +1,4 @@
-"""Compare two JVL programs.
+"""Compare two LVL programs.
 
 This is the heart of the user's core ask: *given two legal documents as programs,
 do they mean the same thing, and if not, what changed?*

@@ -3,15 +3,15 @@
 #
 # The classic dispute: A transferred money to B. A says it was a loan (must be
 # repaid). B says it was an investment (no repayment obligation). The same
-# facts, two incompatible legal characterisations. JVL lets us ask which
+# facts, two incompatible legal characterisations. LVL lets us ask which
 # characterisation the record actually supports — and trace every step back to
 # a document.
 #
 # Try:
-#   jvl check    examples/01-loan-vs-investment.jvl
-#   jvl assert   examples/01-loan-vs-investment.jvl
-#   jvl explain  examples/01-loan-vs-investment.jvl "RepaymentObligation(transfer_17)"
-#   jvl simulate examples/01-loan-vs-investment.jvl --without w17
+#   lvl check    examples/01-loan-vs-investment.lvl
+#   lvl assert   examples/01-loan-vs-investment.lvl
+#   lvl explain  examples/01-loan-vs-investment.lvl "RepaymentObligation(transfer_17)"
+#   lvl simulate examples/01-loan-vs-investment.lvl --without w17
 # ─────────────────────────────────────────────────────────────────────────
 
 jurisdiction IN.Contract.v1

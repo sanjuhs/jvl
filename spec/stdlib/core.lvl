@@ -1,8 +1,8 @@
 # ═══════════════════════════════════════════════════════════════════════════
-# JVL core standard library (draft)
+# LVL core standard library (draft)
 #
 # The language itself has almost no built-in legal vocabulary — that is on
-# purpose. Offences, contract types, and doctrines live here, as ordinary JVL
+# purpose. Offences, contract types, and doctrines live here, as ordinary LVL
 # rules, so they can be versioned, forked, and argued about in the open rather
 # than baked into a compiler.
 #
@@ -11,7 +11,7 @@
 # spec/stdlib/<jurisdiction>/ and cite the actual statute in every source(...).
 # ═══════════════════════════════════════════════════════════════════════════
 
-# ── Reusable predicates (documentation only; JVL is untyped-nominal for now) ─
+# ── Reusable predicates (documentation only; LVL is untyped-nominal for now) ─
 # TransferOfValue(x)          a thing of value moved from one party to another
 # RepaymentObligation(x)      an obligation to return value
 # DeliveryOfProperty(x)       property passed to the accused/defendant
@@ -48,7 +48,7 @@ rule cheating_offence:
         DishonestIntentionAtInception(p)
 
 # ── Limitation as a defeasible default (Catala-style) ───────────────────────
-# JVL supports first-class `normally ... except when ...` defaults. The claim is
+# LVL supports first-class `normally ... except when ...` defaults. The claim is
 # time-barred by default when filed late, unless the debt was acknowledged in
 # time (which rebuts the default). See docs/04-semantics.md.
 rule time_barred:

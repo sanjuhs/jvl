@@ -1,8 +1,8 @@
-/* JVL website interactions: syntax highlighting, tabs, nav, theme, copy. */
+/* LVL website interactions: syntax highlighting, tabs, nav, theme, copy. */
 (function () {
   "use strict";
 
-  // ---- JVL syntax highlighter -------------------------------------------
+  // ---- LVL syntax highlighter -------------------------------------------
   var KEYWORDS = /^(jurisdiction|party|fact|evidence|claim|rule|obligation|permission|prohibition|constraint|exclusive|assert|prove|refute|explain|discover|requires|established_if|normally|except|unless|when|supports|refutes|asserts|by|from|source|status|under|for|and|or)\b/;
   var STATUS = /^(Established|Admitted|Alleged|Disputed|Refuted|Unknown|Proven|Supported|BalanceOfProbabilities|ClearAndConvincing|BeyondReasonableDoubt)\b/;
   var CURRENCY = /^(INR|USD|EUR|GBP|JPY|AUD|CAD|SGD|CNY|CHF)\s+[\d_]+/;
@@ -12,7 +12,7 @@
   }
   function span(cls, txt) { return '<span class="' + cls + '">' + esc(txt) + "</span>"; }
 
-  function highlightJVL(code) {
+  function highlightLVL(code) {
     var out = "", i = 0, n = code.length;
     while (i < n) {
       var rest = code.slice(i), m;
@@ -57,8 +57,8 @@
   }
 
   function render() {
-    document.querySelectorAll("pre code.jvl").forEach(function (el) {
-      el.innerHTML = highlightJVL(el.textContent);
+    document.querySelectorAll("pre code.lvl").forEach(function (el) {
+      el.innerHTML = highlightLVL(el.textContent);
     });
     document.querySelectorAll("pre code.term").forEach(function (el) {
       el.innerHTML = colorizeTerm(el.textContent);
@@ -93,13 +93,13 @@
   function initTheme() {
     var btn = document.querySelector("[data-theme-toggle]");
     var saved = null;
-    try { saved = localStorage.getItem("jvl-theme"); } catch (e) {}
+    try { saved = localStorage.getItem("lvl-theme"); } catch (e) {}
     if (saved) document.documentElement.setAttribute("data-theme", saved);
     if (btn) btn.addEventListener("click", function () {
       var cur = document.documentElement.getAttribute("data-theme") === "light" ? "" : "light";
       if (cur) document.documentElement.setAttribute("data-theme", cur);
       else document.documentElement.removeAttribute("data-theme");
-      try { localStorage.setItem("jvl-theme", cur); } catch (e) {}
+      try { localStorage.setItem("lvl-theme", cur); } catch (e) {}
     });
   }
   function initCopy() {
@@ -115,7 +115,7 @@
   }
 
   // Expose the highlighters so the interactive editor can reuse them.
-  window.JVLHL = { highlightJVL: highlightJVL, colorizeTerm: colorizeTerm, esc: esc };
+  window.LVLHL = { highlightLVL: highlightLVL, colorizeTerm: colorizeTerm, esc: esc };
 
   document.addEventListener("DOMContentLoaded", function () {
     render(); initTabs(); initNav(); initTheme(); initCopy();

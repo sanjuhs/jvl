@@ -18,7 +18,7 @@ page is the friendly companion to it.
 
 ## Statement quick reference
 
-```jvl
+```lvl
 jurisdiction IN.Contract.v1
 
 party ID = Type "label"
@@ -64,7 +64,7 @@ argument inside a rule as a variable.
 Inside a `{ ... }` record, a value may itself be a predicate — this is how
 `obligation` carries `that:` and `on_breach:`:
 
-```jvl
+```lvl
 obligation notify { bearer: B, to: A, that: NotifyOnRequest(B), by: 2025-07-01 }
 ```
 

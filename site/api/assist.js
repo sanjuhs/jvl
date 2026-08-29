@@ -1,16 +1,16 @@
-/* Vercel serverless function: draft a JVL program from a plain-English scenario.
+/* Vercel serverless function: draft an LVL program from a plain-English scenario.
  *
  * The ANTHROPIC_API_KEY stays server-side and is never exposed to the browser.
  * Model defaults to a fast one (the user's priority) and is overridable via the
- * JVL_ASSIST_MODEL env var — set it to claude-opus-5 for maximum quality.
+ * LVL_ASSIST_MODEL env var — set it to claude-opus-5 for maximum quality.
  *
  * Uses raw HTTPS (global fetch, Node 18+) so the static site needs no build
  * step or npm dependencies.
  */
 
 var SYSTEM = [
-  "You are a JVL (Jhana Verifiable Law) extractor. Convert the user's legal scenario",
-  "into a single, valid JVL program. JVL is a small DSL; here is all you need:",
+  "You are an LVL (Legal Verifiable Language) extractor. Convert the user's legal scenario",
+  "into a single, valid LVL program. LVL is a small DSL; here is all you need:",
   "",
   "- jurisdiction Dotted.Name",
   '- party ID = Person \"Label\"   (or Org)',
@@ -38,7 +38,7 @@ var SYSTEM = [
   "correct standard (BeyondReasonableDoubt for criminal charges, else",
   "BalanceOfProbabilities).",
   "",
-  "Whitespace is insignificant. Output ONLY a single ```jvl fenced code block."
+  "Whitespace is insignificant. Output ONLY a single ```lvl fenced code block."
 ].join("\n");
 
 module.exports = async function (req, res) {
@@ -53,7 +53,7 @@ module.exports = async function (req, res) {
   var prompt = ((body && body.prompt) || "").toString().slice(0, 8000).trim();
   if (!prompt) { res.status(400).json({ error: "empty prompt" }); return; }
 
-  var model = process.env.JVL_ASSIST_MODEL || "claude-sonnet-5";
+  var model = process.env.LVL_ASSIST_MODEL || "claude-sonnet-5";
   try {
     var r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -62,7 +62,7 @@ module.exports = async function (req, res) {
         model: model,
         max_tokens: 2000,
         system: SYSTEM,
-        messages: [{ role: "user", content: "Scenario:\n" + prompt + "\n\nProduce the JVL program now." }]
+        messages: [{ role: "user", content: "Scenario:\n" + prompt + "\n\nProduce the LVL program now." }]
       })
     });
     if (!r.ok) {
@@ -73,9 +73,9 @@ module.exports = async function (req, res) {
     var data = await r.json();
     var text = (data.content || []).filter(function (b) { return b.type === "text"; })
       .map(function (b) { return b.text; }).join("\n");
-    var m = text.match(/```(?:jvl)?\s*([\s\S]*?)```/);
-    var jvl = (m ? m[1] : text).trim();
-    res.status(200).json({ jvl: jvl, model: model });
+    var m = text.match(/```(?:lvl)?\s*([\s\S]*?)```/);
+    var lvl = (m ? m[1] : text).trim();
+    res.status(200).json({ lvl: lvl, model: model });
   } catch (e) {
     res.status(500).json({ error: "request failed", detail: String(e).slice(0, 300) });
   }

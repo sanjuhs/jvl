@@ -1,7 +1,7 @@
-"""Canonical formatter — pretty-print a parsed program back to canonical JVL.
+"""Canonical formatter — pretty-print a parsed program back to canonical LVL.
 
 A language that language models write needs a canonical form, so that two
-equivalent programs render identically and diffs stay clean. `jvl fmt` parses a
+equivalent programs render identically and diffs stay clean. `lvl fmt` parses a
 program and re-emits it in this canonical style. The formatter is round-trip
 safe: parsing the formatted output yields the same AST (see the round-trip test).
 """
@@ -12,7 +12,7 @@ from . import ast
 
 
 def _money(m: ast.Money) -> str:
-    # Group thousands with underscores, JVL-style.
+    # Group thousands with underscores, LVL-style.
     whole = f"{m.amount:,.0f}".replace(",", "_")
     return f"{m.currency} {whole}"
 
@@ -123,5 +123,5 @@ def _format_node(n: ast.Node) -> str:
 
 
 def format_program(prog: ast.Program) -> str:
-    """Render a program in canonical JVL, with a blank line between statements."""
+    """Render a program in canonical LVL, with a blank line between statements."""
     return "\n\n".join(_format_node(n) for n in prog.nodes) + "\n"

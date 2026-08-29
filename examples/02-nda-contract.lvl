@@ -3,13 +3,13 @@
 #
 # A contract is a set of obligations that trigger under conditions, plus some
 # objective limits (dates, money caps) that are just... checkable arithmetic.
-# This example shows JVL's deontic layer (obligation / permission / prohibition)
+# This example shows LVL's deontic layer (obligation / permission / prohibition)
 # and the objective `constraint` layer working together.
 #
 # Try:
-#   jvl check       examples/02-nda-contract.jvl
-#   jvl constraints examples/02-nda-contract.jvl
-#   jvl assert      examples/02-nda-contract.jvl
+#   lvl check       examples/02-nda-contract.lvl
+#   lvl constraints examples/02-nda-contract.lvl
+#   lvl assert      examples/02-nda-contract.lvl
 # ─────────────────────────────────────────────────────────────────────────
 
 jurisdiction IN.Contract.v1

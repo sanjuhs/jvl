@@ -1,4 +1,4 @@
-# Deploying the JVL website
+# Deploying the LVL website
 
 The site lives in [`site/`](site/) and is **pure static HTML/CSS/JS** — no build
 step, no framework, no dependencies. That makes hosting it trivial.
@@ -7,14 +7,14 @@ step, no framework, no dependencies. That makes hosting it trivial.
 
 This gives you automatic deploys on every push with zero secrets to manage.
 
-1. Go to <https://vercel.com/new> and **Import** the `sanjuhs/jvl` repository.
+1. Go to <https://vercel.com/new> and **Import** the `sanjuhs/lvl` repository.
 2. In the import screen, set **Root Directory** to `site`.
 3. Framework preset: **Other**. Build command: leave **empty**. Output
    directory: leave as `.` (Vercel serves the static files directly).
 4. Click **Deploy**.
 
 Vercel now redeploys automatically whenever `main` changes. You'll get a URL like
-`https://jvl.vercel.app` (and can add a custom domain in the project settings).
+`https://lvl-lang.vercel.app` (and can add a custom domain in the project settings).
 
 ## Option B — GitHub Action
 
@@ -35,13 +35,13 @@ directory and you're done.
 
 ## Enabling the AI helper (optional)
 
-The editor's "Draft JVL from plain English" button calls a Vercel serverless
+The editor's "Draft LVL from plain English" button calls a Vercel serverless
 function at [`site/api/assist.js`](site/api/assist.js). To turn it on, add an
 environment variable in the Vercel project (Settings → Environment Variables):
 
 - `ANTHROPIC_API_KEY` — your Anthropic API key. **Server-side only**; it is never
   sent to the browser.
-- `JVL_ASSIST_MODEL` *(optional)* — the model to use. Defaults to
+- `LVL_ASSIST_MODEL` *(optional)* — the model to use. Defaults to
   `claude-sonnet-5` (fast). Set to `claude-opus-5` for maximum quality.
 
 Without the key, the button still works as a fallback: it copies a ready-made

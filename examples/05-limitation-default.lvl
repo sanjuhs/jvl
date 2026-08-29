@@ -7,11 +7,11 @@
 # defeasible default: the conclusion holds by default but is rebutted by an
 # exception.
 #
-# JVL expresses it directly with `normally ... except when ...`.
+# LVL expresses it directly with `normally ... except when ...`.
 #
 # Try:
-#   jvl assert   examples/05-limitation-default.jvl
-#   jvl simulate examples/05-limitation-default.jvl --without ack
+#   lvl assert   examples/05-limitation-default.lvl
+#   lvl simulate examples/05-limitation-default.lvl --without ack
 #     → with the acknowledgement removed, the default is no longer rebutted
 #       and the claim becomes time-barred.
 # ─────────────────────────────────────────────────────────────────────────

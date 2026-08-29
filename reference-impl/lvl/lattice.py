@@ -1,6 +1,6 @@
-"""The epistemic lattice — JVL's model of legal truth.
+"""The epistemic lattice — LVL's model of legal truth.
 
-In JVL a proposition is never merely ``true`` or ``false``. It carries an
+In LVL a proposition is never merely ``true`` or ``false``. It carries an
 *epistemic status* drawn from a small lattice, and that status is evaluated
 against a *standard of proof*. This module is the single source of truth for
 how those statuses combine. Everything else in the evaluator defers to it.

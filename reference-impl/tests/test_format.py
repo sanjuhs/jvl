@@ -7,11 +7,11 @@ import pathlib
 
 import pytest
 
-from jvl import Evaluator, compare, parse
-from jvl.format import format_program
+from lvl import Evaluator, compare, parse
+from lvl.format import format_program
 
 EXAMPLES = pathlib.Path(__file__).resolve().parents[2] / "examples"
-ALL = sorted(p.name for p in EXAMPLES.glob("*.jvl"))
+ALL = sorted(p.name for p in EXAMPLES.glob("*.lvl"))
 
 
 @pytest.mark.parametrize("name", ALL)

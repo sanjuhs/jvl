@@ -1,4 +1,4 @@
-"""Abstract syntax tree for JVL.
+"""Abstract syntax tree for LVL.
 
 The AST is intentionally small and boring. A legal document has a lot of
 surface variety, but it reduces to a handful of node kinds: parties, facts,
@@ -15,7 +15,7 @@ from typing import Optional, Union
 
 @dataclass(frozen=True)
 class Span:
-    """A location in the *source .jvl file* (for error messages)."""
+    """A location in the *source .lvl file* (for error messages)."""
 
     line: int
     col: int

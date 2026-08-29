@@ -2,7 +2,7 @@
 
 ## VS Code
 
-A TextMate grammar for `.jvl` files lives in [`vscode/`](vscode/). It highlights
+A TextMate grammar for `.lvl` files lives in [`vscode/`](vscode/). It highlights
 keywords, statuses, standards of proof, money/date/number literals, predicates,
 strings, and comments.
 
@@ -10,8 +10,8 @@ strings, and comments.
 
 ```bash
 # copy the extension into your VS Code extensions folder
-cp -r editor-support/vscode ~/.vscode/extensions/jvl-language-0.1.0
-# reload VS Code — .jvl files now highlight
+cp -r editor-support/vscode ~/.vscode/extensions/lvl-language-0.1.0
+# reload VS Code — .lvl files now highlight
 ```
 
 Or open `editor-support/vscode` in VS Code and press **F5** to launch an
@@ -23,7 +23,7 @@ status, go-to-source, contradiction squiggles) are on the
 
 ## Other editors
 
-The grammar is a standard TextMate grammar (`source.jvl`), so it also works with
+The grammar is a standard TextMate grammar (`source.lvl`), so it also works with
 any editor that consumes TextMate/`tmLanguage` grammars (Sublime Text, Zed via
 conversion, etc.). The website's highlighter (`site/app.js`) is a compact
 JavaScript reference for the same token rules.

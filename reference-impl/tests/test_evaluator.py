@@ -6,9 +6,9 @@ import pathlib
 
 import pytest
 
-from jvl import Evaluator, Standard, Status, parse
-from jvl.ast import Predicate
-from jvl.lattice import combine, join, meet, meets
+from lvl import Evaluator, Standard, Status, parse
+from lvl.ast import Predicate
+from lvl.lattice import combine, join, meet, meets
 
 EXAMPLES = pathlib.Path(__file__).resolve().parents[2] / "examples"
 
@@ -46,20 +46,20 @@ def test_standard_thresholds():
 # --- example 01: loan vs investment ---------------------------------------
 
 def test_loan_is_supported():
-    ev = _eval("01-loan-vs-investment.jvl")
+    ev = _eval("01-loan-vs-investment.lvl")
     st = ev.atom_status(Predicate("Loan", ("transfer_17",)).key())
     assert st is Status.SUPPORTED
 
 
 def test_transfer_is_established_from_a_primary_fact():
-    ev = _eval("01-loan-vs-investment.jvl")
+    ev = _eval("01-loan-vs-investment.lvl")
     st = ev.atom_status(Predicate("TransferOfValue", ("transfer_17",)).key())
     assert st is Status.ESTABLISHED
 
 
 def test_removing_the_whatsapp_evidence_collapses_the_loan():
-    # The counterfactual the CLI exposes as `jvl simulate --without w17`.
-    prog = parse((EXAMPLES / "01-loan-vs-investment.jvl").read_text())
+    # The counterfactual the CLI exposes as `lvl simulate --without w17`.
+    prog = parse((EXAMPLES / "01-loan-vs-investment.lvl").read_text())
     prog.nodes = [n for n in prog.nodes if getattr(n, "id", None) != "w17"]
     ev = Evaluator(prog).build()
     st = ev.atom_status(Predicate("Loan", ("transfer_17",)).key())
@@ -69,20 +69,20 @@ def test_removing_the_whatsapp_evidence_collapses_the_loan():
 # --- example 03: criminal offence -----------------------------------------
 
 def test_offence_fails_beyond_reasonable_doubt():
-    ev = _eval("03-cheating-s420.jvl")
+    ev = _eval("03-cheating-s420.lvl")
     verdict = ev.run_assert(Predicate("Cheating", ("payment",)), Standard.BeyondReasonableDoubt)
     assert not verdict.passes
 
 
 def test_discover_finds_the_missing_mental_element():
-    ev = _eval("03-cheating-s420.jvl")
+    ev = _eval("03-cheating-s420.lvl")
     missing = ev.discover(Predicate("Cheating", ("payment",)))
     names = {p.name for p, _ in missing}
     assert "DishonestIntentionAtInception" in names
 
 
 def test_contradiction_detected_from_conflicting_evidence():
-    ev = _eval("03-cheating-s420.jvl")
+    ev = _eval("03-cheating-s420.lvl")
     issues = ev.contradictions()
     assert any("PresentAtMeeting" in i for i in issues)
 
@@ -92,13 +92,13 @@ def test_contradiction_detected_from_conflicting_evidence():
 def test_default_logic_exception_rebuts_the_conclusion():
     # `normally TimeBarred ... except when Acknowledged` — with the
     # acknowledgement present, the default is rebutted (REFUTED).
-    ev = _eval("05-limitation-default.jvl")
+    ev = _eval("05-limitation-default.lvl")
     st = ev.atom_status(Predicate("TimeBarred", ("claim1",)).key())
     assert st is Status.REFUTED
 
 
 def test_removing_the_exception_restores_the_default():
-    prog = parse((EXAMPLES / "05-limitation-default.jvl").read_text())
+    prog = parse((EXAMPLES / "05-limitation-default.lvl").read_text())
     prog.nodes = [n for n in prog.nodes if getattr(n, "id", None) != "ack"]
     ev = Evaluator(prog).build()
     st = ev.atom_status(Predicate("TimeBarred", ("claim1",)).key())
@@ -135,7 +135,7 @@ def test_default_holds_with_no_exceptions_active():
 
 
 def test_objective_constraint_catches_overcap_damages():
-    ev = _eval("02-nda-contract.jvl")
+    ev = _eval("02-nda-contract.lvl")
     results = {c.id: ok for c, ok, _ in ev.check_constraints()}
     assert results["damages_within_cap"] is False
     assert results["disclosure_before_expiry"] is True

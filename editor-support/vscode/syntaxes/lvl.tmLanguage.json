@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "JVL",
-  "scopeName": "source.jvl",
+  "name": "LVL",
+  "scopeName": "source.lvl",
   "patterns": [
     { "include": "#comments" },
     { "include": "#strings" },
@@ -17,49 +17,49 @@
   "repository": {
     "comments": {
       "patterns": [
-        { "name": "comment.line.number-sign.jvl", "match": "(#|//).*$" }
+        { "name": "comment.line.number-sign.lvl", "match": "(#|//).*$" }
       ]
     },
     "strings": {
-      "name": "string.quoted.double.jvl",
+      "name": "string.quoted.double.lvl",
       "begin": "\"",
       "end": "\"",
-      "patterns": [{ "name": "constant.character.escape.jvl", "match": "\\\\." }]
+      "patterns": [{ "name": "constant.character.escape.lvl", "match": "\\\\." }]
     },
     "keywords": {
       "patterns": [
-        { "name": "keyword.control.jvl",
+        { "name": "keyword.control.lvl",
           "match": "\\b(jurisdiction|party|fact|evidence|claim|rule|obligation|permission|prohibition|constraint|exclusive|assert|prove|refute|explain|discover)\\b" },
-        { "name": "keyword.operator.word.jvl",
+        { "name": "keyword.operator.word.lvl",
           "match": "\\b(requires|established_if|normally|except|unless|when|supports|refutes|asserts|by|from|source|status|under|for|and|or)\\b" }
       ]
     },
     "status": {
-      "name": "support.constant.status.jvl",
+      "name": "support.constant.status.lvl",
       "match": "\\b(Established|Admitted|Alleged|Disputed|Refuted|Unknown|Proven|Supported)\\b"
     },
     "standards": {
-      "name": "support.constant.standard.jvl",
+      "name": "support.constant.standard.lvl",
       "match": "\\b(BalanceOfProbabilities|ClearAndConvincing|BeyondReasonableDoubt)\\b"
     },
     "money": {
-      "name": "constant.numeric.money.jvl",
+      "name": "constant.numeric.money.lvl",
       "match": "\\b(INR|USD|EUR|GBP|JPY|AUD|CAD|SGD|CNY|CHF)\\s+[0-9_]+\\b"
     },
     "dates": {
-      "name": "constant.numeric.date.jvl",
+      "name": "constant.numeric.date.lvl",
       "match": "\\b\\d{4}-\\d{2}-\\d{2}\\b"
     },
     "numbers": {
-      "name": "constant.numeric.jvl",
+      "name": "constant.numeric.lvl",
       "match": "\\b\\d[\\d_]*(\\.\\d+)?\\b"
     },
     "predicates": {
-      "name": "entity.name.function.predicate.jvl",
+      "name": "entity.name.function.predicate.lvl",
       "match": "\\b[A-Z][A-Za-z0-9_]*(?=\\s*\\()"
     },
     "operators": {
-      "name": "keyword.operator.jvl",
+      "name": "keyword.operator.lvl",
       "match": "(<=|>=|==|!=|<|>|=|:)"
     }
   }

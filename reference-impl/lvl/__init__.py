@@ -1,10 +1,10 @@
-"""JVL — Jhana Verifiable Law: a language for compiling legal documents into
+"""LVL — Legal Verifiable Language: a language for compiling legal documents into
 statically-checkable programs.
 
 Public API::
 
-    from jvl import parse, Evaluator
-    prog = parse(open("case.jvl").read())
+    from lvl import parse, Evaluator
+    prog = parse(open("case.lvl").read())
     ev = Evaluator(prog).build()
     ev.run_assert(target, standard)
 """

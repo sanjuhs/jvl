@@ -1,19 +1,19 @@
 # ─────────────────────────────────────────────────────────────────────────
 # Example 03 — Criminal charge: "cheating" (a s.420-style offence)
 #
-# This is where JVL earns its keep. A criminal offence is a *conjunction* of
+# This is where LVL earns its keep. A criminal offence is a *conjunction* of
 # elements, each of which must be proven to a high standard. The hardest to
 # prove is usually the mental element — dishonest intention *at the inception*.
-# JVL makes the gap explicit: it can tell you exactly which element is not yet
+# LVL makes the gap explicit: it can tell you exactly which element is not yet
 # established, and refuse to certify the offence until it is.
 #
 # It also demonstrates contradiction detection: two pieces of evidence pull the
 # accused's presence at the scene in opposite directions.
 #
 # Try:
-#   jvl assert                examples/03-cheating-s420.jvl
-#   jvl discover              examples/03-cheating-s420.jvl "Cheating(payment)"
-#   jvl check-contradictions  examples/03-cheating-s420.jvl
+#   lvl assert                examples/03-cheating-s420.lvl
+#   lvl discover              examples/03-cheating-s420.lvl "Cheating(payment)"
+#   lvl check-contradictions  examples/03-cheating-s420.lvl
 # ─────────────────────────────────────────────────────────────────────────
 
 jurisdiction IN.Penal.v1

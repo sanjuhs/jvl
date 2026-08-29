@@ -1,13 +1,13 @@
 /* ============================================================================
-   jvl-engine.js — a faithful in-browser port of the JVL reference compiler.
+   lvl-engine.js — a faithful in-browser port of the LVL reference compiler.
 
-   Mirrors reference-impl/jvl/{lattice,lexer,parser,evaluator}.py closely enough
-   that `JVL.run(src, cmd, arg)` prints the same thing the `jvl` CLI does. It is
+   Mirrors reference-impl/lvl/{lattice,lexer,parser,evaluator}.py closely enough
+   that `LVL.run(src, cmd, arg)` prints the same thing the `lvl` CLI does. It is
    deliberately dependency-free and synchronous — a legal program is small, and
    this keeps the playground instant (no server round-trip, no WASM download).
 
-   Exposes: window.JVL.run(source, command, arg) -> { text, ok }
-            window.JVL.check(source) -> diagnostics
+   Exposes: window.LVL.run(source, command, arg) -> { text, ok }
+            window.LVL.check(source) -> diagnostics
    ========================================================================== */
 (function () {
   "use strict";
@@ -628,5 +628,5 @@
     return { text: "unknown command: " + command, ok: false };
   }
 
-  window.JVL = { run: run, tokenize: tokenize, version: "0.3.0-js" };
+  window.LVL = { run: run, tokenize: tokenize, version: "0.3.0-js" };
 })();

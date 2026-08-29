@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JVL — Jhana Verifiable Law</title>
+  <title>LVL — Legal Verifiable Language</title>
   <meta name="description" content="Compile any legal document into a program you can statically check. Facts carry provenance; propositions carry an epistemic status; legal arguments type-check.">
   <link rel="icon" href="assets/logo-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,14 +14,14 @@
 <body>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> LVL</a>
       <button class="nav-toggle" aria-label="Menu">☰</button>
       <nav class="links">
         <a href="learn.html">Learn</a>
         <a href="docs.html">Docs</a>
         <a href="editor.html">Editor</a>
         <a href="theory.html">Theory</a>
-        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+        <a href="https://github.com/sanjuhs/lvl">GitHub</a>
         <a class="btn btn-sm primary" href="editor.html">Try it</a>
       </nav>
     </div>
@@ -33,16 +33,16 @@
       <div>
         <span class="eyebrow"><span class="dot"></span> Open source · MIT · early &amp; evolving</span>
         <h1>Compile the law into a program you can <span class="grad-text">check</span>.</h1>
-        <p class="lead">JVL turns a contract or a case file into a small program. Facts carry their source. Propositions carry a confidence. And legal arguments <strong>type-check</strong>.</p>
+        <p class="lead">LVL turns a contract or a case file into a small program. Facts carry their source. Propositions carry a confidence. And legal arguments <strong>type-check</strong>.</p>
         <div class="cta">
           <a class="btn primary" href="editor.html">Try it live →</a>
           <a class="btn" href="learn.html">Learn the language</a>
         </div>
-        <p class="sub">The graph stores what the case says. The JVL program determines what <em>follows</em> from it.</p>
+        <p class="sub">The graph stores what the case says. The LVL program determines what <em>follows</em> from it.</p>
       </div>
       <div class="window">
-        <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">loan-vs-investment.jvl</span></div>
-        <pre><code class="jvl">jurisdiction IN.Contract.v1
+        <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">loan-vs-investment.lvl</span></div>
+        <pre><code class="lvl">jurisdiction IN.Contract.v1
 
 party A = Person "Anil Kumar"
 party B = Person "Beena Rao"
@@ -75,7 +75,7 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
       <div class="section-head">
         <span class="kicker">Why it's different</span>
         <h2>Three ideas no other legal DSL combines</h2>
-        <p>Most tools extract JSON (silent on what follows) or build a graph (vague on meaning). JVL adds the executable meaning layer — and keeps the other two underneath it.</p>
+        <p>Most tools extract JSON (silent on what follows) or build a graph (vague on meaning). LVL adds the executable meaning layer — and keeps the other two underneath it.</p>
       </div>
       <div class="cards">
         <div class="card">
@@ -103,10 +103,10 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
       <div>
         <span class="kicker">The stack</span>
         <h2>The program <em>is</em> the data layer</h2>
-        <p>JVL sits on top of extraction and graphs — and can emit both. One program holds the facts, the relationships, the provenance, and the logic, and it can compute over all of it.</p>
+        <p>LVL sits on top of extraction and graphs — and can emit both. One program holds the facts, the relationships, the provenance, and the logic, and it can compute over all of it.</p>
         <ul class="feature-list">
-          <li><code>jvl emit json</code> — deterministic canonical data</li>
-          <li><code>jvl emit graph</code> — nodes &amp; edges of the case</li>
+          <li><code>lvl emit json</code> — deterministic canonical data</li>
+          <li><code>lvl emit graph</code> — nodes &amp; edges of the case</li>
           <li>Ask questions and get sourced, deterministic answers</li>
         </ul>
       </div>
@@ -114,7 +114,7 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
         <div class="pipe-row"><span class="pipe small">Legal document (PDF)</span></div>
         <div class="pipe-row"><span class="pipe-arrow">↓</span><span class="pipe small">LLM extraction — raw text always kept</span></div>
         <div class="pipe-row"><span class="pipe small">structured JSON</span><span class="pipe-arrow">+</span><span class="pipe small">case graph</span></div>
-        <div class="pipe-row"><span class="pipe-arrow">↓</span><span class="pipe accent">JVL program — meaning</span></div>
+        <div class="pipe-row"><span class="pipe-arrow">↓</span><span class="pipe accent">LVL program — meaning</span></div>
         <div class="pipe-row">
           <span class="pipe">assert</span><span class="pipe">explain</span><span class="pipe">discover</span><span class="pipe">diff / equiv</span><span class="pipe">simulate</span>
         </div>
@@ -126,7 +126,7 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
   <section>
     <div class="container split rev">
       <div class="window">
-        <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">jvl equiv v1.jvl v2.jvl</span></div>
+        <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">lvl equiv v1.lvl v2.lvl</span></div>
         <pre><code class="term">⚖  equiv  service-agreement-v1  ≟  service-agreement-v2
 
   ✗ DIFFERENT — they diverge on these propositions:
@@ -153,18 +153,18 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
     <div class="container">
       <div class="section-head"><span class="kicker">What you can do</span><h2>One program, many questions</h2></div>
       <div class="cmd-grid">
-        <div class="cmd"><code>jvl check</code><p>Parse, type-check, and audit every fact for provenance.</p></div>
-        <div class="cmd"><code>jvl assert</code><p>Does a proposition hold, to a standard of proof? With a full trace.</p></div>
-        <div class="cmd"><code>jvl explain</code><p>The derivation tree for any proposition, sourced to the record.</p></div>
-        <div class="cmd"><code>jvl discover</code><p>Which elements of a claim are still missing? The gap, pinpointed.</p></div>
-        <div class="cmd"><code>jvl check-contradictions</code><p>Where do the clauses conflict with each other?</p></div>
-        <div class="cmd"><code>jvl constraints</code><p>Objective money / date / number checks — pure, non-arguable arithmetic.</p></div>
-        <div class="cmd"><code>jvl simulate --without X</code><p>Counterfactual: drop an exhibit or a rule and re-run.</p></div>
-        <div class="cmd"><code>jvl diff · equiv</code><p>Compare two versions — structurally and semantically.</p></div>
-        <div class="cmd"><code>jvl emit json · graph</code><p>The program as data — it can be the JSON/graph layer.</p></div>
-        <div class="cmd"><code>jvl ask "…"</code><p>Ask in plain English; the engine computes the answer.</p></div>
-        <div class="cmd"><code>jvl fmt</code><p>Canonical formatter — round-trip safe, clean diffs.</p></div>
-        <div class="cmd"><code>jvl check --audit</code><p>Flag any supported conclusion that traces to no source.</p></div>
+        <div class="cmd"><code>lvl check</code><p>Parse, type-check, and audit every fact for provenance.</p></div>
+        <div class="cmd"><code>lvl assert</code><p>Does a proposition hold, to a standard of proof? With a full trace.</p></div>
+        <div class="cmd"><code>lvl explain</code><p>The derivation tree for any proposition, sourced to the record.</p></div>
+        <div class="cmd"><code>lvl discover</code><p>Which elements of a claim are still missing? The gap, pinpointed.</p></div>
+        <div class="cmd"><code>lvl check-contradictions</code><p>Where do the clauses conflict with each other?</p></div>
+        <div class="cmd"><code>lvl constraints</code><p>Objective money / date / number checks — pure, non-arguable arithmetic.</p></div>
+        <div class="cmd"><code>lvl simulate --without X</code><p>Counterfactual: drop an exhibit or a rule and re-run.</p></div>
+        <div class="cmd"><code>lvl diff · equiv</code><p>Compare two versions — structurally and semantically.</p></div>
+        <div class="cmd"><code>lvl emit json · graph</code><p>The program as data — it can be the JSON/graph layer.</p></div>
+        <div class="cmd"><code>lvl ask "…"</code><p>Ask in plain English; the engine computes the answer.</p></div>
+        <div class="cmd"><code>lvl fmt</code><p>Canonical formatter — round-trip safe, clean diffs.</p></div>
+        <div class="cmd"><code>lvl check --audit</code><p>Flag any supported conclusion that traces to no source.</p></div>
       </div>
     </div>
   </section>
@@ -175,7 +175,7 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
       <div class="section-head" style="max-width:70ch;">
         <span class="kicker">The central thesis</span>
         <h2>The LLM transforms. The <span class="grad-text">program</span> decides.</h2>
-        <p>An LLM is an unreliable judge but a capable translator. So JVL never asks it to weigh whether a fact is legally valid. It asks only for a faithful translation: document → program, question → assertion. Then the <strong>assertion runs against the whole logic of the program</strong>, and the deterministic engine — not the model — returns the answer, with a trace back to the record.</p>
+        <p>An LLM is an unreliable judge but a capable translator. So LVL never asks it to weigh whether a fact is legally valid. It asks only for a faithful translation: document → program, question → assertion. Then the <strong>assertion runs against the whole logic of the program</strong>, and the deterministic engine — not the model — returns the answer, with a trace back to the record.</p>
       </div>
       <div class="split" style="align-items:stretch;">
         <div class="card" style="border-left:3px solid var(--amber);">
@@ -183,7 +183,7 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
           <h3>What the LLM does</h3>
           <ul class="feature-list">
             <li>Read a messy document — any length</li>
-            <li>Emit a JVL program with honest sources</li>
+            <li>Emit an LVL program with honest sources</li>
             <li>Map a natural-language question to an assertion</li>
           </ul>
           <p style="margin-top:.9rem;">Fuzzy, linguistic, error-prone — and checkable, because the compiler rejects what doesn't parse or cite.</p>
@@ -209,10 +209,10 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
   <section class="center">
     <div class="container">
       <h2>Make the law's structure visible.<br><span class="grad-text">Let humans keep the judgement.</span></h2>
-      <p style="max-width:52ch;margin:1rem auto 1.8rem;">JVL is a research prototype and an open invitation. Read the tour, run the examples, and help shape a language for encoding law in the open.</p>
+      <p style="max-width:52ch;margin:1rem auto 1.8rem;">LVL is a research prototype and an open invitation. Read the tour, run the examples, and help shape a language for encoding law in the open.</p>
       <div class="cta" style="justify-content:center;">
         <a class="btn primary" href="learn.html">Start the tour →</a>
-        <a class="btn" href="https://github.com/sanjuhs/jvl">Star on GitHub</a>
+        <a class="btn" href="https://github.com/sanjuhs/lvl">Star on GitHub</a>
       </div>
     </div>
   </section>
@@ -220,15 +220,15 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
   <footer class="site">
     <div class="container">
       <div class="foot-grid">
-        <a class="brand" href="index.html" style="font-weight:800;font-size:1.1rem;display:flex;gap:.5rem;align-items:center;"><img src="assets/logo-mark.svg" alt="" style="height:26px"> JVL</a>
+        <a class="brand" href="index.html" style="font-weight:800;font-size:1.1rem;display:flex;gap:.5rem;align-items:center;"><img src="assets/logo-mark.svg" alt="" style="height:26px"> LVL</a>
         <div style="display:flex;gap:1.4rem;flex-wrap:wrap;">
           <a href="learn.html">Learn</a><a href="docs.html">Docs</a>
           <a href="playground.html">Playground</a>
-          <a href="https://github.com/sanjuhs/jvl">GitHub</a>
-          <a href="https://github.com/sanjuhs/jvl/blob/main/LICENSE">MIT License</a>
+          <a href="https://github.com/sanjuhs/lvl">GitHub</a>
+          <a href="https://github.com/sanjuhs/lvl/blob/main/LICENSE">MIT License</a>
         </div>
       </div>
-      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+      <p class="disclaimer">LVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
     </div>
   </footer>
   <script src="app.js"></script>

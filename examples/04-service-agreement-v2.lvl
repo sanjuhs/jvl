@@ -1,13 +1,14 @@
 # ─────────────────────────────────────────────────────────────────────────
-# Example 04a — Service agreement, VERSION 1
+# Example 04b — Service agreement, VERSION 2 (amended)
 #
-# Paired with 04-service-agreement-v2.jvl to demonstrate comparison:
-#   jvl diff  examples/04-service-agreement-v1.jvl examples/04-service-agreement-v2.jvl
-#   jvl equiv examples/04-service-agreement-v1.jvl examples/04-service-agreement-v2.jvl
+# Same contract as v1, with three changes:
+#   1. the fee rises from INR 500,000 to INR 650,000
+#   2. a late-delivery penalty clause is added
+#   3. a new derived proposition (PenaltyOwed) can now arise
 #
-# The two versions describe "the same" contract — but v2 raises the fee and adds
-# a late-delivery penalty. `equiv` reports DIFFERENT and names exactly which
-# propositions diverge; `diff` shows the field-level and rule-level changes.
+# Compare with v1:
+#   lvl diff  examples/04-service-agreement-v1.lvl examples/04-service-agreement-v2.lvl
+#   lvl equiv examples/04-service-agreement-v1.lvl examples/04-service-agreement-v2.lvl
 # ─────────────────────────────────────────────────────────────────────────
 
 jurisdiction IN.Contract.v1
@@ -16,10 +17,11 @@ party client   = Org "Northwind Traders"
 party provider = Person "Dev Consultant"
 
 fact agreement : ServiceAgreement {
-    fee:        INR 500_000
+    fee:        INR 650_000
     due_on:     2025-09-30
     signed_on:  2025-06-01
-} from source(doc="MSA_v1", page=1, para=1) status Established
+    penalty:    INR 50_000
+} from source(doc="MSA_v2", page=1, para=1) status Established
 
 fact delivery : Delivery {
     by:  provider
@@ -30,6 +32,12 @@ rule payment_due:
     PaymentDue(a) requires
         ServiceAgreement(a)
         WorkDelivered(a)
+
+# New clause: a penalty is owed if delivery is late.
+rule penalty_clause:
+    PenaltyOwed(a) requires
+        ServiceAgreement(a)
+        LateDelivery(a)
 
 evidence delivered : Record { note: "work accepted by client" }
     from source(doc="Acceptance", para=1) supports WorkDelivered(agreement)

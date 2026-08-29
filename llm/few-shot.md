@@ -1,7 +1,7 @@
-# Few-shot exemplars — document → JVL
+# Few-shot exemplars — document → LVL
 
 Paste one or two of these into context to teach a model the mapping by example.
-Each shows a short input passage and the JVL it should produce.
+Each shows a short input passage and the LVL it should produce.
 
 ---
 
@@ -16,9 +16,9 @@ Each shows a short input passage and the JVL it should produce.
 > 11. In a WhatsApp message dated 12 March (Exhibit P-7), the defendant wrote
 >    "I'll repay you next month."
 
-**Expected JVL:**
+**Expected LVL:**
 
-```jvl
+```lvl
 jurisdiction IN.Contract.v1
 
 party plaintiff = Person "Plaintiff"
@@ -59,9 +59,9 @@ uncontested); the two characterisations are `claim`s, not facts, and marked
 > "guaranteed 40% returns" (WhatsApp_22). The complainant seeks conviction for
 > cheating.
 
-**Expected JVL:**
+**Expected LVL:**
 
-```jvl
+```lvl
 jurisdiction IN.Penal.v1
 
 party accused     = Person "Accused"
@@ -87,7 +87,7 @@ assert Cheating(payment) under BeyondReasonableDoubt
 ```
 
 **Note what the model did *not* do:** it did not invent evidence for
-`DishonestIntentionAtInception`. Running `jvl discover FIR.jvl "Cheating(payment)"`
+`DishonestIntentionAtInception`. Running `lvl discover FIR.lvl "Cheating(payment)"`
 then correctly reports that element as the missing piece, and the `assert` fails
 the criminal standard — which is the honest result.
 
@@ -98,7 +98,7 @@ the criminal standard — which is the honest result.
 **Input:** an NDA capping penalties at ₹50,00,000; the complaint claims ₹80,00,000
 in damages for a disclosure dated within the term.
 
-```jvl
+```lvl
 fact nda : Agreement { signed_on: 2025-01-15  expires_on: 2028-01-15  penalty_cap: INR 5_000_000 }
     from source(doc="NDA_executed", page=1, para=1) status Established
 fact disclosure : Disclosure { by: Receiving  on: 2025-06-20  amount: INR 8_000_000 }
@@ -108,7 +108,7 @@ constraint damages_within_cap:  disclosure.amount <= nda.penalty_cap
 constraint disclosure_in_term:  disclosure.on before nda.expires_on
 ```
 
-`jvl constraints` reports `damages_within_cap: VIOLATED` — a purely objective
+`lvl constraints` reports `damages_within_cap: VIOLATED` — a purely objective
 finding needing no legal judgement, and one prose review routinely misses.
 
 ---
@@ -118,7 +118,7 @@ finding needing no legal judgement, and one prose review routinely misses.
 **Input:** a suit filed after the limitation period; but the debtor acknowledged
 the debt in writing within the period, which resets the clock.
 
-```jvl
+```lvl
 party creditor = Person "Creditor"
 party debtor   = Person "Debtor"
 
@@ -141,4 +141,4 @@ assert TimeBarred(claim1) under BalanceOfProbabilities
 **Why this shape:** "normally time-barred, except when acknowledged" is a
 *defeasible default*, not a plain conjunction. The model used `normally ...
 except when ...` so the acknowledgement rebuts the default — `TimeBarred` comes
-back `REFUTED`, and `jvl simulate --without ack` shows it flipping to time-barred.
+back `REFUTED`, and `lvl simulate --without ack` shows it flipping to time-barred.

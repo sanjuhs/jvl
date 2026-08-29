@@ -1,24 +1,24 @@
 ---
-name: jvl-encode
+name: lvl-encode
 description: >-
   Convert a legal document (contract, judgment, complaint, charge sheet, statute
-  excerpt) into a JVL — Jhana Verifiable Law — program: a deterministic,
+  excerpt) into an LVL — Legal Verifiable Language — program: a deterministic,
   statically-checkable encoding of its parties, facts, evidence, claims, rules,
   and the questions to be decided, with every fact traced back to its source.
   Use when the user wants to formalise, check, or reason over a legal document —
-  e.g. "turn this contract into JVL", "which element of this charge is unproven",
+  e.g. "turn this contract into LVL", "which element of this charge is unproven",
   "are these clauses contradictory", "what happens if we drop this exhibit".
 ---
 
-# JVL Encode
+# LVL Encode
 
-Turn legal prose into a checkable JVL program, then run the compiler and present
-the trace. You do the fuzzy reading; JVL does the exact logic. **You never decide
+Turn legal prose into a checkable LVL program, then run the compiler and present
+the trace. You do the fuzzy reading; LVL does the exact logic. **You never decide
 the case — you produce a sourced, checkable argument for a human to review.**
 
 ## When to use this skill
 
-- "Encode this contract / judgment / complaint as JVL."
+- "Encode this contract / judgment / complaint as LVL."
 - "Which elements of this offence are actually proven?"
 - "Do these clauses contradict each other?"
 - "What changes if Exhibit P-7 is excluded?"
@@ -38,20 +38,20 @@ the case — you produce a sourced, checkable argument for a human to review.**
    - Do not fabricate elements to make a conclusion true; leave unsupported
      elements unstated (they evaluate to `UNKNOWN`).
 
-3. **Write the program to a `.jvl` file.**
+3. **Write the program to a `.lvl` file.**
 
 4. **Compile in a loop.** Run the reference compiler and iterate until clean:
    ```bash
    cd reference-impl && pip install -e .        # once
-   jvl check --audit path/to/case.jvl           # errors, warnings, unsourced conclusions
-   jvl assert  path/to/case.jvl                 # derivation trace for each question
-   jvl discover path/to/case.jvl "Offence(x)"   # which elements are still missing
-   jvl check-contradictions path/to/case.jvl    # internal conflicts
-   jvl constraints path/to/case.jvl             # objective money/date/duration checks
-   jvl simulate path/to/case.jvl --without ID   # counterfactual
-   jvl fmt --write path/to/case.jvl             # canonicalise before saving
-   jvl diff A.jvl B.jvl                          # what changed between two versions
-   jvl equiv A.jvl B.jvl                         # do two documents mean the same thing?
+   lvl check --audit path/to/case.lvl           # errors, warnings, unsourced conclusions
+   lvl assert  path/to/case.lvl                 # derivation trace for each question
+   lvl discover path/to/case.lvl "Offence(x)"   # which elements are still missing
+   lvl check-contradictions path/to/case.lvl    # internal conflicts
+   lvl constraints path/to/case.lvl             # objective money/date/duration checks
+   lvl simulate path/to/case.lvl --without ID   # counterfactual
+   lvl fmt --write path/to/case.lvl             # canonicalise before saving
+   lvl diff A.lvl B.lvl                          # what changed between two versions
+   lvl equiv A.lvl B.lvl                         # do two documents mean the same thing?
    ```
 
 5. **Present both the program and the compiler output**, and call out: which

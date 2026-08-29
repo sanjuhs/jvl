@@ -1,6 +1,6 @@
 # Roadmap
 
-JVL is an early, experimental project. This is the honest state of it and where
+LVL is an early, experimental project. This is the honest state of it and where
 it is heading. Nothing here is a promise; it is a direction, and pull requests
 move it.
 
@@ -24,7 +24,7 @@ move it.
 - **First-class default logic:** `normally / except / except-to-exception`, the
   single most important missing construct — it is how statutes are actually
   written (borrow directly from Catala).
-- **Provenance on inferences**, plus a `jvl check --audit` report listing every
+- **Provenance on inferences**, plus an `lvl check --audit` report listing every
   atom with no path to a source.
 - **Richer constraints:** durations and intervals (`within 3 years`), currency
   conversion policy, arithmetic expressions.
@@ -34,15 +34,15 @@ move it.
 
 ## Medium term (v0.3+)
 
-- **A `jvl fmt` canonical formatter** — essential for a language LLMs write, so
+- **An `lvl fmt` canonical formatter** — essential for a language LLMs write, so
   diffs stay clean.
 - **Compile-to-Prolog / ASP backend**, so hard queries can use a real solver, and
-  JVL becomes the friendly front-end over proven engines (the SMU `dsl`
+  LVL becomes the friendly front-end over proven engines (the SMU `dsl`
   philosophy).
 - **LegalRuleML export**, for interchange with the wider legal-informatics world.
 - **A language server (LSP):** hovers showing a proposition's current status,
   go-to-source, inline contradiction squiggles.
-- **Graph bridge:** import a case graph directly into base atoms; export a JVL
+- **Graph bridge:** import a case graph directly into base atoms; export an LVL
   program's derivation as a graph.
 
 ## Longer term / research
@@ -50,9 +50,9 @@ move it.
 - **Temporal reasoning:** obligations that arise, transfer, and expire over time.
 - **Probabilistic / weighted evidence** as an optional layer above the discrete
   lattice, for "how strong is this really?" without faking precision.
-- **Precedent and analogical reasoning** — where JVL most obviously ends and
+- **Precedent and analogical reasoning** — where LVL most obviously ends and
   human judgement (assisted by an LLM) must take over.
-- **A verification story:** given a JVL encoding and the source document, can a
+- **A verification story:** given an LVL encoding and the source document, can a
   second model *check* that the encoding faithfully represents the text? The
   provenance layer is the foundation for exactly this.
 

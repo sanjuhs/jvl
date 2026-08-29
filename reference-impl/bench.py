@@ -1,4 +1,4 @@
-"""A tiny benchmark: how fast does JVL evaluate a large program?
+"""A tiny benchmark: how fast does LVL evaluate a large program?
 
 Generates a program with N independent transactions (each a fact + evidence +
 the loan rule), then times a full parse + evaluate. Run:
@@ -12,7 +12,7 @@ from __future__ import annotations
 import sys
 import time
 
-from jvl import Evaluator, parse
+from lvl import Evaluator, parse
 
 
 def make_program(n: int) -> str:

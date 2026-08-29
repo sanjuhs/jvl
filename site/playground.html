@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JVL Playground</title>
-  <meta name="description" content="See JVL run: worked examples and the exact output of the reference compiler.">
+  <title>LVL Playground</title>
+  <meta name="description" content="See LVL run: worked examples and the exact output of the reference compiler.">
   <link rel="icon" href="assets/logo-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,14 +14,14 @@
 <body>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> LVL</a>
       <button class="nav-toggle" aria-label="Menu">☰</button>
       <nav class="links">
         <a href="learn.html">Learn</a>
         <a href="docs.html">Docs</a>
         <a href="editor.html">Editor</a>
         <a href="theory.html">Theory</a>
-        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+        <a href="https://github.com/sanjuhs/lvl">GitHub</a>
       </nav>
     </div>
   </header>
@@ -30,7 +30,7 @@
     <div class="section-head">
       <span class="kicker">Playground</span>
       <h1 style="font-size:clamp(2rem,4vw,2.8rem);font-weight:800;">See it run</h1>
-      <p>Real programs, and the exact output of the reference compiler. A fully in-browser editor is on the roadmap (it needs a WASM build); for now, these show precisely what <code>jvl</code> prints on your machine.</p>
+      <p>Real programs, and the exact output of the reference compiler. A fully in-browser editor is on the roadmap (it needs a WASM build); for now, these show precisely what <code>lvl</code> prints on your machine.</p>
     </div>
 
     <div class="tabs" data-tabs=".pg-panel">
@@ -43,8 +43,8 @@
     <!-- LOAN -->
     <div class="pg-panel" data-panel="loan">
       <div class="split" style="align-items:stretch;">
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">01-loan-vs-investment.jvl</span></div>
-          <pre><code class="jvl">fact transfer_17 : TransferOfValue {
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">01-loan-vs-investment.lvl</span></div>
+          <pre><code class="lvl">fact transfer_17 : TransferOfValue {
     from: A  to: B  amount: INR 1_000_000  on: 2025-03-10
 } from source(doc="BankStatement_3", page=2, para=4) status Established
 
@@ -57,7 +57,7 @@ rule loan_definition:
     Loan(t) requires TransferOfValue(t) RepaymentObligation(t)
 
 assert Loan(transfer_17) under BalanceOfProbabilities</code></pre></div>
-        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ jvl assert 01-loan-vs-investment.jvl</span></div>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ lvl assert 01-loan-vs-investment.lvl</span></div>
           <pre><code class="term">⚖  assert  Loan(transfer_17)   standard: BalanceOfProbabilities
 
   Loan(transfer_17) ............................. SUPPORTED
@@ -75,8 +75,8 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre></div>
     <!-- CRIME -->
     <div class="pg-panel" data-panel="crime" style="display:none;">
       <div class="split" style="align-items:stretch;">
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">03-cheating-s420.jvl</span></div>
-          <pre><code class="jvl">rule cheating:
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">03-cheating-s420.lvl</span></div>
+          <pre><code class="lvl">rule cheating:
     Cheating(p) requires
         Deception(p)
         DishonestInducement(p)
@@ -89,7 +89,7 @@ evidence brochure : Document { note: "fabricated projection" }
 # No evidence establishes dishonest intention at inception.
 
 assert Cheating(payment) under BeyondReasonableDoubt</code></pre></div>
-        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ jvl discover 03-cheating-s420.jvl "Cheating(payment)"</span></div>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ lvl discover 03-cheating-s420.lvl "Cheating(payment)"</span></div>
           <pre><code class="term">⚖  discover  what is missing for Cheating(payment)
 
   ✗ DishonestIntentionAtInception(payment) — UNKNOWN
@@ -104,8 +104,8 @@ assert Cheating(payment) under BeyondReasonableDoubt</code></pre></div>
     <!-- NDA -->
     <div class="pg-panel" data-panel="nda" style="display:none;">
       <div class="split" style="align-items:stretch;">
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">02-nda-contract.jvl</span></div>
-          <pre><code class="jvl">fact nda : Agreement {
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">02-nda-contract.lvl</span></div>
+          <pre><code class="lvl">fact nda : Agreement {
     penalty_cap: INR 5_000_000  expires_on: 2028-01-15
 } from source(doc="NDA_executed", page=1) status Established
 
@@ -115,8 +115,8 @@ fact disclosure_event : Disclosure {
 
 constraint damages_within_cap: disclosure_event.amount <= nda.penalty_cap
 constraint disclosure_before_expiry: disclosure_event.on before nda.expires_on</code></pre></div>
-        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ jvl constraints 02-nda-contract.jvl</span></div>
-          <pre><code class="term">⚖  objective constraints: 02-nda-contract.jvl
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ lvl constraints 02-nda-contract.lvl</span></div>
+          <pre><code class="term">⚖  objective constraints: 02-nda-contract.lvl
 
   ✗ damages_within_cap: VIOLATED
   ✓ disclosure_after_signing: holds
@@ -132,7 +132,7 @@ constraint disclosure_before_expiry: disclosure_event.on before nda.expires_on</
     <div class="pg-panel" data-panel="cmp" style="display:none;">
       <div class="split" style="align-items:stretch;">
         <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">v1  vs  v2</span></div>
-          <pre><code class="jvl"># v1
+          <pre><code class="lvl"># v1
 fact agreement : ServiceAgreement {
     fee: INR 500_000  due_on: 2025-09-30
 } from source(doc="MSA_v1", page=1) status Established
@@ -144,7 +144,7 @@ fact agreement : ServiceAgreement {
 
 rule penalty_clause:
     PenaltyOwed(a) requires ServiceAgreement(a) LateDelivery(a)</code></pre></div>
-        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ jvl equiv v1.jvl v2.jvl</span></div>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">$ lvl equiv v1.lvl v2.lvl</span></div>
           <pre><code class="term">⚖  equiv  service-agreement-v1  ≟  service-agreement-v2
 
   ✗ DIFFERENT — they diverge on these propositions:
@@ -160,12 +160,12 @@ rule penalty_clause:
       </div>
     </div>
 
-    <p style="margin-top:2rem;"><a class="btn primary" href="learn.html">Learn the language →</a> <a class="btn" href="https://github.com/sanjuhs/jvl/tree/main/examples">All examples on GitHub</a></p>
+    <p style="margin-top:2rem;"><a class="btn primary" href="learn.html">Learn the language →</a> <a class="btn" href="https://github.com/sanjuhs/lvl/tree/main/examples">All examples on GitHub</a></p>
   </div>
 
   <footer class="site">
     <div class="container">
-      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+      <p class="disclaimer">LVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
     </div>
   </footer>
   <script src="app.js"></script>

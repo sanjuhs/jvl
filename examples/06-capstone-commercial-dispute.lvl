@@ -1,7 +1,7 @@
 # ─────────────────────────────────────────────────────────────────────────
 # Example 06 — Capstone: a commercial dispute using the whole language
 #
-# One file that exercises every part of JVL:
+# One file that exercises every part of LVL:
 #   parties · facts (+provenance +status) · evidence (supports/refutes) ·
 #   claims · a conjunction rule · a defeasible default (normally/except) ·
 #   deontic obligations · objective constraints · exclusivity · assertions.
@@ -13,12 +13,12 @@
 # above the contractual cap.
 #
 # Try the full toolchain on it:
-#   jvl check --audit          examples/06-capstone-commercial-dispute.jvl
-#   jvl assert                 examples/06-capstone-commercial-dispute.jvl
-#   jvl discover               examples/06-capstone-commercial-dispute.jvl "Breach(contract)"
-#   jvl check-contradictions   examples/06-capstone-commercial-dispute.jvl
-#   jvl constraints            examples/06-capstone-commercial-dispute.jvl
-#   jvl simulate               examples/06-capstone-commercial-dispute.jvl --without ack
+#   lvl check --audit          examples/06-capstone-commercial-dispute.lvl
+#   lvl assert                 examples/06-capstone-commercial-dispute.lvl
+#   lvl discover               examples/06-capstone-commercial-dispute.lvl "Breach(contract)"
+#   lvl check-contradictions   examples/06-capstone-commercial-dispute.lvl
+#   lvl constraints            examples/06-capstone-commercial-dispute.lvl
+#   lvl simulate               examples/06-capstone-commercial-dispute.lvl --without ack
 # ─────────────────────────────────────────────────────────────────────────
 
 jurisdiction IN.Contract.v1

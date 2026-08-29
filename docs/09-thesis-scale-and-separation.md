@@ -5,45 +5,45 @@ honest answer to the obvious question: *is this actually possible?*
 
 ## 1. The separation of concerns
 
-The most important design decision in JVL is not in the syntax. It is a division
+The most important design decision in LVL is not in the syntax. It is a division
 of labour:
 
 > **The LLM transforms. The program decides.**
 
-An LLM is an *unreliable judge* but a *capable translator*. So JVL never asks a
+An LLM is an *unreliable judge* but a *capable translator*. So LVL never asks a
 model to weigh whether a fact is legally valid, whether an element is satisfied,
 or who should win. It asks only for a faithful **translation**:
 
-- document → JVL program
-- natural-language question → JVL assertion
+- document → LVL program
+- natural-language question → LVL assertion
 
 Then the assertion runs against the whole logic of the program, and the
 **deterministic engine — not the model — returns the answer**, with a derivation
 trace back to the record.
 
 ```
-        ┌──────────────── the fuzzy part (LLM) ────────────────┐
-        │  read an arbitrary document  →  emit a JVL program    │
-        │  read a question in English  →  emit an assertion     │
-        └───────────────────────────────┬──────────────────────┘
-                                         ▼
-        ┌────────────── the exact part (compiler) ─────────────┐
-        │  run the assertion over every rule and fact           │
+        ┌───────────────── the fuzzy part (LLM) ─────────────────┐
+        │  read an arbitrary document  →  emit an LVL program    │
+        │  read a question in English  →  emit an assertion      │
+        └────────────────────────────┬───────────────────────────┘
+                                     ▼
+        ┌────────────── the exact part (compiler) ───────────────┐
+        │  run the assertion over every rule and fact            │
         │  return proven / refuted / disputed — deterministically│
         │  show the derivation, sourced to the document          │
-        └───────────────────────────────────────────────────────┘
+        └────────────────────────────────────────────────────────┘
 ```
 
 Why this matters: the failure mode of "just ask the LLM if B has to repay A" is
 that the model's answer is a confident guess with no audit trail, different each
-run. JVL moves the *judgement* into code you can read and re-run, and confines
+run. LVL moves the *judgement* into code you can read and re-run, and confines
 the model to the one job it is genuinely good at — turning language into
 structure. The model's output is even checkable: a program that doesn't parse,
 or a fact with no `source(...)`, is rejected before any question is asked.
 
 ## 2. Scale is a feature, not a problem
 
-Because a JVL program is *just a program*, it can be **arbitrarily large**. A
+Because an LVL program is *just a program*, it can be **arbitrarily large**. A
 five-thousand-page case file, an entire contract suite, a constitution, a legal
 treatise — each compresses into some number of typed propositions, rules, and
 provenance links. There is no length limit; there is only more of the same.
@@ -66,7 +66,7 @@ netlist. Law is unusual only in that we still ship it as un-runnable prose.
 
 ## 3. Is it possible? An honest assessment
 
-**Yes for the checkable skeleton; no for the whole of law — and JVL is built to
+**Yes for the checkable skeleton; no for the whole of law — and LVL is built to
 respect that line.**
 
 What is clearly tractable, and works in the reference implementation today:
@@ -81,7 +81,7 @@ What is genuinely hard, and where the honesty lives:
 
 1. **Faithful translation is the crux.** The whole thesis rests on the LLM
    producing a program that actually represents the document. This is a real,
-   unsolved reliability problem. JVL's answer is not to pretend it's solved but
+   unsolved reliability problem. LVL's answer is not to pretend it's solved but
    to make errors *visible and checkable*: mandatory provenance means every fact
    can be audited against the source, and a future verification pass (a second
    model checking the encoding against the text) is a first-class roadmap item.
@@ -89,14 +89,14 @@ What is genuinely hard, and where the honesty lives:
    rather than hide.
 
 2. **Open-textured law resists formalisation.** "Reasonable", "dishonest
-   intention", "good faith" — these are balancing tests, not booleans. JVL does
+   intention", "good faith" — these are balancing tests, not booleans. LVL does
    **not** fake a value here. It leaves the proposition `Unknown` or `Disputed`,
    and `discover` hands the precise open question to a human. The claim is never
    "all of law is computable"; it is "the checkable part is much larger than we
    act as if it is, and isolating it is worth doing."
 
 3. **Garbage in, rigorous garbage out.** A perfect proof over a mis-extracted
-   fact is dangerous. This is why provenance is mandatory and why JVL positions
+   fact is dangerous. This is why provenance is mandatory and why LVL positions
    itself as a tool that *surfaces structure for human review*, never a robot
    judge.
 

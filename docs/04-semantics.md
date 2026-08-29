@@ -1,7 +1,7 @@
-# Semantics — How JVL decides what holds
+# Semantics — How LVL decides what holds
 
-This is the precise account of what a JVL program *means*. The reference
-implementation (`reference-impl/jvl/lattice.py` and `evaluator.py`) is the
+This is the precise account of what an LVL program *means*. The reference
+implementation (`reference-impl/lvl/lattice.py` and `evaluator.py`) is the
 executable version of everything below.
 
 ## 1. The epistemic lattice
@@ -50,9 +50,9 @@ evaluation reach a stable answer.
 
 ## 3b. Defeasible defaults — `normally ... except when ...`
 
-Statutes are full of *"normally X, except when Y"*. JVL expresses this directly:
+Statutes are full of *"normally X, except when Y"*. LVL expresses this directly:
 
-```jvl
+```lvl
 rule limitation_default:
     TimeBarred(c) normally
         FiledAfterLimitation(c)
@@ -62,19 +62,19 @@ rule limitation_default:
 Semantics: the body is combined like a `requires` (the default holds when the
 body holds), **but if any exception proposition reaches `SUPPORTED` or above, the
 conclusion is rebutted and becomes `REFUTED`**. Removing the exception (e.g.
-`jvl simulate --without ack`) restores the default. This is the *defeasible*
+`lvl simulate --without ack`) restores the default. This is the *defeasible*
 logic that mirrors how legislation is actually written — a rule with carve-outs —
 and it composes with everything else: a rebutted default is just a `REFUTED`
 contribution, so if other evidence still supports the conclusion, the atom
 becomes `DISPUTED` and the conflict surfaces.
 
 Exceptions can stack (`except when A except when B`); any one holding rebuts the
-default. See [example 05](../examples/05-limitation-default.jvl).
+default. See [example 05](../examples/05-limitation-default.lvl).
 
 **Exceptions to the exception.** Add `unless when ...` to reinstate the default,
 giving Catala-style cascading defaults:
 
-```jvl
+```lvl
 rule limitation:
     TimeBarred(k) normally FiledLate(k)
     except when Acknowledged(k)             # rebuts the time-bar
@@ -102,8 +102,8 @@ Two hard rules:
 - **`DISPUTED` never meets any standard.** A live conflict must be resolved
   before anything built on it can be certified.
 - A civil claim clears at `SUPPORTED`; a criminal charge needs `PROVEN`. This is
-  why the same evidence can win a civil case and lose a criminal one — and JVL
-  shows exactly that in [example 03](../examples/03-cheating-s420.jvl).
+  why the same evidence can win a civil case and lose a criminal one — and LVL
+  shows exactly that in [example 03](../examples/03-cheating-s420.lvl).
 
 > **Honest simplification.** Real standards of proof are not a single scalar, and
 > `ClearAndConvincing` genuinely sits between the other two. v0.1 collapses it to
@@ -131,7 +131,7 @@ fixpoint, same trace, every run (§8).
 
 ## 6. Contradiction detection
 
-Two independent mechanisms, both surfaced by `jvl check-contradictions`:
+Two independent mechanisms, both surfaced by `lvl check-contradictions`:
 
 - **Evidential:** any atom that resolves to `DISPUTED`.
 - **Declared:** an `exclusive { ... }` set with two or more members at
@@ -161,19 +161,19 @@ non-arguable defect.
 
 ## 8. Determinism, and where it stops
 
-JVL is deterministic by construction: no ordering-dependence (the fixpoint is
+LVL is deterministic by construction: no ordering-dependence (the fixpoint is
 order-free), no randomness, no hidden state. The *same program always yields the
 same answer and the same explanation*. This is the point — we are trying to make
 the mechanical part of law actually mechanical.
 
 Determinism stops exactly where the law stops being determinate: at genuine
-balancing tests, discretion, and open-textured standards. JVL's design response
+balancing tests, discretion, and open-textured standards. LVL's design response
 is not to fake a number there, but to leave the proposition `UNKNOWN` or
 `DISPUTED` and let `discover` hand the precise open question to a human. The
 language draws a bright line between *"the computer resolved this"* and *"a human
 must"*, and never blurs it.
 
-## 9. What the type system checks statically (`jvl check`)
+## 9. What the type system checks statically (`lvl check`)
 
 - Missing provenance on `fact` / `evidence` → **warning**.
 - A `claim by` an undeclared party → **error**.

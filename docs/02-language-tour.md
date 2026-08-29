@@ -1,11 +1,11 @@
-# The JVL Language Tour
+# The LVL Language Tour
 
 A guided walk through the whole language in one sitting. If you can read a little
 code and a little law, you can finish this in twenty minutes and write your own
 programs afterward. Nothing here is more complex than it needs to be — that is a
 design goal, not an accident.
 
-> **Mental model.** A JVL program is a small world. You *declare who exists*,
+> **Mental model.** An LVL program is a small world. You *declare who exists*,
 > *state what happened* (with a source and a confidence), *write down the rules
 > of law*, and then *ask questions*. The compiler answers, and shows its work.
 
@@ -15,7 +15,7 @@ design goal, not an accident.
 
 Here is a complete, runnable program. We will build it up piece by piece.
 
-```jvl
+```lvl
 jurisdiction IN.Contract.v1
 
 party A = Person "Anil Kumar"
@@ -47,7 +47,7 @@ assert Loan(transfer_17) under BalanceOfProbabilities
 Run it:
 
 ```bash
-jvl assert examples/01-loan-vs-investment.jvl
+lvl assert examples/01-loan-vs-investment.lvl
 ```
 
 Now let's understand every line.
@@ -56,7 +56,7 @@ Now let's understand every line.
 
 ## 1. `jurisdiction` — which body of law is in force
 
-```jvl
+```lvl
 jurisdiction IN.Contract.v1
 ```
 
@@ -65,7 +65,7 @@ metadata today; in future it will select which `spec/stdlib/` library loads.
 
 ## 2. `party` — declare who exists
 
-```jvl
+```lvl
 party A = Person "Anil Kumar"
 party B = Person "Beena Rao"
 ```
@@ -75,7 +75,7 @@ label. Types you'll see: `Person`, `Org`. Parties are the nouns of your world.
 
 ## 3. `fact` — state what happened, with a source and a status
 
-```jvl
+```lvl
 fact transfer_17 : TransferOfValue {
     from:   A
     to:     B
@@ -92,10 +92,10 @@ with these fields; it comes from page 2 ¶4 of BankStatement_3; and its status i
   (`INR 1_000_000` — underscores are ignored), dates (`2025-03-10`), numbers, or
   strings.
 - `from source(...)` is the **provenance**. Keys: `doc`, `page`, `para`,
-  `exhibit`, `speaker`. Omit it and `jvl check` will warn you — a fact with no
+  `exhibit`, `speaker`. Omit it and `lvl check` will warn you — a fact with no
   source is not trustworthy.
 - `status` is how well the fact is accepted. Common values: `Established`,
-  `Admitted`, `Alleged`, `Disputed`, `Refuted`. This is your first taste of JVL
+  `Admitted`, `Alleged`, `Disputed`, `Refuted`. This is your first taste of LVL
   never treating truth as a plain boolean.
 
 Declaring `fact transfer_17 : TransferOfValue { ... }` also asserts the
@@ -104,7 +104,7 @@ bridge from a data record to a logical atom.
 
 ## 4. `claim` — who asserts what
 
-```jvl
+```lvl
 claim c_loan by A : "the transfer was a loan" asserts Loan(transfer_17)
 ```
 
@@ -114,7 +114,7 @@ capture the adversarial structure: two parties, two incompatible stories.
 
 ## 5. `evidence` — things that bear on a proposition
 
-```jvl
+```lvl
 evidence w17 : Message {
     author: B
     text:   "I'll repay you next month."
@@ -123,13 +123,13 @@ evidence w17 : Message {
 
 Evidence is like a fact but it points at a proposition: `supports` raises that
 proposition toward `Supported`; `refutes` pushes it toward `Refuted`. When a
-proposition has both, JVL marks it `Disputed` and flags a contradiction (§10).
+proposition has both, LVL marks it `Disputed` and flags a contradiction (§10).
 
 ## 6. `rule` — the law itself
 
 Two shapes cover most of legal logic:
 
-```jvl
+```lvl
 # Conjunction: ALL elements required (a "meet" — as strong as the weakest part)
 rule loan_definition:
     Loan(t) requires
@@ -151,7 +151,7 @@ rule repayment_obligation:
 
 ## 7. `assert` — ask a question
 
-```jvl
+```lvl
 assert Loan(transfer_17) under BalanceOfProbabilities
 ```
 
@@ -176,20 +176,20 @@ not yes/no — it is a **status plus a derivation trace**:
 ## 8. Writing assertions over *someone else's* program
 
 You do not have to author a whole case to query one. Assertions are the primary
-way humans interrogate an existing JVL program, and there are two ways to write
+way humans interrogate an existing LVL program, and there are two ways to write
 them:
 
 **In the file** — add a line and re-run:
 
-```jvl
+```lvl
 assert BreachOfNDA(disclosure_event) under BeyondReasonableDoubt
 ```
 
 **From the command line** — no editing required:
 
 ```bash
-jvl explain  case.jvl "RepaymentObligation(transfer_17)"   # full trace
-jvl discover case.jvl "Cheating(payment)"                   # what's missing?
+lvl explain  case.lvl "RepaymentObligation(transfer_17)"   # full trace
+lvl discover case.lvl "Cheating(payment)"                   # what's missing?
 ```
 
 `explain` gives the whole derivation tree for any proposition. `discover` is the
@@ -205,7 +205,7 @@ yet established*, so you know exactly what evidence you still need:
 
 Some things need no legal judgement at all — they are arithmetic and calendars:
 
-```jvl
+```lvl
 constraint damages_within_cap:  disclosure_event.amount <= nda.penalty_cap
 constraint disclosure_in_term:  disclosure_event.on before nda.expires_on
 ```
@@ -214,7 +214,7 @@ constraint disclosure_in_term:  disclosure_event.on before nda.expires_on
 money and numbers, `before / after` for dates. Run them:
 
 ```bash
-jvl constraints case.jvl
+lvl constraints case.lvl
 #   ✗ damages_within_cap: VIOLATED     ← claimed damages exceed the contract cap
 #   ✓ disclosure_in_term: holds
 ```
@@ -224,28 +224,28 @@ is not arguable.
 
 ## 10. Finding contradictions
 
-Two ways JVL surfaces conflict:
+Two ways LVL surfaces conflict:
 
 1. **Evidence both ways.** If one piece of evidence `supports` and another
    `refutes` the same proposition, it becomes `Disputed`.
 2. **Declared mutual exclusion.** State that two propositions cannot co-exist:
 
-```jvl
+```lvl
 exclusive { Loan(transfer_17) Investment(transfer_17) }
 ```
 
 If both ever become `Supported`, the checker reports it:
 
 ```bash
-jvl check-contradictions case.jvl
+lvl check-contradictions case.lvl
 #   ⚠ MUTUAL EXCLUSION VIOLATED: Loan(...), Investment(...) cannot all hold
 ```
 
 ## 11. `obligation` / `permission` / `prohibition` — the deontic layer
 
-Contracts are mostly *duties*, so JVL has first-class deontic nodes:
+Contracts are mostly *duties*, so LVL has first-class deontic nodes:
 
-```jvl
+```lvl
 obligation notify {
     bearer: Receiving
     to:     Disclosing
@@ -269,7 +269,7 @@ checkable.
 Ask what the case looks like if a piece of it vanishes:
 
 ```bash
-jvl simulate case.jvl --without w17
+lvl simulate case.lvl --without w17
 #   Loan(transfer_17): UNKNOWN   ← changed from SUPPORTED
 ```
 

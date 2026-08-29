@@ -19,6 +19,6 @@ htmlcov/
 .vscode/
 *.swp
 
-# JVL build artifacts
-*.jvlc
-.jvl-cache/
+# LVL build artifacts
+*.lvlc
+.lvl-cache/

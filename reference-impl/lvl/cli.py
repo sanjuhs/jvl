@@ -1,18 +1,18 @@
-"""``jvl`` command-line interface.
+"""``lvl`` command-line interface.
 
 Subcommands:
 
-    jvl check    FILE                 parse + static checks + provenance audit
-    jvl assert   FILE                 run every assert/refute in the file
-    jvl explain  FILE "Pred(x)"       derivation trace for one proposition
-    jvl discover FILE "Pred(x)"       what is still missing to establish it
-    jvl check-contradictions FILE     report conflicts between clauses
-    jvl constraints FILE              evaluate the objective constraints
-    jvl simulate FILE --without ID    counterfactual: drop a node, re-run asserts
-    jvl emit     FILE json|graph|dot  emit the program as data (the JSON/graph layer)
-    jvl diff     A B                  structural + semantic diff of two programs
-    jvl equiv    A B                  do two programs mean the same thing?
-    jvl ask      FILE "question"      answer an English question (LLM picks the
+    lvl check    FILE                 parse + static checks + provenance audit
+    lvl assert   FILE                 run every assert/refute in the file
+    lvl explain  FILE "Pred(x)"       derivation trace for one proposition
+    lvl discover FILE "Pred(x)"       what is still missing to establish it
+    lvl check-contradictions FILE     report conflicts between clauses
+    lvl constraints FILE              evaluate the objective constraints
+    lvl simulate FILE --without ID    counterfactual: drop a node, re-run asserts
+    lvl emit     FILE json|graph|dot  emit the program as data (the JSON/graph layer)
+    lvl diff     A B                  structural + semantic diff of two programs
+    lvl equiv    A B                  do two programs mean the same thing?
+    lvl ask      FILE "question"      answer an English question (LLM picks the
                                       query; the engine computes the answer)
 """
 
@@ -273,7 +273,7 @@ def cmd_ask(args) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="jvl", description="Jhana Verifiable Law compiler")
+    p = argparse.ArgumentParser(prog="lvl", description="Legal Verifiable Language compiler")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     c = sub.add_parser("check", help="parse + static checks + provenance audit")
@@ -331,7 +331,7 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("question")
     c.set_defaults(func=cmd_ask)
 
-    c = sub.add_parser("fmt", help="format a program in canonical JVL")
+    c = sub.add_parser("fmt", help="format a program in canonical LVL")
     c.add_argument("file")
     c.add_argument("--write", "-w", action="store_true", help="overwrite the file in place")
     c.set_defaults(func=cmd_fmt)

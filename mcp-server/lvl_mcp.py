@@ -1,14 +1,14 @@
-"""JVL MCP server — expose the JVL compiler as tools for LLMs and agents.
+"""LVL MCP server — expose the LVL compiler as tools for LLMs and agents.
 
-This lets Claude (or any MCP client) drive JVL as a set of tools: hand it a
+This lets Claude (or any MCP client) drive LVL as a set of tools: hand it a
 program, ask it to check, assert, explain, discover, find contradictions, or
-compare two programs. The model does the language work; JVL returns the
+compare two programs. The model does the language work; LVL returns the
 deterministic, sourced answer — the project's thesis, wired into the agent loop.
 
 Run:
     pip install -e ../reference-impl
     pip install "mcp[cli]"
-    python jvl_mcp.py           # stdio transport
+    python lvl_mcp.py           # stdio transport
 
 Add to Claude Code / Claude Desktop: see README.md in this folder.
 """
@@ -17,12 +17,12 @@ from __future__ import annotations
 
 from mcp.server.fastmcp import FastMCP
 
-from jvl import Evaluator, compare, serialize
-from jvl.ast import Query
-from jvl.lattice import Standard
-from jvl.parser import parse
+from lvl import Evaluator, compare, serialize
+from lvl.ast import Query
+from lvl.lattice import Standard
+from lvl.parser import parse
 
-mcp = FastMCP("jvl")
+mcp = FastMCP("lvl")
 
 
 def _eval(program: str) -> Evaluator:
@@ -35,7 +35,7 @@ def _predicate(text: str):
 
 @mcp.tool()
 def check(program: str) -> str:
-    """Parse a JVL program, type-check it, and audit facts for provenance.
+    """Parse an LVL program, type-check it, and audit facts for provenance.
 
     Returns the diagnostics (errors and warnings). Use this first when given a
     program you didn't write.
@@ -106,7 +106,7 @@ def emit_json(program: str) -> str:
 
 @mcp.tool()
 def diff(program_a: str, program_b: str) -> str:
-    """Structural + semantic diff between two JVL programs."""
+    """Structural + semantic diff between two LVL programs."""
     d = compare.diff(_eval(program_a), _eval(program_b))
     import json
     return json.dumps(d.as_dict(), indent=2) if not d.is_empty() else "Identical."
@@ -114,7 +114,7 @@ def diff(program_a: str, program_b: str) -> str:
 
 @mcp.tool()
 def equiv(program_a: str, program_b: str) -> str:
-    """Do two JVL programs mean the same thing? Names any diverging propositions."""
+    """Do two LVL programs mean the same thing? Names any diverging propositions."""
     r = compare.equiv(_eval(program_a), _eval(program_b))
     if r.equivalent:
         return "EQUIVALENT — both programs derive the same conclusions."

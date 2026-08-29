@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Learn JVL</title>
-  <meta name="description" content="Learn JVL in one sitting: the building blocks, how to ask questions, the epistemic lattice, and how to convert any legal document into a JVL program.">
+  <title>Learn LVL</title>
+  <meta name="description" content="Learn LVL in one sitting: the building blocks, how to ask questions, the epistemic lattice, and how to convert any legal document into an LVL program.">
   <link rel="icon" href="assets/logo-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,14 +14,14 @@
 <body>
   <header class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> JVL</a>
+      <a class="brand" href="index.html"><img src="assets/logo-mark.svg" alt=""> LVL</a>
       <button class="nav-toggle" aria-label="Menu">☰</button>
       <nav class="links">
         <a href="learn.html">Learn</a>
         <a href="docs.html">Docs</a>
         <a href="editor.html">Editor</a>
         <a href="theory.html">Theory</a>
-        <a href="https://github.com/sanjuhs/jvl">GitHub</a>
+        <a href="https://github.com/sanjuhs/lvl">GitHub</a>
       </nav>
     </div>
   </header>
@@ -29,8 +29,8 @@
   <div class="container" style="padding-top:2.5rem;">
     <div class="section-head">
       <span class="kicker">Learn</span>
-      <h1 style="font-size:clamp(2rem,4vw,2.8rem);font-weight:800;">JVL in one sitting</h1>
-      <p>If you can read a little code and a little law, you can finish this in twenty minutes and write your own programs afterward. A JVL program is a small world: declare who exists, state what happened (with a source and a confidence), write the rules of law, and ask questions.</p>
+      <h1 style="font-size:clamp(2rem,4vw,2.8rem);font-weight:800;">LVL in one sitting</h1>
+      <p>If you can read a little code and a little law, you can finish this in twenty minutes and write your own programs afterward. An LVL program is a small world: declare who exists, state what happened (with a source and a confidence), write the rules of law, and ask questions.</p>
     </div>
 
     <div class="doc-wrap">
@@ -53,8 +53,8 @@
         <h2 id="hello">Hello, dispute</h2>
         <p>Here is a complete, runnable program. Every keyword in it is explained below.</p>
         <div class="window">
-          <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">hello.jvl</span><button class="copy-btn">copy</button></div>
-          <pre><code class="jvl">jurisdiction IN.Contract.v1
+          <div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">hello.lvl</span><button class="copy-btn">copy</button></div>
+          <pre><code class="lvl">jurisdiction IN.Contract.v1
 
 party A = Person "Anil Kumar"
 party B = Person "Beena Rao"
@@ -78,26 +78,26 @@ assert Loan(transfer_17) under BalanceOfProbabilities</code></pre>
 
         <h2 id="blocks">The building blocks</h2>
         <p><strong><code>jurisdiction</code></strong> names the rule library in force. <strong><code>party</code></strong> declares the people and organisations — the nouns of your world.</p>
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">parties.jvl</span></div>
-          <pre><code class="jvl">party A = Person "Anil Kumar"
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">parties.lvl</span></div>
+          <pre><code class="lvl">party A = Person "Anil Kumar"
 party acme = Org "Acme Labs Pvt Ltd"</code></pre></div>
 
-        <p><strong><code>fact</code></strong> states something that happened. Two JVL-specific questions come attached: <em>where is it in the record?</em> (<code>from source(...)</code>) and <em>how firmly is it accepted?</em> (<code>status</code>). Declaring a fact also asserts the proposition of its type — <code>TransferOfValue(transfer_17)</code>.</p>
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">fact.jvl</span></div>
-          <pre><code class="jvl">fact transfer_17 : TransferOfValue {
+        <p><strong><code>fact</code></strong> states something that happened. Two LVL-specific questions come attached: <em>where is it in the record?</em> (<code>from source(...)</code>) and <em>how firmly is it accepted?</em> (<code>status</code>). Declaring a fact also asserts the proposition of its type — <code>TransferOfValue(transfer_17)</code>.</p>
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">fact.lvl</span></div>
+          <pre><code class="lvl">fact transfer_17 : TransferOfValue {
     from: A  to: B  amount: INR 1_000_000  on: 2025-03-10
 } from source(doc="BankStatement_3", page=2, para=4) status Established</code></pre></div>
 
         <p><strong><code>claim</code></strong> is a party's contention (weak on its own). <strong><code>evidence</code></strong> is a document, message, or testimony that <code>supports</code> or <code>refutes</code> a proposition.</p>
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">claim-evidence.jvl</span></div>
-          <pre><code class="jvl">claim c_loan by A : "the transfer was a loan" asserts Loan(transfer_17)
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">claim-evidence.lvl</span></div>
+          <pre><code class="lvl">claim c_loan by A : "the transfer was a loan" asserts Loan(transfer_17)
 
 evidence w17 : Message { author: B  text: "I'll repay next month." }
     from source(doc="WhatsApp_17", para=21) supports RepaymentObligation(transfer_17)</code></pre></div>
 
         <p><strong><code>rule</code></strong> is the law itself. Two shapes cover most legal logic: <code>requires</code> (all elements — a conjunction) and <code>established_if</code> (any branch — a disjunction). A lowercase, undeclared argument like <code>t</code> is a variable.</p>
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">rules.jvl</span></div>
-          <pre><code class="jvl">rule loan_definition:
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">rules.lvl</span></div>
+          <pre><code class="lvl">rule loan_definition:
     Loan(t) requires
         TransferOfValue(t)
         RepaymentObligation(t)
@@ -107,9 +107,9 @@ rule repayment_obligation:
         AdmittedRepayment(t)
         or ContractRequiresRepayment(t)</code></pre></div>
 
-        <p>Contracts are mostly duties, so JVL has <strong>deontic</strong> nodes: <code>obligation</code>, <code>permission</code>, <code>prohibition</code>.</p>
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">deontic.jvl</span></div>
-          <pre><code class="jvl">obligation notify {
+        <p>Contracts are mostly duties, so LVL has <strong>deontic</strong> nodes: <code>obligation</code>, <code>permission</code>, <code>prohibition</code>.</p>
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">deontic.lvl</span></div>
+          <pre><code class="lvl">obligation notify {
     bearer: Receiving  to: Disclosing
     that: NotifyOnRequest(Receiving)  by: 2025-07-01
 }
@@ -119,8 +119,8 @@ prohibition keep_secret {
 }</code></pre></div>
 
         <h2 id="questions">Asking questions</h2>
-        <p>Questions are the primary way humans use a JVL program. Write them in the file, or run them from the command line over any existing program. Answers are never a bare yes/no — they're a <strong>status plus a derivation trace</strong>, every leaf tied to the record.</p>
-        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">jvl assert hello.jvl</span></div>
+        <p>Questions are the primary way humans use an LVL program. Write them in the file, or run them from the command line over any existing program. Answers are never a bare yes/no — they're a <strong>status plus a derivation trace</strong>, every leaf tied to the record.</p>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">lvl assert hello.lvl</span></div>
           <pre><code class="term">⚖  assert  Loan(transfer_17)   standard: BalanceOfProbabilities
 
   Loan(transfer_17) ............................. SUPPORTED
@@ -139,7 +139,7 @@ prohibition keep_secret {
         </div>
 
         <h2 id="lattice">The epistemic lattice</h2>
-        <p>A JVL proposition is never just <code>true</code>. It carries a status, ordered from worst to best support, and is judged against a <strong>standard of proof</strong>.</p>
+        <p>An LVL proposition is never just <code>true</code>. It carries a status, ordered from worst to best support, and is judged against a <strong>standard of proof</strong>.</p>
         <table>
           <tr><th>Status</th><th>Meaning</th></tr>
           <tr><td><code>Refuted</code></td><td>evidence shows it's false</td></tr>
@@ -153,24 +153,24 @@ prohibition keep_secret {
 
         <h2 id="objective">Objective checks &amp; conflicts</h2>
         <p>Some things need no legal judgement — they're arithmetic and calendars. <code>constraint</code> compares money, numbers, and dates directly.</p>
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">constraints.jvl</span></div>
-          <pre><code class="jvl">constraint damages_within_cap: disclosure.amount <= nda.penalty_cap
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">constraints.lvl</span></div>
+          <pre><code class="lvl">constraint damages_within_cap: disclosure.amount <= nda.penalty_cap
 constraint disclosure_in_term: disclosure.on before nda.expires_on</code></pre></div>
-        <p>Conflicts surface two ways: evidence that <code>supports</code> and <code>refutes</code> the same proposition makes it <code>Disputed</code>; and an <code>exclusive { }</code> set that both hold triggers a violation. Run <code>jvl check-contradictions</code>.</p>
-        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">exclusive.jvl</span></div>
-          <pre><code class="jvl">exclusive { Loan(transfer_17) Investment(transfer_17) }</code></pre></div>
+        <p>Conflicts surface two ways: evidence that <code>supports</code> and <code>refutes</code> the same proposition makes it <code>Disputed</code>; and an <code>exclusive { }</code> set that both hold triggers a violation. Run <code>lvl check-contradictions</code>.</p>
+        <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">exclusive.lvl</span></div>
+          <pre><code class="lvl">exclusive { Loan(transfer_17) Investment(transfer_17) }</code></pre></div>
 
         <h2 id="compare">Compare two documents</h2>
         <p>Turn two versions of a contract into programs, then ask whether they mean the same thing. <code>equiv</code> compares both the conclusions and the operative terms, ignoring cosmetics; <code>diff</code> gives the full delta.</p>
-        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">jvl equiv v1.jvl v2.jvl</span></div>
+        <div class="window term"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">lvl equiv v1.lvl v2.lvl</span></div>
           <pre><code class="term">⚖  equiv  service-agreement-v1  ≟  service-agreement-v2
 
   ✗ DIFFERENT — they diverge on these propositions:
     · term changed — agreement.fee: INR500000 → INR650000
     · rule added — penalty_clause</code></pre></div>
 
-        <h2 id="convert">Convert your document into JVL</h2>
-        <p>Don't try to write the whole program at once. Make five cheap passes over the document, each producing one kind of node. An LLM can do this — see the <a href="https://github.com/sanjuhs/jvl/tree/main/llm">LLM kit</a> — but the method is the same by hand.</p>
+        <h2 id="convert">Convert your document into LVL</h2>
+        <p>Don't try to write the whole program at once. Make five cheap passes over the document, each producing one kind of node. An LLM can do this — see the <a href="https://github.com/sanjuhs/lvl/tree/main/llm">LLM kit</a> — but the method is the same by hand.</p>
         <ol>
           <li><strong>Parties.</strong> Every person and organisation → a <code>party</code>.</li>
           <li><strong>Facts.</strong> Every event/state the document treats as having happened → a <code>fact</code>, with <code>source(...)</code> and a <code>status</code> matching the document's own hedging.</li>
@@ -179,7 +179,7 @@ constraint disclosure_in_term: disclosure.on before nda.expires_on</code></pre><
           <li><strong>Constraints &amp; questions.</strong> Objective relations → <code>constraint</code>; the ultimate issues → <code>assert ... under</code> the right standard.</li>
         </ol>
         <div class="callout">
-          <strong>The golden rules.</strong> Cite everything (no source → not a fact). Never inflate confidence beyond the document. Encode the logic you can, and leave genuine open questions <code>Unknown</code> for a human. Then <code>jvl check</code>, fix, and read the trace — never present a bare conclusion.
+          <strong>The golden rules.</strong> Cite everything (no source → not a fact). Never inflate confidence beyond the document. Encode the logic you can, and leave genuine open questions <code>Unknown</code> for a human. Then <code>lvl check</code>, fix, and read the trace — never present a bare conclusion.
         </div>
 
         <h2 id="syntax">Syntax reference</h2>
@@ -198,17 +198,17 @@ constraint disclosure_in_term: disclosure.on before nda.expires_on</code></pre><
           <tr><td><code>assert / prove / refute</code></td><td>ask whether something holds</td></tr>
           <tr><td><code>explain / discover</code></td><td>trace it / find what's missing</td></tr>
         </table>
-        <p>Whitespace is insignificant; comments are <code>#</code> or <code>//</code>. Full grammar: <a href="https://github.com/sanjuhs/jvl/blob/main/spec/grammar.ebnf">spec/grammar.ebnf</a>.</p>
+        <p>Whitespace is insignificant; comments are <code>#</code> or <code>//</code>. Full grammar: <a href="https://github.com/sanjuhs/lvl/blob/main/spec/grammar.ebnf">spec/grammar.ebnf</a>.</p>
 
         <h2 id="install">Install &amp; run</h2>
         <div class="window"><div class="titlebar"><div class="dots"><i></i><i></i><i></i></div><span class="name">terminal</span><button class="copy-btn">copy</button></div>
-          <pre><code class="term">git clone https://github.com/sanjuhs/jvl.git
-cd jvl/reference-impl && pip install -e .
+          <pre><code class="term">git clone https://github.com/sanjuhs/lvl.git
+cd lvl/reference-impl && pip install -e .
 
-jvl check    ../examples/01-loan-vs-investment.jvl
-jvl assert   ../examples/01-loan-vs-investment.jvl
-jvl discover ../examples/03-cheating-s420.jvl "Cheating(payment)"
-jvl equiv    ../examples/04-service-agreement-v1.jvl ../examples/04-service-agreement-v2.jvl</code></pre></div>
+lvl check    ../examples/01-loan-vs-investment.lvl
+lvl assert   ../examples/01-loan-vs-investment.lvl
+lvl discover ../examples/03-cheating-s420.lvl "Cheating(payment)"
+lvl equiv    ../examples/04-service-agreement-v1.lvl ../examples/04-service-agreement-v2.lvl</code></pre></div>
         <p style="margin-top:2rem;"><a class="btn primary" href="playground.html">Try the playground →</a> <a class="btn" href="docs.html">Read the full docs</a></p>
       </main>
     </div>
@@ -216,7 +216,7 @@ jvl equiv    ../examples/04-service-agreement-v1.jvl ../examples/04-service-agre
 
   <footer class="site">
     <div class="container">
-      <p class="disclaimer">JVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
+      <p class="disclaimer">LVL is a research prototype. It is not a lawyer, does not give legal advice, and its output must be reviewed by a qualified human before it informs any real decision.</p>
     </div>
   </footer>
   <script src="app.js"></script>

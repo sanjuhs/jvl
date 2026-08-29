@@ -1,5 +1,5 @@
 /* ============================================================================
-   JVL website — a clean, fast, dependency-light stylesheet.
+   LVL website — a clean, fast, dependency-light stylesheet.
    Dark-first, with a light theme via [data-theme="light"]. Brand gradient:
    indigo (#6366f1) → sky (#0ea5e9); verified accent emerald (#10b981).
    ========================================================================== */
@@ -131,7 +131,7 @@ pre, code { font-family: var(--mono); font-size: .86rem; }
 pre { line-height: 1.55; }
 .window.term pre { background: #060911; color: #cbd5e1; }
 
-/* JVL syntax colors */
+/* LVL syntax colors */
 .tok-comment { color: #5b6b8c; font-style: italic; }
 .tok-key { color: #c792ea; font-weight: 600; }
 .tok-pred { color: #82aaff; }

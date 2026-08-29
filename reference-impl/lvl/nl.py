@@ -1,13 +1,13 @@
-"""Natural-language front-end: map an English question to a JVL query.
+"""Natural-language front-end: map an English question to an LVL query.
 
-This is the ``jvl ask`` path. The division of labour is the project's whole
-thesis: the LLM does **only** the translation (English question -> a single JVL
+This is the ``lvl ask`` path. The division of labour is the project's whole
+thesis: the LLM does **only** the translation (English question -> a single LVL
 query line), and the deterministic engine computes the actual answer. The model
 never decides whether a proposition holds — it just picks which query to run.
 
 Uses the standard library only (``urllib``) so the reference implementation
 keeps its zero-dependency promise. Requires ``ANTHROPIC_API_KEY`` in the
-environment; the model is configurable via ``JVL_ASSIST_MODEL``.
+environment; the model is configurable via ``LVL_ASSIST_MODEL``.
 """
 
 from __future__ import annotations
@@ -19,8 +19,8 @@ import urllib.request
 
 _ENDPOINT = "https://api.anthropic.com/v1/messages"
 
-_SYSTEM = """You translate a plain-English question about a JVL (Jhana Verifiable
-Law) program into exactly ONE JVL query line. You never answer the question
+_SYSTEM = """You translate a plain-English question about an LVL (Legal Verifiable
+Language) program into exactly ONE LVL query line. You never answer the question
 yourself — the compiler does that. Output ONLY the query line, nothing else.
 
 Valid query forms:
@@ -42,22 +42,22 @@ class NLError(RuntimeError):
 
 
 def question_to_query(program_src: str, question: str) -> str:
-    """Return a single JVL query line for ``question`` over ``program_src``."""
+    """Return a single LVL query line for ``question`` over ``program_src``."""
     key = os.environ.get("ANTHROPIC_API_KEY")
     if not key:
         raise NLError(
-            "ANTHROPIC_API_KEY is not set. `jvl ask` needs it to translate the "
+            "ANTHROPIC_API_KEY is not set. `lvl ask` needs it to translate the "
             "question into a query. Export it, or write the query yourself with "
-            "`jvl assert/explain/discover`.")
-    model = os.environ.get("JVL_ASSIST_MODEL", "claude-sonnet-5")
+            "`lvl assert/explain/discover`.")
+    model = os.environ.get("LVL_ASSIST_MODEL", "claude-sonnet-5")
     body = {
         "model": model,
         "max_tokens": 200,
         "system": _SYSTEM,
         "messages": [{
             "role": "user",
-            "content": f"JVL program:\n\n{program_src}\n\nQuestion: {question}\n\n"
-                       f"Output the single JVL query line now.",
+            "content": f"LVL program:\n\n{program_src}\n\nQuestion: {question}\n\n"
+                       f"Output the single LVL query line now.",
         }],
     }
     req = urllib.request.Request(
@@ -82,7 +82,7 @@ def question_to_query(program_src: str, question: str) -> str:
                    if b.get("type") == "text").strip()
     # Strip fences/backticks if the model added them.
     text = text.strip("`").strip()
-    if text.lower().startswith("jvl"):
+    if text.lower().startswith("lvl"):
         text = text[3:].strip()
     line = next((ln.strip() for ln in text.splitlines() if ln.strip()), "")
     if not line:

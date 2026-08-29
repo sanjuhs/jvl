@@ -1,6 +1,6 @@
-"""Emit a JVL program as canonical JSON or as a graph.
+"""Emit an LVL program as canonical JSON or as a graph.
 
-This is Phase 1 of the roadmap made concrete: a JVL program already *contains*
+This is Phase 1 of the roadmap made concrete: an LVL program already *contains*
 the facts, relationships, provenance, and derived conclusions, so it can produce
 the JSON and graph layers itself rather than depending on a separate extractor.
 The output is deterministic (sorted keys, stable ordering) so two runs — or two
@@ -141,7 +141,7 @@ def to_dot(ev: Evaluator) -> str:
     g = to_graph(ev)
     palette = {"party": "#6366f1", "atom": "#0ea5e9", "evidence": "#10b981",
                "claim": "#f59e0b"}
-    lines = ["digraph JVL {", '  rankdir=LR;', '  node [style=filled, fontname="Helvetica"];']
+    lines = ["digraph LVL {", '  rankdir=LR;', '  node [style=filled, fontname="Helvetica"];']
     for n in g["nodes"]:
         color = palette.get(n["kind"], "#94a3b8")
         label = n["id"].replace('"', '\\"')

@@ -1,9 +1,9 @@
-"""Tokenizer for JVL.
+"""Tokenizer for LVL.
 
 Newlines and indentation are *insignificant*. The grammar is driven entirely
 by keywords, structure (``{}``, ``()``), and predicate shape. This is a
 deliberate choice: whitespace-sensitive languages are painful for a language
-model to emit reliably, and JVL's whole premise is that an LLM can produce it.
+model to emit reliably, and LVL's whole premise is that an LLM can produce it.
 """
 
 from __future__ import annotations

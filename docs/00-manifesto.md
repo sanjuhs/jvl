@@ -1,4 +1,4 @@
-# The JVL Manifesto
+# The LVL Manifesto
 
 *Why a language for law, and what it is careful never to become.*
 
@@ -26,7 +26,7 @@ amounts, durations, and the logical skeleton of an argument — "the offence
 requires A and B and C and D" — are structure we can capture, execute, and
 audit.
 
-JVL is a small language for writing that structure down, so a machine (or a
+LVL is a small language for writing that structure down, so a machine (or a
 careful human) can ask:
 
 - Does this obligation actually follow from these facts?
@@ -37,7 +37,7 @@ careful human) can ask:
 
 ## Three commitments
 
-1. **Honesty about uncertainty.** A proposition in JVL is never just `true`. It
+1. **Honesty about uncertainty.** A proposition in LVL is never just `true`. It
    carries an epistemic status and is judged against a standard of proof. The
    language refuses to let you assert a conclusion without saying how well it is
    supported. Law lives in doubt; the type system lives there too.
@@ -48,21 +48,21 @@ careful human) can ask:
    against the failure mode that makes automated legal reasoning dangerous: a
    flawless proof of a hallucinated fact.
 
-3. **Determinism where determinism is honest.** Given the same program, JVL
+3. **Determinism where determinism is honest.** Given the same program, LVL
    produces the same answer, every time, with the same explanation. Where the
    law is genuinely determinate — arithmetic, temporal order, the logical form
-   of a rule — we make it fully mechanical. Where it is not, JVL's job is to
+   of a rule — we make it fully mechanical. Where it is not, LVL's job is to
    isolate exactly the human judgement that remains, and hand it to a human.
 
-## What JVL is not
+## What LVL is not
 
-- **Not a robot judge.** JVL makes arguments explicit and checkable. It does not
+- **Not a robot judge.** LVL makes arguments explicit and checkable. It does not
   decide cases. Its output is a structured argument for a human to review, never
   a verdict.
 - **Not legal advice.** It is a research tool. Nothing it emits should inform a
   real decision without a qualified human in the loop.
 - **Not a replacement for the record.** The messy, information-rich layers — the
-  raw text, the JSON extraction, the case graph — are kept underneath JVL, never
+  raw text, the JSON extraction, the case graph — are kept underneath LVL, never
   discarded. See [the design rationale](01-design-rationale.md).
 - **Not a claim that all of law is computable.** It is a claim that the
   *checkable part is much larger than we act as if it is*, and that isolating it
@@ -72,7 +72,7 @@ careful human) can ask:
 
 Law belongs to everyone it governs. A language for encoding it should be forkable
 by a legal aid clinic, a startup, a court, a student, and a sceptic — without
-permission and without a licence fee. If JVL is wrong about something, the fix
+permission and without a licence fee. If LVL is wrong about something, the fix
 should be a pull request, in public, where the reasoning can be argued with.
 
 > Make the law's structure visible. Let humans keep the judgement.

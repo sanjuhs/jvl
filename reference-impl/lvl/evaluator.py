@@ -1,9 +1,9 @@
-"""The JVL evaluator.
+"""The LVL evaluator.
 
-Given a parsed :class:`~jvl.ast.Program`, this builds a table of *atoms*
+Given a parsed :class:`~lvl.ast.Program`, this builds a table of *atoms*
 (ground propositions), each with an epistemic status derived from facts,
 evidence, claims and rules. On top of that table it offers the operations that
-make JVL worth having:
+make LVL worth having:
 
 * ``assert`` / ``prove`` — does a proposition hold, to a standard of proof?
 * ``explain`` — the full derivation trace, every node linked to the record.
@@ -374,8 +374,8 @@ class Evaluator:
         """Propositions that reach SUPPORTED+ but trace to no source at all.
 
         A supported conclusion the compiler cannot ground in the record is the
-        exact failure mode JVL exists to catch — a rigorous proof of a fact
-        nobody wrote down. `jvl check --audit` reports these.
+        exact failure mode LVL exists to catch — a rigorous proof of a fact
+        nobody wrote down. `lvl check --audit` reports these.
         """
         out = []
         for key, st in sorted(self.status.items(), key=lambda kv: (kv[0][0], kv[0][1])):
@@ -383,7 +383,7 @@ class Evaluator:
                 out.append((key, st))
         return out
 
-    # --- static checks (jvl check) -------------------------------------
+    # --- static checks (lvl check) -------------------------------------
     def static_check(self) -> list[Diagnostic]:
         diags: list[Diagnostic] = list(self.diagnostics)
         parties = {p.id for p in self.program.of_type(ast.Party)}

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from jvl import ast, parse
-from jvl.lexer import tokenize
-from jvl.parser import ParseError
+from lvl import ast, parse
+from lvl.lexer import tokenize
+from lvl.parser import ParseError
 
 
 def test_tokenize_money_and_dates():

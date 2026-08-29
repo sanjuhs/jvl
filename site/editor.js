@@ -1,4 +1,4 @@
-/* editor.js — the interactive JVL editor: live highlight, run, lessons, AI. */
+/* editor.js — the interactive LVL editor: live highlight, run, lessons, AI. */
 (function () {
   "use strict";
 
@@ -139,10 +139,10 @@ constraint within_term: breach.on before nda.expires_on`
 
   var $ = function (s) { return document.querySelector(s); };
   var src = $("#src"), hl = $("#hl"), out = $("#out"), outName = $("#outName"), predInput = $("#predInput");
-  var HL = window.JVLHL, JVL = window.JVL;
+  var HL = window.LVLHL, LVL = window.LVL;
 
   function syncHighlight() {
-    hl.innerHTML = HL.highlightJVL(src.value) + "\n";
+    hl.innerHTML = HL.highlightLVL(src.value) + "\n";
   }
   function syncScroll() { hl.parentNode.scrollTop = src.scrollTop; hl.parentNode.scrollLeft = src.scrollLeft; }
 
@@ -161,8 +161,8 @@ constraint within_term: breach.on before nda.expires_on`
 
   function runCommand(cmd, usePred) {
     var arg = usePred ? predInput.value.trim() : null;
-    var res = JVL.run(src.value, cmd, arg);
-    outName.textContent = "$ jvl " + (cmd === "graph" ? "emit graph" : cmd) + (arg ? ' "' + arg + '"' : "");
+    var res = LVL.run(src.value, cmd, arg);
+    outName.textContent = "$ lvl " + (cmd === "graph" ? "emit graph" : cmd) + (arg ? ' "' + arg + '"' : "");
 
     if (cmd === "graph") {
       outPre.style.display = "none";
@@ -191,10 +191,10 @@ constraint within_term: breach.on before nda.expires_on`
 
   // ---- AI helper --------------------------------------------------------
   function fallbackPrompt(userText) {
-    return "You are a JVL (Jhana Verifiable Law) extractor. Convert the scenario below into a single JVL program.\n" +
+    return "You are an LVL (Legal Verifiable Language) extractor. Convert the scenario below into a single LVL program.\n" +
       "Rules: every fact/evidence needs a from source(...); use party/fact/evidence/claim/rule/constraint/assert; " +
       "predicates are UpperCamelCase; never inflate confidence; leave unsupported elements unstated; end with assert ... under a standard.\n\n" +
-      "Scenario:\n" + userText + "\n\nOutput only a fenced ```jvl code block.";
+      "Scenario:\n" + userText + "\n\nOutput only a fenced ```lvl code block.";
   }
 
   function initAI() {
@@ -210,15 +210,15 @@ constraint within_term: breach.on before nda.expires_on`
         if (!r.ok) throw new Error("status " + r.status);
         return r.json();
       }).then(function (data) {
-        var jvl = (data.jvl || "").trim();
-        if (!jvl) throw new Error("empty response");
-        src.value = jvl; syncHighlight(); runCommand("run");
+        var lvl = (data.lvl || "").trim();
+        if (!lvl) throw new Error("empty response");
+        src.value = lvl; syncHighlight(); runCommand("run");
         status.textContent = "Drafted by AI — review every fact and its source before trusting it.";
       }).catch(function (e) {
         // No backend / key configured: hand over a ready-made prompt.
         var p = fallbackPrompt(text);
         if (navigator.clipboard) navigator.clipboard.writeText(p).then(function () {});
-        status.innerHTML = "AI endpoint not available (" + e.message + "). A ready-made prompt was copied to your clipboard — paste it into Claude or any LLM, then paste the JVL back here. To enable one-click drafting, set <code>ANTHROPIC_API_KEY</code> on the Vercel deployment (see DEPLOY.md).";
+        status.innerHTML = "AI endpoint not available (" + e.message + "). A ready-made prompt was copied to your clipboard — paste it into Claude or any LLM, then paste the LVL back here. To enable one-click drafting, set <code>ANTHROPIC_API_KEY</code> on the Vercel deployment (see DEPLOY.md).";
       }).finally(function () { btn.disabled = false; });
     });
   }
